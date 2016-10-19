@@ -195,6 +195,7 @@ public class UpdatePlanInfoActivity extends BaseActivity {
                     @Override
                     public void onSucceed(String s) {
                         DialogUtil.dissmiss();
+                        Log.w("plan",s.toString());
                         Toast.makeText(UpdatePlanInfoActivity.this,"保存成功",Toast.LENGTH_LONG).show();
                        // MyDBHandler.getInstance(UpdatePlanInfoActivity.this).updatePlanInfo(p);
                         lastIntent.putExtra(TimePlanContent.UPDATE_PLAN_INFO_TAG,p);
@@ -204,6 +205,7 @@ public class UpdatePlanInfoActivity extends BaseActivity {
 
                     @Override
                     public void onError(VolleyError error) {
+                        Log.w("plan",error.getMessage());
                         DialogUtil.dissmiss();
                         Toast.makeText(UpdatePlanInfoActivity.this,"保存失败",Toast.LENGTH_LONG).show();
                     }

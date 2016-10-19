@@ -10,6 +10,7 @@ import android.os.Handler;
 import android.os.Message;
 import android.support.v4.view.ViewPager;
 import android.support.v7.app.AlertDialog;
+import android.util.Log;
 import android.view.KeyEvent;
 import android.view.LayoutInflater;
 import android.view.MotionEvent;
@@ -511,6 +512,11 @@ public class TimeManageActivity extends BaseActivity implements View.OnClickList
                     }else // 获取网络数据成功
                     {
                         planTitles = tempList;
+
+                        for(Plan pp :planTitles)
+                        {
+                            Log.w("plan","test----"+pp.getWeekDay()+"...."+pp.getDayTime());
+                        }
                         //原本已经加载了本地数据，需要对数据进行更新
                         if(isLoad)
                         {

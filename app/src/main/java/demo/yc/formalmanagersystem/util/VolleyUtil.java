@@ -231,7 +231,7 @@ public class VolleyUtil {
      * @param updateListener
      */
     public synchronized void updatePlanInfo(final Plan plan, final UpdateListener updateListener) {
-        String url2 = ROOT_URL+"plan/updateplan";
+        String url2 = ROOT_URL+"plan/update";
         StringRequest request2 = new StringRequest(Request.Method.POST, url2, new Response.Listener<String>() {
             @Override
             public void onResponse(String s) {
@@ -251,8 +251,9 @@ public class VolleyUtil {
                 map.put("isFixed", plan.getIsFixed()+"");
                 map.put("type", plan.getType()+"");
                 map.put("isFree", plan.getIsFree()+"");
-                map.put("useId", plan.getUserId());
                 map.put("id",plan.getId());
+                map.put("weekDay", plan.getWeekDay()+"");
+                map.put("dayTime",plan.getDayTime()+"");
                 return map;
             }
 
