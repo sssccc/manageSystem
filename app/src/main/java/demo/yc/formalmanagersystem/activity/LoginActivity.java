@@ -1,11 +1,8 @@
 package demo.yc.formalmanagersystem.activity;
 
-import android.app.Activity;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.Bundle;
-import android.os.Handler;
-import android.os.Message;
 import android.text.Editable;
 import android.text.TextUtils;
 import android.text.TextWatcher;
@@ -16,20 +13,15 @@ import android.widget.CheckBox;
 import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import com.android.volley.VolleyError;
 
-import cn.bmob.push.BmobPush;
-import cn.bmob.v3.Bmob;
-import cn.bmob.v3.BmobInstallation;
 import cn.pedant.SweetAlert.SweetAlertDialog;
 import demo.yc.formalmanagersystem.MainActivity;
 import demo.yc.formalmanagersystem.MyApplication;
 import demo.yc.formalmanagersystem.R;
 import demo.yc.formalmanagersystem.UpdateListener;
 import demo.yc.formalmanagersystem.models.User;
-import demo.yc.formalmanagersystem.util.ActivityCollector;
 import demo.yc.formalmanagersystem.util.ToastUtil;
 import demo.yc.formalmanagersystem.util.VolleyUtil;
 
@@ -47,27 +39,11 @@ public class LoginActivity extends BaseActivity implements View.OnClickListener 
     private SharedPreferences pre;
     SharedPreferences.Editor editor;
 
-    private Handler handler = new Handler(){
-
-        @Override
-        public void handleMessage(Message msg) {
-            super.handleMessage(msg);
-
-        }
-    };
-
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.login_layout);
-        Bmob.initialize(LoginActivity.this, "d7149c2e98e36ac492f13255c7f3c9a3");
-        BmobInstallation.getCurrentInstallation(this).save();
-        BmobPush.startWork(this);
         initViews();
-        for (Activity activity : ActivityCollector.activities
-                ) {
-            Toast.makeText(this, activity.getLocalClassName(), Toast.LENGTH_SHORT).show();
-        }
         loginButton.setOnClickListener(this);
         registerTextView.setOnClickListener(this);
         pre = getPreferences(MODE_PRIVATE);
