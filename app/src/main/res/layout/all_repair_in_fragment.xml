@@ -1,0 +1,56 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical">
+
+    <!--<LinearLayout-->
+        <!--android:id="@+id/refresh_layout_in_all_repair"-->
+        <!--android:layout_width="match_parent"-->
+        <!--android:orientation="vertical"-->
+        <!--android:visibility="gone"-->
+        <!--android:gravity="center_horizontal"-->
+        <!--android:layout_height="80dp">-->
+        <!--<ProgressBar-->
+            <!--style="@style/Widget.AppCompat.ProgressBar"-->
+            <!--android:layout_width="wrap_content"-->
+            <!--android:layout_height="wrap_content"-->
+            <!--/>-->
+        <!--<TextView-->
+            <!--android:layout_width="wrap_content"-->
+            <!--android:layout_height="wrap_content"-->
+            <!--android:text="Refreshing..."/>-->
+    <!--</LinearLayout>-->
+
+        <FrameLayout
+            android:layout_weight="1"
+            android:layout_width="match_parent"
+            android:layout_height="0dp">
+            <demo.yc.formalmanagersystem.view.RefreshableView
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:id="@+id/refresh_view">
+            <ListView
+                android:id="@+id/list_view_in_all_repair_fragment"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent">
+            </ListView>
+            </demo.yc.formalmanagersystem.view.RefreshableView>
+
+            <LinearLayout
+                android:id="@+id/back_to_top_in_all_repair"
+                android:clickable="true"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="bottom|right"
+                android:visibility="invisible"
+                android:padding="10dp">
+                <ImageView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:src="@drawable/back_to_top"/>
+            </LinearLayout>
+        </FrameLayout>
+
+
+</LinearLayout>

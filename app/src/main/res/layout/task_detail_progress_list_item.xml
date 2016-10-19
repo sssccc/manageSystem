@@ -1,0 +1,61 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent">
+
+    <View
+        android:layout_centerVertical="true"
+        android:layout_width="8dp"
+        android:layout_height="8dp"
+        android:id="@+id/task_detail_list_item_point"
+        android:background="#ff0000"
+        android:layout_alignParentLeft="true"
+        android:layout_marginLeft="20dp"/>
+
+    <TextView
+        android:textSize="15sp"
+        android:textColor="#333333"
+        android:layout_centerVertical="true"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:id="@+id/task_detail_list_item_title"
+        android:text="完成界面布局，并实现"
+        android:layout_toRightOf="@id/task_detail_list_item_point"
+
+        android:layout_marginLeft="20dp"
+        />
+
+    <LinearLayout
+        android:layout_marginRight="20dp"
+        android:layout_centerVertical="true"
+        android:orientation="vertical"
+        android:gravity="center"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentRight="true">
+        <TextView
+            android:textSize="13sp"
+            android:textColor="#333333"
+            android:layout_centerVertical="true"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:id="@+id/task_detail_list_item_name"
+            android:text="何永财"
+            android:layout_margin="1dp" />
+        <TextView
+            android:textSize="13sp"
+            android:textColor="#333333"
+            android:layout_centerVertical="true"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:id="@+id/task_detail_list_item_time"
+            android:text="16/07/20"
+            android:layout_margin="1dp" />
+
+
+    </LinearLayout>
+
+
+</RelativeLayout>
+
+

@@ -1,0 +1,43 @@
+<resources>
+    <string name="app_name">FormalManagerSystem</string>
+
+
+    <array name="popitem">
+        <item>显示所有时间</item>
+        <item>显示空闲时间</item>
+        <item>显示繁忙时间</item>
+    </array>
+    <string-array name="property_status_type">
+        <item>全部</item>
+        <item>借入资产</item>
+        <item>待维修资产</item>
+    </string-array>
+    <string-array name="property_cate">
+        <item>全部分类</item>
+        <item>电脑</item>
+        <item>打印机</item>
+        <item>投影仪</item>
+        <item>其他</item>
+    </string-array>
+    <string-array name="bool1">
+        <item>是</item>
+        <item>否</item>
+    </string-array>
+    <string-array name="bool2">
+        <item>已维修</item>
+        <item>待维修</item>
+        <item>待处理</item>
+        <item>无</item>
+    </string-array>
+
+    <string name="pull_to_refresh">下拉可以刷新</string>
+    <string name="release_to_refresh">释放立即刷新</string>
+    <string name="refreshing">正在刷新…</string>
+    <string name="not_updated_yet">暂未更新过</string>
+    <string name="updated_at">上次更新于%1$s前</string>
+    <string name="updated_just_now">刚刚更新</string>
+    <string name="time_error">时间有问题</string>
+
+    <!-- TODO: Remove or change this placeholder text -->
+    <string name="hello_blank_fragment">Hello blank fragment</string>
+</resources>

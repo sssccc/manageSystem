@@ -1,0 +1,87 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:paddingLeft="-71dp"
+    android:paddingRight="-71dp">
+
+    <!--删除-->
+    <LinearLayout
+        android:layout_centerVertical="true"
+        android:padding="10dp"
+        android:background="#e4d641"
+        android:layout_alignParentLeft="true"
+        android:layout_height="match_parent"
+        android:layout_width="70dp"
+        android:gravity="center"
+        android:id="@+id/layout_left2">
+        <ImageView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:src="@drawable/delete"/>
+    </LinearLayout>
+
+    <!--完成-->
+    <LinearLayout
+        android:layout_centerVertical="true"
+        android:padding="10dp"
+        android:background="#41e4c3"
+        android:layout_alignParentRight="true"
+        android:layout_width="70dp"
+        android:gravity="center"
+        android:layout_height="match_parent"
+        android:id="@+id/layout_right2">
+        <TextView
+            android:textSize="15sp"
+            android:text="参与"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content" />
+    </LinearLayout>
+
+    <!--中间内容-->
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:id="@+id/layout_center"
+        android:layout_marginTop="120dp"
+        android:layout_alignParentTop="true"
+        android:layout_alignParentLeft="true"
+        android:layout_alignParentStart="true">
+        <View
+            android:layout_alignParentLeft="true"
+            android:layout_centerVertical="true"
+            android:layout_width="8dp"
+            android:layout_height="8dp"
+            android:background="#54dc96"
+            android:id="@+id/item_point2"
+            android:layout_marginLeft="100dp"/>
+
+        <TextView
+            android:layout_toRightOf="@+id/item_point2"
+            android:layout_centerVertical="true"
+            android:id="@+id/item_title2"
+            android:textSize="15sp"
+            android:layout_marginLeft="20dp"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="界面设计"/>
+
+        <TextView
+            android:layout_marginRight="100dp"
+            android:layout_alignParentRight="true"
+            android:layout_centerVertical="true"
+            android:id="@+id/item_time2"
+            android:textSize="15sp"
+            android:paddingLeft="5dp"
+            android:paddingRight="2dp"
+            android:paddingBottom="2dp"
+            android:paddingTop="5dp"
+            android:background="#3e70d6"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="明天截止"/>
+
+    </RelativeLayout>
+
+
+</RelativeLayout>

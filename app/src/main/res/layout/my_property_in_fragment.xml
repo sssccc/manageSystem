@@ -1,0 +1,35 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical">
+    <FrameLayout
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:layout_weight="1">
+        <demo.yc.formalmanagersystem.view.RefreshableView
+            android:id="@+id/refresh_view_in_my_property"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent">
+            <ListView
+                android:id="@+id/list_view_in_my_property_fragment"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent">
+            </ListView>
+        </demo.yc.formalmanagersystem.view.RefreshableView>
+
+        <LinearLayout
+            android:id="@+id/back_to_top_in_my_property"
+            android:clickable="true"
+            android:visibility="invisible"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="bottom|right"
+            android:padding="10dp">
+            <ImageView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:src="@drawable/back_to_top"/>
+        </LinearLayout>
+    </FrameLayout>
+</LinearLayout>

@@ -1,0 +1,219 @@
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical">
+
+
+    <!--标题栏-->
+    <RelativeLayout
+        android:background="#5fbbb0"
+        android:layout_width="match_parent"
+        android:layout_height="50dp">
+
+        <ImageButton
+            android:background="@drawable/layout_item_click"
+            android:layout_centerVertical="true"
+            android:id="@+id/time_manage_back_btn"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignParentLeft="true"
+            android:padding="5dp"
+            android:src="@drawable/back"/>
+        <TextView
+            android:textSize="15sp"
+            android:textColor="#ffffff"
+            android:layout_toRightOf="@+id/time_manage_back_btn"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="07-27 星期三"
+            android:layout_centerVertical="true"
+            android:id="@+id/time_manage_day_tv"/>
+
+        <ProgressBar
+            android:paddingLeft="10dp"
+            android:layout_centerVertical="true"
+            android:layout_toRightOf="@id/time_manage_day_tv"
+            android:layout_width="30dp"
+            android:layout_height="30dp"
+            android:id="@+id/time_manage_fresh_pd"
+            android:visibility="invisible" />
+
+        <ImageButton
+            android:background="@drawable/layout_item_click"
+            android:padding="10dp"
+            android:layout_width="50dp"
+            android:layout_height="match_parent"
+            android:layout_centerVertical="true"
+            android:layout_alignParentRight="true"
+            android:src="@drawable/menu_3_point"
+            android:id="@+id/time_manage_menu_btn"/>
+
+        <Button
+            android:background="@drawable/layout_item_click"
+            android:textSize="15sp"
+            android:textColor="#ffffff"
+            android:layout_width="50dp"
+            android:layout_height="match_parent"
+            android:layout_centerVertical="true"
+            android:text="周"
+            android:layout_toLeftOf="@+id/time_manage_menu_btn"
+            android:id="@+id/time_manage_type_btn"/>
+
+    </RelativeLayout>
+    <View
+        android:layout_width="match_parent"
+        android:layout_height="3dp"
+        android:background="#885fbbb0" />
+
+
+    <!--正文1-->
+    <LinearLayout
+        android:visibility="gone"
+        android:id="@+id/time_manage_week_layout"
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:orientation="vertical"
+        android:layout_weight="1">
+        <LinearLayout
+            android:background="#ecebeb"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:layout_weight="12"
+            android:orientation="horizontal">
+            <TextView
+                android:text="MON"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:gravity="center"
+                android:layout_weight="1"/>
+            <TextView
+                android:text="TUE"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:gravity="center"
+                android:layout_weight="1"/>
+            <TextView
+                android:text="WED"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:gravity="center"
+                android:layout_weight="1"/>
+            <TextView
+                android:text="THU"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:gravity="center"
+                android:layout_weight="1"/>
+            <TextView
+                android:text="FRI"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:gravity="center"
+                android:layout_weight="1"/>
+            <TextView
+                android:text="SAT"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:gravity="center"
+                android:layout_weight="1"/>
+            <TextView
+                android:text="SUN"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:gravity="center"
+                android:layout_weight="1"/>
+        </LinearLayout>
+        <View
+            android:layout_width="match_parent"
+            android:layout_height="3dp"
+            android:background="#aaa"/>
+        <GridView
+            android:id="@+id/time_manage_gridView"
+            android:layout_weight="1"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:numColumns="7"/>
+    </LinearLayout>
+
+    <!--正文2-->
+    <LinearLayout
+        android:id="@+id/time_manage_day_layout"
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:orientation="vertical"
+        android:layout_weight="1">
+
+        <LinearLayout
+            android:background="#ffffff"
+            android:layout_width="match_parent"
+            android:layout_height="50dp">
+            <RadioGroup
+                android:layout_width="match_parent"
+                android:orientation="horizontal"
+                android:id="@+id/time_manage_radio_group"
+                android:layout_height="match_parent">
+                <RadioButton
+                    android:id="@+id/time_manage_mon_btn"
+                    style="@style/TimeManageRadiouButton"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:text="MON"/>
+                <RadioButton
+                    android:id="@+id/time_manage_tue_btn"
+                    style="@style/TimeManageRadiouButton"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:text="TUE"/>
+                <RadioButton
+                    android:id="@+id/time_manage_wed_btn"
+                    style="@style/TimeManageRadiouButton"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:text="WED"/>
+                <RadioButton
+                    android:id="@+id/time_manage_thu_btn"
+                    style="@style/TimeManageRadiouButton"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:text="THU"/>
+                <RadioButton
+                    android:id="@+id/time_manage_fri_btn"
+                    style="@style/TimeManageRadiouButton"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:text="FRI"/>
+                <RadioButton
+                    android:id="@+id/time_manage_sat_btn"
+                    style="@style/TimeManageRadiouButton"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:text="SAT"/>
+                <RadioButton
+                    android:id="@+id/time_manage_sun_btn"
+                    style="@style/TimeManageRadiouButton"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:text="SUN"/>
+            </RadioGroup>
+        </LinearLayout>
+
+        <demo.yc.formalmanagersystem.view.MyLineView
+            android:id="@+id/time_manage_line"
+            android:layout_width="match_parent"
+            android:layout_height="3dp"
+            android:visibility="gone"
+            android:background="#aad4d1d1"/>
+
+        <android.support.v4.view.ViewPager
+            android:layout_weight="1"
+            android:id="@+id/time_manage_view_pager"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent">
+        </android.support.v4.view.ViewPager>
+
+    </LinearLayout>
+
+
+
+</LinearLayout>

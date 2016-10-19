@@ -1,0 +1,171 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical">
+
+    <FrameLayout
+        android:layout_weight="1"
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:id="@+id/task_frame_layout">
+    </FrameLayout>
+
+    <FrameLayout
+        android:background="#88aaaaaa"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content">
+        <View
+            android:id="@+id/task_line"
+            android:layout_width="100dp"
+            android:layout_height="5dp"
+            android:background="#5fbbb0"/>
+    </FrameLayout>
+
+    <LinearLayout
+        android:orientation="horizontal"
+        android:layout_width="match_parent"
+        android:layout_height="50dp">
+        <FrameLayout
+            android:id="@+id/task_info_all_layout"
+            android:layout_weight="1"
+            android:layout_width="0dp"
+            android:layout_gravity="center"
+            android:layout_height="match_parent">
+            <ImageView
+                android:id="@+id/task_info_all_image"
+                android:layout_width="40dp"
+                android:layout_height="40dp"
+                android:layout_gravity="center"
+                android:clickable="false"
+                android:padding="10dp"
+              />
+            <TextView
+                android:textStyle="bold"
+                android:typeface="serif"
+                android:textSize="15sp"
+                android:id="@+id/task_info_all_text"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center"
+                android:text="all" />
+        </FrameLayout>
+        <View
+            android:layout_width="2dp"
+            android:layout_height="match_parent"
+            android:background="#88aaaaaa"/>
+        <FrameLayout
+            android:id="@+id/task_info_involve_layout"
+            android:layout_weight="1"
+            android:layout_width="0dp"
+            android:layout_gravity="center"
+            android:layout_height="match_parent">
+            <ImageView
+                android:id="@+id/task_info_involve_image"
+                android:layout_width="40dp"
+                android:layout_height="40dp"
+                android:clickable="false"
+                android:padding="10dp"
+                android:layout_gravity="center"
+                 />
+            <TextView
+                android:textStyle="bold"
+                android:typeface="serif"
+                android:textSize="15sp"
+                android:id="@+id/task_info_involve_text"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center"
+                android:text="ia" />
+        </FrameLayout>
+        <View
+            android:layout_width="2dp"
+            android:layout_height="match_parent"
+            android:background="#88aaaaaa"/>
+        <FrameLayout
+            android:id="@+id/task_info_history_layout"
+            android:layout_weight="1"
+            android:layout_width="0dp"
+            android:layout_gravity="center"
+            android:layout_height="match_parent">
+            <ImageView
+                android:padding="10dp"
+                android:id="@+id/task_info_history_image"
+                android:layout_width="40dp"
+                android:layout_height="40dp"
+                android:layout_gravity="center"
+                android:clickable="false"
+               />
+            <TextView
+                android:textStyle="bold"
+                android:typeface="serif"
+                android:textSize="15sp"
+                android:id="@+id/task_info_history_text"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center"
+                android:text="hy" />
+        </FrameLayout>
+        <View
+            android:layout_width="2dp"
+            android:layout_height="match_parent"
+            android:background="#88aaaaaa"/>
+        <FrameLayout
+            android:id="@+id/task_info_quit_layout"
+            android:layout_weight="1"
+            android:layout_width="0dp"
+            android:layout_gravity="center"
+            android:layout_height="match_parent">
+            <ImageView
+                android:id="@+id/task_info_quit_image"
+                android:layout_width="40dp"
+                android:layout_height="40dp"
+                android:layout_gravity="center"
+                android:clickable="false"
+                android:padding="10dp"
+               />
+            <TextView
+                android:textStyle="bold"
+                android:typeface="serif"
+                android:textSize="15sp"
+                android:id="@+id/task_info_quit_text"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center"
+                android:text="qk" />
+        </FrameLayout>
+    </LinearLayout>
+
+</LinearLayout>
+
+<!--<RadioGroup-->
+<!--android:id="@+id/task_radiogroup"-->
+<!--android:layout_width="match_parent"-->
+<!--android:layout_height="match_parent"-->
+<!--android:orientation="horizontal">-->
+<!--<RadioButton-->
+    <!--android:id="@+id/task_all_btn"-->
+    <!--android:text="所有"-->
+    <!--android:layout_width="match_parent"-->
+    <!--android:layout_height="match_parent"-->
+    <!--style="@style/TaskInfoRadioButton"/>-->
+<!--<RadioButton-->
+    <!--android:id="@+id/task_involve_btn"-->
+    <!--android:text="参与"-->
+    <!--style="@style/TaskInfoRadioButton"-->
+    <!--android:layout_width="match_parent"-->
+    <!--android:layout_height="match_parent" />-->
+<!--<RadioButton-->
+    <!--android:id="@+id/task_history_btn"-->
+    <!--android:text="历史"-->
+    <!--style="@style/TaskInfoRadioButton"-->
+    <!--android:layout_width="match_parent"-->
+    <!--android:layout_height="match_parent" />-->
+<!--<RadioButton-->
+    <!--android:id="@+id/task_quit_btn"-->
+    <!--android:text="放弃"-->
+    <!--style="@style/TaskInfoRadioButton"-->
+    <!--android:layout_width="match_parent"-->
+    <!--android:layout_height="match_parent" />-->
+<!--</RadioGroup>-->

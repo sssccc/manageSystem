@@ -1,0 +1,156 @@
+<?xml version="1.0" encoding="utf-8"?>
+    <!--正文-->
+<ScrollView
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    android:fillViewport="true"
+    android:id="@+id/main_scrollView"
+    android:orientation="vertical"
+    android:background="#fafafa"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:layout_weight="1"
+    android:fadeScrollbars="true"
+    android:scrollbars="none">
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical">
+
+        <!--通知-->
+        <RelativeLayout
+            android:visibility="gone"
+            android:id="@+id/notify_layout"
+            android:layout_marginRight="40dp"
+            android:layout_marginLeft="40dp"
+            android:layout_marginTop="20dp"
+            android:layout_marginBottom="20dp"
+            android:layout_width="match_parent"
+            android:layout_height="70dp"
+            android:background="#aaaaf2c6">
+            <TextView
+                android:id="@+id/notify_message"
+                android:layout_centerVertical="true"
+                android:layout_centerInParent="true"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="电脑维修申请已通过"/>
+            <ImageView
+                android:id="@+id/notify_delete_btn"
+                android:layout_marginRight="15dp"
+                android:layout_centerVertical="true"
+                android:layout_alignParentRight="true"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:background="@drawable/delete"/>
+        </RelativeLayout>
+
+        <!--除ListView外-->
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical">
+
+            <!--//个人行程标题-->
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="40dp"
+                android:layout_marginTop="15dp"
+                android:layout_marginBottom="15dp"
+                android:background="#ffffff"
+                android:gravity="center_vertical">
+                <ImageView
+                    android:layout_margin="5dp"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:src="@drawable/ring"/>
+
+                <TextView
+                    android:textColor="#232222"
+                    android:textSize="15sp"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="今日行程"/>
+            </LinearLayout>
+
+            <!--//viewPager-->
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:clipChildren="false"
+                android:gravity="center">
+                <android.support.v4.view.ViewPager
+                    android:background="#fff"
+                    android:layout_gravity="center"
+                    android:layout_width="200dp"
+                    android:layout_height="180dp"
+                    android:id="@+id/viewpager"
+                    android:overScrollMode="never"
+                    android:clipChildren="false"
+                    android:layout_marginTop="20dp"
+                    android:layout_marginBottom="30dp">
+                </android.support.v4.view.ViewPager>
+            </LinearLayout>
+
+            <!--//个人任务标题-->
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="40dp"
+                android:layout_marginTop="15dp"
+                android:layout_marginBottom="15dp"
+                android:background="#ffffff"
+                android:gravity="center_vertical">
+                <ImageView
+                    android:layout_margin="5dp"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:src="@drawable/task"/>
+
+                <TextView
+                    android:textSize="15sp"
+                    android:textColor="#232222"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="参与任务"/>
+
+                <ProgressBar
+                    android:layout_marginLeft="10dp"
+                    android:layout_width="30dp"
+                    android:layout_height="30dp"
+                    android:id="@+id/home_frag_task_fresh_pd"/>
+
+                <TextView
+                    android:layout_marginRight="20dp"
+                    android:gravity="right"
+                    android:text="0"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:textSize="15sp"
+                    android:textColor="#aa000000"
+                    android:id="@+id/home_frag_list_num"/>
+            </LinearLayout>
+
+        </LinearLayout>
+
+         <!--listView-->
+        <View
+            android:layout_width="match_parent"
+            android:layout_height="1dp"
+            android:background="#aaaaaa"/>
+
+        <demo.yc.formalmanagersystem.view.MySlideListView
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:id="@+id/mainListView"
+            android:divider="#aaaaaa"
+            android:dividerHeight="1dp">
+        </demo.yc.formalmanagersystem.view.MySlideListView>
+
+
+        <View
+            android:layout_width="match_parent"
+            android:layout_height="1dp"
+            android:background="#aaaaaa"/>
+    </LinearLayout>
+</ScrollView>
+

@@ -1,0 +1,247 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:orientation="vertical"
+    android:background="#ffffff"
+    android:id="@+id/left_layout_of_main">
+
+    <!--个人信息-->
+    <LinearLayout
+        android:id="@+id/one_of_left_layout"
+        android:paddingLeft="15dp"
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:layout_weight="3"
+        android:gravity="center_vertical"
+        android:background="#7cdbd0">
+        <demo.yc.formalmanagersystem.view.CircleImageView
+            android:padding="10dp"
+            android:layout_width="100dp"
+            android:layout_height="100dp"
+            android:layout_gravity="center"
+            android:layout_marginRight="15dp"
+            android:src="#fff"
+            android:id="@+id/one_head_photo"
+            />
+        <LinearLayout
+            android:layout_width="0dp"
+            android:layout_weight="1"
+            android:orientation="vertical"
+            android:gravity="center_vertical"
+            android:layout_height="wrap_content">
+            <TextView
+                android:textSize="15sp"
+                android:textColor="#fff"
+                android:id="@+id/one_name"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginBottom="5dp"
+                android:text="曹伟钊"
+                />
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:gravity="center_vertical">
+                <TextView
+                    android:textSize="15sp"
+                    android:textColor="#fff"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="岗位："
+                    />
+                <TextView
+                    android:textSize="15sp"
+                    android:textColor="#fff"
+                    android:id="@+id/one_position"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="安卓"/>
+            </LinearLayout>
+
+        </LinearLayout>
+
+    </LinearLayout>
+
+
+    <LinearLayout
+        android:paddingTop="10dp"
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:layout_weight="4"
+        android:orientation="vertical">
+        <!--//首页-->
+        <LinearLayout
+            android:background="@drawable/layout_item_click"
+            android:id="@+id/two_of_left_layout"
+            android:paddingLeft="20dp"
+            android:layout_width="match_parent"
+            android:layout_height="0dp"
+            android:layout_weight="1"
+            android:gravity="center_vertical">
+
+            <ImageView
+                android:src="@drawable/left_main"
+                android:layout_width="30dp"
+                android:layout_height="30dp" />
+
+            <TextView
+                android:paddingLeft="10dp"
+                android:textSize="20sp"
+                android:textColor="#333"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="首页" />
+        </LinearLayout>
+
+        <!--//任务管理-->
+        <LinearLayout
+            android:background="@drawable/layout_item_click"
+            android:id="@+id/three_of_left_layout"
+            android:paddingLeft="20dp"
+            android:layout_width="match_parent"
+            android:layout_height="0dp"
+            android:layout_weight="1"
+            android:gravity="center_vertical">
+
+            <ImageView
+                android:src="@drawable/left_task"
+                android:layout_width="30dp"
+                android:layout_height="30dp" />
+
+            <TextView
+                android:paddingLeft="10dp"
+                android:textSize="20sp"
+                android:textColor="#333"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="任务管理" />
+        </LinearLayout>
+
+        <!--//资产管理-->
+        <LinearLayout
+            android:background="@drawable/layout_item_click"
+            android:id="@+id/four_of_left_layout"
+            android:paddingLeft="20dp"
+            android:layout_width="match_parent"
+            android:layout_height="0dp"
+            android:layout_weight="1"
+            android:gravity="center_vertical">
+
+            <ImageView
+                android:src="@drawable/left_property"
+                android:layout_width="30dp"
+                android:layout_height="30dp"
+                />
+
+            <TextView
+                android:paddingLeft="10dp"
+                android:textSize="20sp"
+                android:textColor="#333"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="资产管理" />
+        </LinearLayout>
+
+        <!--//时间管理-->
+        <LinearLayout
+            android:background="@drawable/layout_item_click"
+            android:id="@+id/five_of_left_layout"
+            android:paddingLeft="20dp"
+            android:layout_width="match_parent"
+            android:layout_height="0dp"
+            android:layout_weight="1"
+            android:gravity="center_vertical">
+
+            <ImageView
+                android:src="@drawable/left_time"
+                android:layout_width="30dp"
+                android:layout_height="30dp" />
+
+            <TextView
+                android:paddingLeft="10dp"
+                android:textSize="20sp"
+                android:textColor="#333"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="时间管理" />
+        </LinearLayout>
+
+
+        <View
+            android:layout_width="match_parent"
+            android:layout_height="1dp"
+            android:background="#55aaaaaa"
+            android:layout_marginStart="20dp"
+            android:layout_marginEnd="20dp"
+            android:layout_marginTop="10dp"
+            android:layout_marginBottom="10dp"
+            />
+
+        <!--//二维码扫描-->
+        <LinearLayout
+            android:background="@drawable/layout_item_click"
+            android:id="@+id/qr_scan"
+            android:paddingLeft="20dp"
+            android:layout_width="match_parent"
+            android:layout_height="0dp"
+            android:layout_weight="1"
+            android:gravity="center_vertical">
+
+            <ImageView
+                android:src="@drawable/scan_qr"
+                android:layout_width="30dp"
+                android:layout_height="30dp" />
+
+            <TextView
+                android:paddingLeft="10dp"
+                android:textSize="20sp"
+                android:textColor="#333"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="二维码扫描" />
+        </LinearLayout>
+
+        <View
+            android:layout_width="match_parent"
+            android:layout_height="1dp"
+            android:background="#55aaaaaa"
+            android:layout_marginStart="20dp"
+            android:layout_marginEnd="20dp"
+            android:layout_marginTop="10dp"
+            android:layout_marginBottom="10dp"
+            />
+        <!--//设置-->
+        <LinearLayout
+            android:background="@drawable/layout_item_click"
+            android:id="@+id/six_of_left_layout"
+            android:paddingLeft="20dp"
+            android:layout_width="match_parent"
+            android:layout_height="0dp"
+            android:layout_weight="1"
+            android:gravity="center_vertical">
+
+            <ImageView
+                android:src="@drawable/left_setting"
+                android:layout_width="30dp"
+                android:layout_height="30dp" />
+
+            <TextView
+                android:paddingLeft="10dp"
+                android:textSize="20sp"
+                android:textColor="#333"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="设置" />
+        </LinearLayout>
+
+        </LinearLayout>
+
+
+    <LinearLayout
+        android:layout_width="0dp"
+        android:layout_height="0dp"
+        android:layout_weight="3"></LinearLayout>
+
+</LinearLayout>

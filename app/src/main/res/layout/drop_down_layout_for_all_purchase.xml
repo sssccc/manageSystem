@@ -1,0 +1,77 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:paddingBottom="10dp"
+    android:alpha="1"
+    android:paddingTop="10dp"
+    android:orientation="vertical">
+
+    <LinearLayout
+        android:paddingTop="20dp"
+        android:paddingBottom="20dp"
+        android:background="#fff"
+        android:layout_width="match_parent"
+        android:orientation="vertical"
+        android:layout_height="wrap_content">
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginBottom="10dp"
+            android:gravity="center_vertical">
+
+            <TextView
+                android:clickable="true"
+                android:id="@+id/all_purchase_in_drop_down_for_all_purchase"
+                android:paddingTop="5dp"
+                android:paddingBottom="5dp"
+                android:paddingLeft="10dp"
+                android:paddingRight="10dp"
+                android:layout_marginBottom="5dp"
+                android:layout_marginRight="5dp"
+                android:layout_marginTop="5dp"
+                android:layout_marginLeft="10dp"
+                android:background="@drawable/bg_border_green"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:textColor="#95187176"
+                android:text="全部采购" />
+
+            <TextView
+                android:clickable="true"
+                android:id="@+id/pass_in_drop_down_for_all_purchase"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:padding="5dp"
+                android:layout_margin="5dp"
+                android:background="@drawable/bg_border_gray"
+                android:text="通过" />
+
+            <TextView
+                android:id="@+id/refuse_in_drop_down_for_all_purchase"
+                android:clickable="true"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:padding="5dp"
+                android:layout_margin="5dp"
+                android:background="@drawable/bg_border_gray"
+                android:text="拒绝" />
+            <TextView
+                android:clickable="true"
+                android:id="@+id/to_be_review_in_drop_down_for_all_purchase"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:padding="5dp"
+                android:layout_margin="5dp"
+                android:background="@drawable/bg_border_gray"
+                android:text="审核中" />
+        </LinearLayout>
+
+    </LinearLayout>
+
+    <View
+        android:layout_width="match_parent"
+        android:layout_height="1dp"
+        android:background="#908c8e" />
+</LinearLayout>

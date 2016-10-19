@@ -1,0 +1,43 @@
+apply plugin: 'com.android.application'
+
+android {
+    compileSdkVersion 24
+    buildToolsVersion '23.0.3'
+    defaultConfig {
+        applicationId "demo.yc.formalmanagersystem"
+        minSdkVersion 14
+        targetSdkVersion 22
+        versionCode 1
+        versionName "1.0"
+    }
+    buildTypes {
+        release {
+            minifyEnabled false
+            proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
+        }
+    }
+    productFlavors {
+    }
+}
+repositories {
+    flatDir{
+        dirs 'libs' //就是你放aar的目录地址
+    }
+}
+dependencies {
+    compile fileTree(include: ['*.jar'], dir: 'libs')
+    testCompile 'junit:junit:4.12'
+    compile files('libs/gson-2.1.jar')
+    compile 'com.android.support:appcompat-v7:24.0.0'
+    compile files('libs/MobTools-2016.0714.1402.jar')
+    compile files('libs/MobCommons-2016.0714.1402.jar')
+    compile(name: 'SMSSDK-2.1.1', ext: 'aar')
+    compile 'com.github.bumptech.glide:glide:3.6.1'
+    compile files('libs/bmob-sdk-3.3.5.jar')
+    compile files('libs/bmob-push-1.0.0.jar')
+    compile files('libs/volly-1.0.11.jar')
+    compile project(':xAlertDialogLibrary')
+    compile project(':libzxing')
+    compile 'com.squareup.okhttp3:okhttp:3.2.0'
+    compile 'com.squareup.okio:okio:1.5.0'
+}

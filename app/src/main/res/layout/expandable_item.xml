@@ -1,0 +1,71 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:background="#55dddddd"
+    android:orientation="horizontal"
+    android:paddingTop="10dp"
+    android:paddingBottom="10dp"
+    android:paddingRight="10dp"
+    >
+
+    <LinearLayout
+        android:paddingLeft="10dp"
+        android:layout_weight="5"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:orientation="vertical">
+        <LinearLayout
+            android:orientation="horizontal"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content">
+            <TextView
+                android:textSize="13sp"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="行程描述： "/>
+            <TextView
+                android:id="@+id/ex_item_describe"
+                android:ellipsize="end"
+                android:maxLines="3"
+                android:textSize="13sp"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="今日休息,不知道干嘛1.今日休息,不知道干嘛1.今日休息,不知道干嘛1.今日休息,不知道干嘛1.今日休息,不知道干嘛1"/>
+        </LinearLayout>
+
+        <LinearLayout
+            android:orientation="horizontal"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content">
+            <TextView
+                android:textSize="13sp"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="行程周期： "/>
+            <TextView
+                android:id="@+id/ex_item_isFixed"
+                android:textSize="13sp"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="今日"/>
+        </LinearLayout>
+    </LinearLayout>
+
+    <LinearLayout
+        android:gravity="bottom|end"
+        android:layout_weight="1.5"
+        android:layout_height="match_parent"
+        android:layout_width="0dp">
+
+        <Button
+            android:id="@+id/ex_item_updateBtn"
+            android:background="@drawable/plan_btn_click"
+            android:textColor="#fff"
+            android:layout_width="50dp"
+            android:layout_height="30dp"
+            android:text="修改"/>
+    </LinearLayout>
+
+
+</LinearLayout>

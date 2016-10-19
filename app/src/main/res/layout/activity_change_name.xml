@@ -1,0 +1,58 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical"
+    android:gravity="center"
+    android:background="#66222222">
+
+    <LinearLayout
+        android:gravity="center"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content">
+        <LinearLayout
+
+            android:background="#fff"
+            android:layout_width="300dp"
+            android:layout_height="wrap_content"
+            android:orientation="vertical">
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:gravity="center"
+                android:text="修改姓名"
+                android:padding="10dp"
+                android:textColor="#fff"
+                android:textSize="20sp"
+                android:background="#5fbbb0"/>
+            <EditText
+                android:gravity="center"
+                android:textSize="20sp"
+                android:textColor="#000"
+                android:layout_margin="5dp"
+                android:background="@null"
+                android:layout_width="match_parent"
+                android:layout_height="50dp"
+                android:id="@+id/change_name_edit"/>
+
+            <View
+                android:layout_width="match_parent"
+                android:layout_height="1dp"
+                android:background="#aaaaaa"/>
+
+            <Button
+                android:layout_margin="10dp"
+                android:background="@drawable/btn_click"
+                android:text="确定"
+                android:textColor="#fff"
+                android:layout_gravity="center"
+                android:id="@+id/change_name_saveBtn"
+                android:layout_width="100dp"
+                android:layout_height="40dp" />
+
+
+        </LinearLayout>
+
+    </LinearLayout>
+
+</LinearLayout>

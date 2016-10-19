@@ -1,0 +1,519 @@
+package demo.yc.formalmanagersystem.fragment;
+
+import android.content.Context;
+import android.database.Cursor;
+import android.database.sqlite.SQLiteDatabase;
+import android.graphics.Color;
+import android.os.Bundle;
+import android.os.Handler;
+import android.os.Message;
+import android.support.annotation.Nullable;
+import android.support.v4.app.Fragment;
+import android.util.Log;
+import android.view.LayoutInflater;
+import android.view.MotionEvent;
+import android.view.View;
+import android.view.ViewGroup;
+import android.widget.AbsListView;
+import android.widget.AdapterView;
+import android.widget.ImageView;
+import android.widget.LinearLayout;
+import android.widget.ListView;
+import android.widget.PopupWindow;
+import android.widget.RelativeLayout;
+import android.widget.TextView;
+import android.widget.Toast;
+
+import com.android.volley.VolleyError;
+
+import java.util.ArrayList;
+import java.util.List;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
+
+import cn.bmob.push.BmobPush;
+import cn.bmob.v3.Bmob;
+import cn.bmob.v3.BmobInstallation;
+import demo.yc.formalmanagersystem.MainActivity;
+import demo.yc.formalmanagersystem.R;
+import demo.yc.formalmanagersystem.UpdateListener;
+import demo.yc.formalmanagersystem.activity.RepairDetailActivity;
+import demo.yc.formalmanagersystem.adapter.MyAdapterForRepair;
+import demo.yc.formalmanagersystem.database.MyDBHandler;
+import demo.yc.formalmanagersystem.models.Repair;
+import demo.yc.formalmanagersystem.util.JsonUtil;
+import demo.yc.formalmanagersystem.util.VolleyUtil;
+import demo.yc.formalmanagersystem.view.RefreshableView;
+
+/**
+ * Created by Administrator on 2016/7/26.
+ */
+public class P_AllRepairFragment extends Fragment implements View.OnClickListener {
+
+    private ImageView top_layout_menu;
+    private boolean once = true;    //确保本地数据库无数据时，只自动进行一次服务器访问
+
+    private Handler handler = new Handler() {
+        @Override
+        public void handleMessage(Message msg) {
+            super.handleMessage(msg);
+            P_PropertyManagementFragment.isInitial = true;
+            executor.shutdownNow();
+            refreshableView.findViewById(R.id.pull_to_refresh_head).setVisibility(View.VISIBLE);
+            //更新出错时
+            if (msg.what == 1) {
+                Log.d("myTag", "failure");
+                if (getActivity() != null) {
+                    Toast.makeText(getActivity(), "更新失败，请重试！", Toast.LENGTH_SHORT).show();
+                }
+                // refreshLayout.setVisibility(View.GONE);
+            }
+            //更新成功时
+            else {
+                repairs = (List<Repair>) msg.obj;
+                if (repairs.size() != 0) {
+                    Log.d("myTag", "success");
+                    for (Repair repair : repairs
+                            ) {
+                        temp2.add(repair);
+                    }
+                    if (temp2.size() != 0) {
+                        if (getActivity() != null) {    //快速切换时候，新开的线程中Fragment的Activity还没Created
+                            myAdapterForRepair = new MyAdapterForRepair(getActivity(), R.layout.item, temp2);
+                        }
+                        if (myAdapterForRepair != null) {
+                            listView.setAdapter(myAdapterForRepair);
+                            myAdapterForRepair.notifyDataSetChanged();
+
+                        }
+                    }
+                    if (flag) {
+                        flag = false;
+                        Toast.makeText(getActivity(), "更新成功！", Toast.LENGTH_SHORT).show();
+                    }
+                    // refreshLayout.setVisibility(View.GONE);
+                    doAfterAsyTask();
+                } else {
+                    if (once) {
+                        once = false;
+                        refreshData();
+                    }
+                }
+            }
+        }
+    };
+    //全部报修
+    private List<Repair> repairs = new ArrayList<>();
+    private ListView listView;
+    private MyAdapterForRepair myAdapterForRepair;
+
+    //线程池执行从本地数据库读取数据的任务
+    public static ExecutorService executor;
+
+    //用于判断在ListView的滑动手势
+    float dY = 0;
+    float uY = 0;
+
+    private List<Repair> temp2 = new ArrayList<>();
+
+    //用于分类
+    private PopupWindow popupwindow;
+    private TextView allPurchase;
+    private TextView pass;
+    private TextView refuse;
+    private View customView;
+    private TextView toBeHandle;
+
+    //private LinearLayout refreshLayout;
+    private LinearLayout backToTop;
+    private RelativeLayout direction;
+    private ImageView directionImg;
+    private boolean down;
+    private boolean flag;
+
+    private VolleyUtil volleyUtil = new VolleyUtil();
+
+    private RefreshableView refreshableView;
+
+    @Override
+    public void onAttach(Context context) {
+        super.onAttach(context);
+    }
+
+    @Nullable
+    @Override
+    public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
+        View view = inflater.inflate(R.layout.all_repair_in_fragment, container, false);
+        listView = (ListView) view.findViewById(R.id.list_view_in_all_repair_fragment);
+        //refreshLayout = (LinearLayout) view.findViewById(R.id.refresh_layout_in_all_repair);
+        refreshableView = (RefreshableView) view.findViewById(R.id.refresh_view);
+        refreshableView.findViewById(R.id.pull_to_refresh_head).setVisibility(View.INVISIBLE);
+        return view;
+    }
+
+    @Override
+    public void onActivityCreated(Bundle savedInstanceState) {
+        super.onActivityCreated(savedInstanceState);
+        if (getActivity() != null) {
+            executor = Executors.newFixedThreadPool(2);
+            readDataFromSQLite();
+            refreshableView.setOnRefreshListener(new RefreshableView.PullToRefreshListener() {
+                @Override
+                public void onRefresh() {
+                    refreshData();
+                }
+            }, 0);
+            Bmob.initialize(getActivity(), "d7149c2e98e36ac492f13255c7f3c9a3");
+            BmobInstallation.getCurrentInstallation(getActivity()).save();
+            BmobPush.startWork(getActivity());
+            top_layout_menu =(ImageView) getActivity().findViewById(R.id.top_layout_menu);
+            top_layout_menu.setOnClickListener(this);
+            direction = (RelativeLayout) getActivity().findViewById(R.id.direction_in_top);
+            direction.setOnClickListener(this);
+            directionImg = (ImageView) getActivity().findViewById(R.id.direction_img);
+            myAdapterForRepair = new MyAdapterForRepair(getActivity(), R.layout.item, repairs);
+            //new MyRepairAsynTask().execute();
+
+        }
+    }
+
+    @Override
+    public void onDestroy() {
+        super.onDestroy();
+        // P_PropertyManagementFragment.isInitial = true;
+    }
+
+    //从本地数据库读取数据
+    private void readDataFromSQLite() {
+        Runnable task = new Runnable() {
+            @Override
+            public void run() {
+                SQLiteDatabase db = MyDBHandler.getInstance(getActivity()).getDBInstance();
+                Cursor cursor = db.query("Repair", null, null, null, null, null, null, null);
+                repairs.clear();
+                temp2.clear();
+                if (cursor.moveToFirst()) {
+                    Cursor propertyCursor = null;
+                    do {
+                        Repair repair = new Repair();
+                        repair.setIdentifier(cursor.getString(cursor.getColumnIndex("identifier")));
+                        repair.setApplyTime(cursor.getString(cursor.getColumnIndex("applyTime")));
+                        repair.setFinishTime(cursor.getString(cursor.getColumnIndex("finishTime")));
+                        try {
+                            propertyCursor = db.query("Property", null, "identifier=?", new String[]{cursor.getString(cursor.getColumnIndex("identifier"))}, null, null, null, null);
+                            propertyCursor.moveToFirst();
+                            if (propertyCursor.moveToFirst()) {
+                                repair.setName(propertyCursor.getString(propertyCursor.getColumnIndex("name")));
+                            }
+                        } catch (Exception e) {
+                            repair.setName("未知");
+                        } finally {
+                            propertyCursor.close();
+                        }
+                        repair.setDescribe(cursor.getString(cursor.getColumnIndex("describe")));
+                        repair.setCheckState(cursor.getString(cursor.getColumnIndex("checkState")));
+                        repair.setRepairState(cursor.getString(cursor.getColumnIndex("repairState")));
+                        repair.setCreaterIdentifier(cursor.getString(cursor.getColumnIndex("createrIdentifier")));
+                        repairs.add(repair);
+                    } while (cursor.moveToNext());
+                    cursor.close();
+                }
+                Message msg = handler.obtainMessage();
+                msg.obj = repairs;
+                msg.what = 0;
+                handler.sendMessage(msg);
+
+            }
+        };
+        executor.execute(task);
+    }
+
+    //初始化ListView
+    private void initListView() {
+        if (getActivity() != null) {
+            listView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+                @Override
+                public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+                    RepairDetailActivity.startActivity(getActivity(), RepairDetailActivity.USER, temp2.get(position));
+                }
+            });
+           /* listView.setOnTouchListener(new View.OnTouchListener() {
+                @Override
+                public boolean onTouch(View v, MotionEvent event) {
+                    switch (event.getAction()) {
+                        case MotionEvent.ACTION_DOWN:
+                            dY = event.getY();
+                            break;
+                        case MotionEvent.ACTION_UP:
+                            uY = event.getY();
+                            if (getScrollY() == 0) {
+                                if ((uY - dY) > 180) {
+                                    flag = true;
+                                    refreshData();
+                                }
+                            }
+                            break;
+                    }
+                    return false;
+                }
+            });*/
+
+            listView.setOnScrollListener(new AbsListView.OnScrollListener() {
+                @Override
+                public void onScrollStateChanged(AbsListView view, int scrollState) {
+                }
+
+                @Override
+                public void onScroll(AbsListView view, int firstVisibleItem, int visibleItemCount, int totalItemCount) {
+                    if (firstVisibleItem > 20) {
+                        backToTop.setVisibility(View.VISIBLE);
+                    } else backToTop.setVisibility(View.INVISIBLE);
+                }
+            });
+        }
+    }
+
+    //事件注册
+    private void initEvents() {
+        if (getActivity() != null) {
+            //注册事件
+            allPurchase.setOnClickListener(this);
+            pass.setOnClickListener(this);
+            refuse.setOnClickListener(this);
+            toBeHandle.setOnClickListener(this);
+            backToTop.setOnClickListener(this);
+        }
+    }
+
+    //获取listView拖动高度
+    public int getScrollY() {
+        View c = listView.getChildAt(0);
+        if (c == null) {
+            return 0;
+        }
+        int firstVisiblePosition = listView.getFirstVisiblePosition();
+        int top = c.getTop();
+        return -top + firstVisiblePosition * c.getHeight();
+    }
+
+    //重置资产状态分类的样式
+    public void resetStatusStyle() {
+        if (getActivity() != null) {
+            toBeHandle.setTextColor(Color.rgb(90, 90, 90));
+            allPurchase.setTextColor(Color.rgb(90, 90, 90));
+            pass.setTextColor(Color.rgb(90, 90, 90));
+            refuse.setTextColor(Color.rgb(90, 90, 90));
+
+            toBeHandle.setAlpha(0.5f);
+            allPurchase.setAlpha(0.5f);
+            pass.setAlpha(0.5f);
+            refuse.setAlpha(0.5f);
+
+            toBeHandle.setBackgroundResource(R.drawable.bg_border_gray);
+            allPurchase.setBackgroundResource(R.drawable.bg_border_gray);
+            pass.setBackgroundResource(R.drawable.bg_border_gray);
+            refuse.setBackgroundResource(R.drawable.bg_border_gray);
+        }
+    }
+
+    //获取下拉分类框
+    private void getPopupWindowView() {
+        // 获取自定义布局文件pop.xml的视图
+        if (getActivity() != null) {
+            customView = getActivity().getLayoutInflater().inflate(R.layout.drop_down_layout_for_all_repair,
+                    null, false);
+            //获取控件
+            allPurchase = (TextView) customView.findViewById(R.id.all_repair_in_drop_down_for_all_repair);
+            pass = (TextView) customView.findViewById(R.id.pass_in_drop_down_for_all_repair);
+            refuse = (TextView) customView.findViewById(R.id.refuse_in_drop_down_for_all_repair);
+            toBeHandle = (TextView) customView.findViewById(R.id.to_be_review_in_drop_down_for_all_repair);
+            backToTop = (LinearLayout) getActivity().findViewById(R.id.back_to_top_in_all_repair);
+            // 自定义view添加触摸事件
+            customView.setOnTouchListener(new View.OnTouchListener() {
+                @Override
+                public boolean onTouch(View v, MotionEvent event) {
+                    directionImg.setImageResource(R.drawable.down);
+                    if (popupwindow != null && popupwindow.isShowing()) {
+                        popupwindow.dismiss();
+                        listView.setAlpha(1);
+                        popupwindow = null;
+                    }
+                    return false;
+                }
+            });
+            initEvents();
+        }
+
+    }
+
+    private void showPopupWindow() {
+        // 创建PopupWindow实例,200,150分别是宽度和高度
+        if (popupwindow == null) {
+            if (customView != null) {
+                popupwindow = new PopupWindow(customView, ViewGroup.LayoutParams.MATCH_PARENT,
+                        ViewGroup.LayoutParams.MATCH_PARENT);
+            }
+        }
+    }
+
+    @Override
+    public void onClick(View v) {
+        switch (v.getId()) {
+            case R.id.top_layout_menu:
+//                if (popupwindow != null) {
+//                    down = false;
+//                    directionImg.setImageResource(R.drawable.down);
+//                    popupwindow.dismiss();
+//                    listView.setAlpha(1);
+//                }
+                ((MainActivity)getActivity()).showMenu();
+                break;
+            //下拉选择框
+            case R.id.direction_in_top:
+                // refreshLayout.setVisibility(View.GONE);
+                if (down == false) {
+                    directionImg.setImageResource(R.drawable.up);
+                    showPopupWindow();
+                    listView.setAlpha(0.3f);
+                    if (popupwindow != null) {
+                        popupwindow.showAsDropDown(getActivity().findViewById(R.id.direction_img), 0, 0);
+                    }
+                    down = true;
+                } else {
+                    down = false;
+                    directionImg.setImageResource(R.drawable.down);
+                    if (popupwindow != null) {
+                        directionImg.setImageResource(R.drawable.down);
+                        popupwindow.dismiss();
+                        listView.setAlpha(1);
+                    }
+                }
+                break;
+
+            //返回顶部
+            case R.id.back_to_top_in_all_repair:
+                //listView.setSelection(0);
+                listView.smoothScrollByOffset(-getScrollY());
+                backToTop.setVisibility(View.INVISIBLE);
+                break;
+
+            //全部采购
+            case R.id.all_repair_in_drop_down_for_all_repair:
+                temp2.clear();
+                for (Repair repair : repairs
+                        ) {
+                    temp2.add(repair);
+                }
+                myAdapterForRepair = new MyAdapterForRepair(getActivity(), R.layout.item, temp2);
+                listView.setAdapter(myAdapterForRepair);
+                myAdapterForRepair.notifyDataSetChanged();
+                resetStatusStyle();
+                allPurchase.setAlpha(1);
+                allPurchase.setTextColor(Color.rgb(95, 187, 176));
+                allPurchase.setBackgroundResource(R.drawable.bg_border_green);
+                break;
+            //通过审核
+            case R.id.pass_in_drop_down_for_all_repair:
+                temp2.clear();
+                for (Repair repair : repairs) {
+                    if (repair.getCheckState().equals("通过")) {
+                        temp2.add(repair);
+                    }
+                }
+                myAdapterForRepair = new MyAdapterForRepair(getActivity(), R.layout.item, temp2);
+                listView.setAdapter(myAdapterForRepair);
+                myAdapterForRepair.notifyDataSetChanged();
+                resetStatusStyle();
+                pass.setAlpha(1);
+                pass.setTextColor(Color.rgb(95, 187, 176));
+                pass.setBackgroundResource(R.drawable.bg_border_green);
+                break;
+            //拒绝申请
+            case R.id.refuse_in_drop_down_for_all_repair:
+                temp2.clear();
+                for (Repair repair : repairs
+                        ) {
+                    if (repair.getCheckState().equals("拒绝")) {
+                        temp2.add(repair);
+                    }
+                }
+                myAdapterForRepair = new MyAdapterForRepair(getActivity(), R.layout.item, temp2);
+                listView.setAdapter(myAdapterForRepair);
+                myAdapterForRepair.notifyDataSetChanged();
+
+                resetStatusStyle();
+                refuse.setAlpha(1);
+                refuse.setTextColor(Color.rgb(95, 187, 176));
+                refuse.setBackgroundResource(R.drawable.bg_border_green);
+                break;
+
+            //待审核
+            case R.id.to_be_review_in_drop_down_for_all_repair:
+                temp2.clear();
+                for (Repair repair : repairs
+                        ) {
+                    if (repair.getCheckState().equals("待审核")) {
+                        temp2.add(repair);
+                    }
+                }
+                myAdapterForRepair = new MyAdapterForRepair(getActivity(), R.layout.item, temp2);
+                listView.setAdapter(myAdapterForRepair);
+                myAdapterForRepair.notifyDataSetChanged();
+
+                resetStatusStyle();
+                toBeHandle.setAlpha(1);
+                toBeHandle.setTextColor(Color.rgb(95, 187, 176));
+                toBeHandle.setBackgroundResource(R.drawable.bg_border_green);
+                break;
+
+
+        }
+    }
+
+    //数据读取完成后的操作
+    private void doAfterAsyTask() {
+        if (getActivity() != null) {
+            getPopupWindowView();
+            resetStatusStyle();
+            //默认选中全部资产与全部分类
+            allPurchase.setAlpha(1);
+            allPurchase.setTextColor(Color.rgb(95, 187, 176));
+            allPurchase.setBackgroundResource(R.drawable.bg_border_green);
+            initListView();
+        }
+    }
+
+    //获取服务器数据
+    public void refreshData() {
+        if (getActivity() != null) {
+            // refreshLayout.setVisibility(View.VISIBLE);
+            //访问服务器数据
+            volleyUtil.updateSQLiteFromMySql("repair", new UpdateListener() {
+                @Override
+                public void onSucceed(String s) {
+                    refreshableView.finishRefreshing("all_repair");
+                    Log.d("myTag", s);
+                    //从服务器获取数据
+                    if (s.contains("error-business")) {
+                        onError(new VolleyError("error-business"));
+                    } else {
+                        JsonUtil.parseRepairJson(getActivity(), s);
+                        //从本地数据库获取数据，更新界面
+                        readDataFromSQLite();
+                    }
+                }
+
+                @Override
+                public void onError(VolleyError error) {
+                    refreshableView.finishRefreshing("all_repair");
+                    Log.d("myTag", error.toString());
+                    Message msg = new Message();
+                    msg.what = 1;
+                    handler.sendMessage(msg);
+                }
+
+            });
+        }
+    }
+}
+

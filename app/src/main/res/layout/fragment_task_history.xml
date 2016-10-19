@@ -1,0 +1,62 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical">
+
+    <LinearLayout
+        android:id="@+id/tip_title_layout"
+        android:layout_width="match_parent"
+        android:layout_height="30dp"
+        android:layout_marginTop="10dp"
+        android:layout_marginBottom="10dp"
+        android:gravity="center_vertical">
+        <ImageView
+            android:layout_margin="5dp"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:src="@drawable/task"/>
+        <TextView
+            android:textSize="18sp"
+            android:textColor="#232222"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="历史任务"/>
+
+        <TextView
+            android:layout_marginRight="20dp"
+            android:gravity="right"
+            android:text="0"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:textSize="15sp"
+            android:textColor="#aa000000"
+            android:id="@+id/history_list_num"/>
+    </LinearLayout>
+
+    <View
+        android:layout_width="match_parent"
+        android:layout_height="1dp"
+        android:background="#aaaaaa"/>
+
+    <FrameLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent">
+        <demo.yc.formalmanagersystem.view.RefreshableView
+            android:id="@+id/refresh_view_in_history"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent">
+            <demo.yc.formalmanagersystem.view.MySlideListView2
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:id="@+id/task_history_listView">
+            </demo.yc.formalmanagersystem.view.MySlideListView2>
+
+        </demo.yc.formalmanagersystem.view.RefreshableView>
+    </FrameLayout>
+
+
+
+
+
+</LinearLayout>
