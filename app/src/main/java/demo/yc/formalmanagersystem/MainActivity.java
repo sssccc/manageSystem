@@ -548,7 +548,7 @@ public class MainActivity extends BaseActivity implements View.OnClickListener,P
     @Override
     protected void onDestroy() {
         super.onDestroy();
-        unregisterReceiver(mReceiver);
+//        unregisterReceiver(mReceiver);
     }
 
     BroadcastReceiver mReceiver = new BroadcastReceiver() {

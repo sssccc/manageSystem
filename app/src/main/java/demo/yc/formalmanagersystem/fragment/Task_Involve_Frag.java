@@ -85,8 +85,12 @@ public class Task_Involve_Frag extends TaskBaseFrag {
         new VolleyUtil().getAllInvolveTaskList(MyApplication.getUser().getId(), new UpdateListener() {
             @Override
             public void onSucceed(String s) {
+                Log.w("task","all involve = "+s);
                 allList = JsonUtil.parseTaskJson(s);
-                showAllListView(0);
+                if(allList != null)
+                    showMyListView(0);
+                else
+                    Toast.makeText(getContext(), "all involve nothing", Toast.LENGTH_SHORT).show();
         }
 
         @Override
@@ -100,7 +104,10 @@ public class Task_Involve_Frag extends TaskBaseFrag {
             public void onSucceed(String s) {
                 Log.w("task","my involve = "+s);
                 myList = JsonUtil.parseTaskJson(s);
-                showMyListView(0);
+                if(myList != null)
+                    showMyListView(0);
+                else
+                    Toast.makeText(getContext(), "my involve nothing", Toast.LENGTH_SHORT).show();
         }
 
         @Override

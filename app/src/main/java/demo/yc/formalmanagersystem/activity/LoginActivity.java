@@ -123,11 +123,16 @@ public class LoginActivity extends BaseActivity implements View.OnClickListener 
                         Log.w("login",s);
                         if(s.equals("1"))
                         {
+                            dialog.dismiss();
+                            Toast.makeText(LoginActivity.this,"用户名不存在",Toast.LENGTH_SHORT).show();
+
                             Log.w("login","用户名不存在");
                         }
                         //密码错误
                         else if(s.equals("2"))
                         {
+                            dialog.dismiss();
+                            Toast.makeText(LoginActivity.this,"密码错误",Toast.LENGTH_SHORT).show();
                             Log.w("login","密码错误");
                         }
                         //登录成功
@@ -153,6 +158,8 @@ public class LoginActivity extends BaseActivity implements View.OnClickListener 
 
                     @Override
                     public void onError(VolleyError error) {
+                        dialog.dismiss();
+                        Toast.makeText(LoginActivity.this,"登录超时",Toast.LENGTH_SHORT).show();
                         Log.w("login","error login" + error.toString());
                     }
                 });
