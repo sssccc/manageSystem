@@ -453,6 +453,7 @@ public class VolleyUtil {
      */
     public synchronized void getAllDayPlan(final String userId, final UpdateListener updateListener) {
 
+
         String url2 = ROOT_URL+"plan/get?userId="+userId;
         StringRequest request2 = new StringRequest(Request.Method.GET, url2, new Response.Listener<String>() {
             @Override
@@ -466,7 +467,7 @@ public class VolleyUtil {
             }
 
         });
-        request2.addMarker("getAllDayPlan");
+        request2.setTag("getAllDayPlan");
         MyApplication.getInstance().getMyQueue().add(request2);
     }
 
@@ -489,7 +490,7 @@ public class VolleyUtil {
             }
 
         });
-        request2.addMarker("getAllAcceptableTaskList");
+        request2.setTag("getAllAcceptableTaskList");
         MyApplication.getInstance().getMyQueue().add(request2);
     }
 
@@ -513,7 +514,7 @@ public class VolleyUtil {
             }
 
         });
-        request2.addMarker("getMyAcceptableTaskList");
+        request2.setTag("getMyAcceptableTaskList");
         MyApplication.getInstance().getMyQueue().add(request2);
     }
 
@@ -537,7 +538,7 @@ public class VolleyUtil {
             }
 
         });
-        request2.addMarker("getAllInvolveTaskList");
+        request2.setTag("getAllInvolveTaskList");
         MyApplication.getInstance().getMyQueue().add(request2);
     }
 
@@ -561,7 +562,7 @@ public class VolleyUtil {
             }
 
         });
-        request2.addMarker("getMyInvolveTaskList");
+        request2.setTag("getMyInvolveTaskList");
         MyApplication.getInstance().getMyQueue().add(request2);
     }
 
@@ -585,7 +586,7 @@ public class VolleyUtil {
             }
 
         });
-        request2.addMarker("getHistoryTaskList");
+        request2.setTag("getHistoryTaskList");
         MyApplication.getInstance().getMyQueue().add(request2);
     }
 
@@ -608,7 +609,7 @@ public class VolleyUtil {
                 updateListener.onError(volleyError);
             }
         });
-        request2.addMarker("getQuitTaskList");
+        request2.setTag("getQuitTaskList");
         MyApplication.getInstance().getMyQueue().add(request2);
     }
 
@@ -631,7 +632,7 @@ public class VolleyUtil {
                 updateListener.onError(volleyError);
             }
         });
-        request2.addMarker("GetTaskDetail");
+        request2.setTag("GetTaskDetail");
         MyApplication.getInstance().getMyQueue().add(request2);
     }
 
@@ -646,22 +647,7 @@ public class VolleyUtil {
     {
 
        Log.w("login",username+"......"+password);
-//        String url2 = ROOT_URL+"logininphone?username="+username+"&password="+password;
-//        StringRequest request2 = new StringRequest(Request.Method.GET, url2, new Response.Listener<String>() {
-//            @Override
-//            public void onResponse(String s) {
-//                updateListener.onSucceed(s);
-//            }
-//        }, new Response.ErrorListener() {
-//            @Override
-//            public void onErrorResponse(VolleyError volleyError) {
-//                updateListener.onError(volleyError);
-//            }
-//        });
-//        request2.addMarker("GetTaskDetail");
-//        MyApplication.getInstance().getMyQueue().add(request2);
-
-        String url2 = ROOT_URL+"login";
+        String url2 = ROOT_URL+"phone/login";
         StringRequest request2 = new StringRequest(Request.Method.POST, url2, new Response.Listener<String>() {
             @Override
             public void onResponse(String s) {

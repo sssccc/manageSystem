@@ -221,6 +221,7 @@ public class MainActivity extends BaseActivity implements View.OnClickListener,P
 
     private void getPersonInfoFromHttp() {
 
+
         //userId   回调接口
         Log.w("person",MyApplication.getUser().getId());
         new VolleyUtil().getPersonInfo(MyApplication.getUser().getId(), new UpdateListener() {
@@ -383,6 +384,7 @@ public class MainActivity extends BaseActivity implements View.OnClickListener,P
 
     //如果本地没有用户信息，并且无法通过网络加载出数据。则无法进行任何操作，提示刷新或者退出
     private AlertDialog dialog;
+
     public void showDialog()
     {
         if(dialog == null) {
@@ -486,7 +488,6 @@ public class MainActivity extends BaseActivity implements View.OnClickListener,P
 
     public void startIntetnToTimeManager() {
         Intent timeIntent = new Intent(MainActivity.this, TimeManageActivity.class);
-        timeIntent.putExtra("account",account);
         startActivityForResult(timeIntent,SEND_DATA_TO_TIME);
     }
 

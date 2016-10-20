@@ -99,22 +99,22 @@ public class Task_Involve_Frag extends TaskBaseFrag {
             }
         });
          //获取我的任务
-        new VolleyUtil().getMyInvolveTaskList(MyApplication.getUser().getId(), new UpdateListener() {
-            @Override
-            public void onSucceed(String s) {
-                Log.w("task","my involve = "+s);
-                myList = JsonUtil.parseTaskJson(s);
-                if(myList != null)
-                    showMyListView(0);
-                else
-                    Toast.makeText(getContext(), "my involve nothing", Toast.LENGTH_SHORT).show();
-        }
-
-        @Override
-        public void onError(VolleyError error) {
-            getDataFromLocal(1);
-        }
-    });
+//        new VolleyUtil().getMyInvolveTaskList(MyApplication.getUser().getId(), new UpdateListener() {
+//            @Override
+//            public void onSucceed(String s) {
+//                Log.w("task","my involve = "+s);
+//                myList = JsonUtil.parseTaskJson(s);
+//                if(myList != null)
+//                    showMyListView(0);
+//                else
+//                    Toast.makeText(getContext(), "my involve nothing", Toast.LENGTH_SHORT).show();
+//        }
+//
+//        @Override
+//        public void onError(VolleyError error) {
+//            getDataFromLocal(1);
+//        }
+//    });
 
 }
 

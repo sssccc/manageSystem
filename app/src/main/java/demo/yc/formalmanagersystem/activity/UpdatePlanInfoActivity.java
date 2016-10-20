@@ -160,8 +160,7 @@ public class UpdatePlanInfoActivity extends BaseActivity {
                     @Override
                     public void onCancel() {
                         DialogUtil.dissmiss();
-                        Log.w("file","取消事件.....");
-                        Toast.makeText(UpdatePlanInfoActivity.this,"手动取消",Toast.LENGTH_SHORT).show();
+                        Log.w("plan","取消事件.....手动取消");
                         MyApplication.getInstance().getMyQueue().cancelAll("updatePlanInfo");
                     }
                 });
@@ -195,9 +194,8 @@ public class UpdatePlanInfoActivity extends BaseActivity {
                     @Override
                     public void onSucceed(String s) {
                         DialogUtil.dissmiss();
-                        Log.w("plan",s.toString());
+                        Log.w("plan","plan保存成功后的返回："+s.toString());
                         Toast.makeText(UpdatePlanInfoActivity.this,"保存成功",Toast.LENGTH_LONG).show();
-                       // MyDBHandler.getInstance(UpdatePlanInfoActivity.this).updatePlanInfo(p);
                         lastIntent.putExtra(TimePlanContent.UPDATE_PLAN_INFO_TAG,p);
                         setResult(RESULT_OK,lastIntent);
                         finish();
@@ -205,7 +203,7 @@ public class UpdatePlanInfoActivity extends BaseActivity {
 
                     @Override
                     public void onError(VolleyError error) {
-                        Log.w("plan",error.getMessage());
+                        Log.w("plan","plan保存失败后的返回"+error.toString());
                         DialogUtil.dissmiss();
                         Toast.makeText(UpdatePlanInfoActivity.this,"保存失败",Toast.LENGTH_LONG).show();
                     }

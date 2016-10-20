@@ -37,7 +37,6 @@ import demo.yc.formalmanagersystem.adapter.ViewPagerAdapter;
 import demo.yc.formalmanagersystem.models.Plan;
 import demo.yc.formalmanagersystem.models.Task;
 import demo.yc.formalmanagersystem.util.JsonUtil;
-import demo.yc.formalmanagersystem.util.ThreadUtil;
 import demo.yc.formalmanagersystem.util.VolleyUtil;
 import demo.yc.formalmanagersystem.view.MyPagerAnimation;
 import demo.yc.formalmanagersystem.view.MySlideListView;
@@ -54,9 +53,9 @@ public class HomePageFrag extends TaskBaseFrag {
     MySlideListView listView ;
     MySlideListViewAdapter listViewAdapter;
     ArrayList<Task> taskList = new ArrayList<>();
-
     ArrayList<Plan> todayPlan;
 
+    View refreshPd;
 
     View view;
     TextView numTv;
@@ -67,35 +66,6 @@ public class HomePageFrag extends TaskBaseFrag {
 
     public HomePageFrag() {
     }
-
-    ThreadUtil threadUtil = new ThreadUtil(getContext())
-    {
-        @Override
-        public void error(int code) {
-            switch (code)
-            {
-                case 2:
-                    //Toast.makeText(getContext(), "本地查找失败。。。", Toast.LENGTH_SHORT).show();
-                    getDataFromLocal();
-                    break;
-            }
-        }
-        @Override
-        public void success(int code, Object obj) {
-            switch (code)
-            {
-                case 2:
-                   // Toast.makeText(getContext(), "本地查找cg。。。", Toast.LENGTH_SHORT).show();
-                    taskList = (ArrayList<Task>)obj;
-                   // Toast.makeText(getContext(), taskList.size()+"。。。", Toast.LENGTH_SHORT).show();
-                    if(taskList.size() != 0)
-                        showListView();
-                    else
-                        getDataFromLocal();
-                    break;
-            }
-        }
-    };
 
 
     @Override
@@ -119,6 +89,9 @@ public class HomePageFrag extends TaskBaseFrag {
         setListener();
         return  view;
     }
+
+
+    //设置ui
     private void setUi()
     {
         frags.add(new Time_Frag_1_2());
@@ -128,10 +101,11 @@ public class HomePageFrag extends TaskBaseFrag {
         frags.add(new Time_Frag_9_10());
         frags.add(new Time_Frag_11_12_13());
 
+        refreshPd =  view.findViewById(R.id.home_frag_task_fresh_pd);
+
         pager = (ViewPager) view.findViewById(R.id.viewpager);
         pager.setPageTransformer(true,new MyPagerAnimation());
         pager.setOffscreenPageLimit(6);
-
 
 
         listView = (MySlideListView)view.findViewById(R.id.mainListView);
@@ -150,7 +124,7 @@ public class HomePageFrag extends TaskBaseFrag {
 
     }
 
-
+    //网络请求task数据
     private void getTaskInfoFromHttp() {
 
         Log.w("task","homePage:"+MyApplication.getPersonId());
@@ -158,19 +132,24 @@ public class HomePageFrag extends TaskBaseFrag {
 
             @Override
             public void onSucceed(String s) {
-                Log.w("task","homePage:"+s);
+                Log.w("task","honepage访问后台服务器成功:"+s);
+                if( s == null || !s.startsWith("[")) {
+                    Log.w("task","后台服务器返回数据异常");
+                    Toast.makeText(getContext(), "获取数据异常", Toast.LENGTH_SHORT).show();
+                }
                 taskList = JsonUtil.parseTaskJson(s);
-                if(taskList != null)
+                if(taskList != null) {
+                    Log.w("task","json 格式解析错误");
                     showListView();
+                }
                 else
                     Toast.makeText(getContext(), "暂无数据。。。", Toast.LENGTH_SHORT).show();
             }
 
             @Override
             public void onError(VolleyError error) {
-                Toast.makeText(getContext(), "进到本地查找内容。。。", Toast.LENGTH_SHORT).show();
-                Log.w("task",error.toString());
-                threadUtil.getTaskInfo("heyongcai",1);
+                //Toast.makeText(getContext(), "网络连接失败。。。", Toast.LENGTH_SHORT).show();
+                Log.w("task","homepage访问后台服务器失败："+error.toString());
             }
         });
 
@@ -188,7 +167,7 @@ public class HomePageFrag extends TaskBaseFrag {
     //绑定数据到 listView
     private void showListView()
     {
-        view.findViewById(R.id.home_frag_task_fresh_pd).setVisibility(View.INVISIBLE);
+        refreshPd.setVisibility(View.INVISIBLE);
         listViewAdapter = new MySlideListViewAdapter(this,getContext(),taskList);
         listView.setAdapter(listViewAdapter);
         numTv.setText(taskList.size()+"");
@@ -214,7 +193,6 @@ public class HomePageFrag extends TaskBaseFrag {
             }
         });
     }
-
 
     //获取今日行程安排，已经在主界面加载
     public void refreshTodayPlan()
@@ -313,7 +291,6 @@ public class HomePageFrag extends TaskBaseFrag {
         notifyLayout.setVisibility(View.VISIBLE);
         notifyMessage.setText(msg);
     }
-
 
 }
 

@@ -14,8 +14,6 @@ import android.widget.ScrollView;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import com.android.volley.VolleyError;
-
 import java.io.BufferedReader;
 import java.io.FileNotFoundException;
 import java.io.IOException;
@@ -25,12 +23,10 @@ import java.util.ArrayList;
 
 import demo.yc.formalmanagersystem.MyApplication;
 import demo.yc.formalmanagersystem.R;
-import demo.yc.formalmanagersystem.UpdateListener;
 import demo.yc.formalmanagersystem.activity.TaskDetailActivity;
 import demo.yc.formalmanagersystem.adapter.MySlideListViewAdapter;
 import demo.yc.formalmanagersystem.models.Task;
 import demo.yc.formalmanagersystem.util.JsonUtil;
-import demo.yc.formalmanagersystem.util.VolleyUtil;
 import demo.yc.formalmanagersystem.view.MySlideListView;
 
 /**
@@ -80,37 +76,37 @@ public class Task_All_Frag extends TaskBaseFrag {
     //网络请求数据
     private void setData() {
         //获取所有人的
-        new VolleyUtil().getAllAcceptableTaskList(new UpdateListener() {
-            @Override
-            public void onSucceed(String s) {
-                Log.w("task","all accept ok:"+s);
-                allList = JsonUtil.parseTaskJson(s);
-                showAllListView(0);
-        }
-
-            @Override
-            public void onError(VolleyError error) {
-                Log.w("task","all accept:"+error.toString());
-                getDataFromLocal(0);
-            }
-        });
+//        new VolleyUtil().getAllAcceptableTaskList(new UpdateListener() {
+//            @Override
+//            public void onSucceed(String s) {
+//                Log.w("task","all accept ok:"+s);
+//                allList = JsonUtil.parseTaskJson(s);
+//                showAllListView(0);
+//        }
+//
+//            @Override
+//            public void onError(VolleyError error) {
+//                Log.w("task","all accept:"+error.toString());
+//                getDataFromLocal(0);
+//            }
+//        });
 
         //获取我的任务
         Log.w("task",MyApplication.getPersonId());
-        new VolleyUtil().getMyAcceptableTaskList(MyApplication.getUser().getId(), new UpdateListener() {
-            @Override
-            public void onSucceed(String s) {
-                Log.w("task","my accept ok:"+s.toString());
-                myList = JsonUtil.parseTaskJson(s);
-                showMyListView(0);
-            }
-
-            @Override
-            public void onError(VolleyError error) {
-                Log.w("task","my accept:"+error.toString());
-                getDataFromLocal(1);
-            }
-        });
+//        new VolleyUtil().getMyAcceptableTaskList(MyApplication.getUser().getId(), new UpdateListener() {
+//            @Override
+//            public void onSucceed(String s) {
+//                Log.w("task","my accept ok:"+s.toString());
+//                myList = JsonUtil.parseTaskJson(s);
+//                showMyListView(0);
+//            }
+//
+//            @Override
+//            public void onError(VolleyError error) {
+//                Log.w("task","my accept:"+error.toString());
+//                getDataFromLocal(1);
+//            }
+//        });
 
     }
 
@@ -163,12 +159,12 @@ public class Task_All_Frag extends TaskBaseFrag {
             allNumTv.setText(allList.size()+"");
         }else
         {
-            myList.remove(pos);
-            myAdapter.notifyDataSetChanged();
-           myListView.slideBack();
-            myNumTv.setText(myList.size()+"");
-        }
+        myList.remove(pos);
+        myAdapter.notifyDataSetChanged();
+        myListView.slideBack();
+        myNumTv.setText(myList.size()+"");
     }
+}
 
     private static final int ALL_INVOLVE = 1111;
     private static final int MY_INVOLVE = 11112;

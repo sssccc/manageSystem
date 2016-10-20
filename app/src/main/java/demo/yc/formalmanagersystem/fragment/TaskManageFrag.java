@@ -143,7 +143,6 @@ public class TaskManageFrag extends Fragment implements View.OnClickListener{
             }
         }
         ft.commit();
-      //  ft.replace(R.id.task_frame_layout,list.get(index));
         setBtnBackground(index);
 
     }

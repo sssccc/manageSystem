@@ -118,7 +118,6 @@ public class TimeManageActivity extends BaseActivity implements View.OnClickList
                 setColor(currentPage);
                 setListener();
                 pd.dismiss();
-                getPlanInfoFromHttp();
             }
         }
     };
@@ -134,20 +133,45 @@ public class TimeManageActivity extends BaseActivity implements View.OnClickList
         public void success(int code, Object obj) {
             planTitles = (ArrayList<Plan>)obj;
             isLoad = true;
-            freshPd.setVisibility(View.VISIBLE);
             getPlanInfoFromHttp();
             handler.sendEmptyMessage(0x111);
-
         }
     };
 
+    //本地数据  （进度条显示）
+
+        //成功： （进度条消失）
+            //网络获取
+                //成功
+                       //显示listView
+                // 失败
+                        //  不做处理
+
+
+        //失败    （进度条显示）
+            //网络获取    进度条显示）
+                //成功
+                    //    显示listView
+                // 失败
+                    //    显示退出对话框
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_time_manage);
         db = MyDBHandler.getInstance(this);
         pd = new ProgressDialog(this);
-        pd.setCancelable(false);
+        pd.setCancelable(true);
+        pd.setOnCancelListener(new DialogInterface.OnCancelListener() {
+            @Override
+            public void onCancel(DialogInterface dialogInterface) {
+                Log.w("plan", "手动取消后台访问申请:");
+                MyApplication.getInstance().getMyQueue().cancelAll("getAllDayPlan");
+                if(!isLoad)
+                {
+                    showDialog("无法获取数据");
+                }
+            }
+        });
         pd.show();
         calculateDay();
         freshPd = (ProgressBar) findViewById(R.id.time_manage_fresh_pd);
@@ -155,9 +179,8 @@ public class TimeManageActivity extends BaseActivity implements View.OnClickList
         line.setTabNum(7);
         line.setCurrentNum(currentPage);
         lastIntent = getIntent();
-        account = lastIntent.getStringExtra("account");
+        account = MyApplication.getUser().getId();
         threadUtil.getPlanInfo(account);
-
     }
 
     private void setUi() {
@@ -196,6 +219,10 @@ public class TimeManageActivity extends BaseActivity implements View.OnClickList
         {
             showWeekPlan(refreshType);
         }
+        showAllListView();
+    }
+
+    private void showAllListView() {
         dayTv.setText(today);
         adapter = new ViewPagerAdapter(getSupportFragmentManager(),frags);
         viewPager.setAdapter(adapter);
@@ -355,18 +382,24 @@ public class TimeManageActivity extends BaseActivity implements View.OnClickList
         HashMap<String,String> map1 = new HashMap<>();
         HashMap<String,String> map2 = new HashMap<>();
         HashMap<String,String> map3 = new HashMap<>();
+        HashMap<String,String> map4 = new HashMap<>();
         map1.put("time","显示所有时间");
         list.add(map1);
         map2.put("time","显示空闲时间");
         list.add(map2);
         map3.put("time","显示工作时间");
         list.add(map3);
+        map3.put("time","刷新数据");
         SimpleAdapter adapter = new SimpleAdapter(this,list,R.layout.popup_list_item,new String[]{"time"},new int[]{R.id.popup_listview_item_title});
         listView.setAdapter(adapter);
         listView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView<?> adapterView, View view, int i, long l) {
-                if(refreshType != i) {
+                if(i == 3)
+                {
+                    getPlanInfoFromHttp();
+                }
+                else if(refreshType != i) {
                     refreshPlanList(i);
                     refreshType = i;
                     gridViewAdapter = new MyTimeGridViewAdapter(TimeManageActivity.this, weekPlans,refreshType);
@@ -455,6 +488,7 @@ public class TimeManageActivity extends BaseActivity implements View.OnClickList
             if(requestCode == TimePlanContent.UPDATE_PLAN_INFO_CODE)
             {
                 Plan p = (Plan)data.getSerializableExtra(TimePlanContent.UPDATE_PLAN_INFO_TAG);
+                Log.w("plan","修改的是"+p.getWeekDay()+"...."+p.getDayTime());
                 if(p.getWeekDay() == DateUtil.getWeekDayCode(today))
                 {
                     isTodayPlanChanges = true;
@@ -483,7 +517,6 @@ public class TimeManageActivity extends BaseActivity implements View.OnClickList
                 }
                 refreshPlanList(p);
                 gridViewAdapter.notifyDataSetChanged();
-               // Toast.makeText(this,p.title+p.day_time,Toast.LENGTH_SHORT).show();
             }
         }
         super.onActivityResult(requestCode, resultCode, data);
@@ -494,66 +527,83 @@ public class TimeManageActivity extends BaseActivity implements View.OnClickList
     private void getPlanInfoFromHttp()
     {
         if(NetWorkUtil.getInstance(TimeManageActivity.this).isWork()) {
-            new VolleyUtil().getAllDayPlan(MyApplication.getUser().getId(), new UpdateListener() {
+            new VolleyUtil().getAllDayPlan(account, new UpdateListener() {
                 @Override
                 public void onSucceed(String s) {
-                    ArrayList<Plan> tempList = JsonUtil.parsePlanJson(s);
-                    //获取网络数据失败
-                    freshPd.setVisibility(View.INVISIBLE);
-                    if(tempList == null || tempList.size()==0)
-                    {
-                        //如果数据库已有内容，则不做处理
-                        //否则，进入测试数据
+                    if(pd.isShowing())
+                        pd.dismiss();
+                    Log.w("plan", "后台返回数据json:" + s);
+                    if (s == null || !s.startsWith("[")) {
+                        Log.w("plan", "json格式错误:");
                         if(!isLoad)
                         {
-                            Toast.makeText(TimeManageActivity.this, "数据获取失败，插入测试数据", Toast.LENGTH_SHORT).show();
-                            getDateFromLocal();
-                        }
-                    }else // 获取网络数据成功
-                    {
-                        planTitles = tempList;
-
-                        for(Plan pp :planTitles)
+                            showDialog("无法获取数据");
+                        }else
                         {
-                            Log.w("plan","test----"+pp.getWeekDay()+"...."+pp.getDayTime());
+                            Toast.makeText(TimeManageActivity.this,"数据更新失败",Toast.LENGTH_SHORT).show();
                         }
-                        //原本已经加载了本地数据，需要对数据进行更新
+                        return;
+                    }
+
+                    ArrayList<Plan> tempList = JsonUtil.parsePlanJson(s);
+                    //获取网络数据失败
+                    if (tempList == null || tempList.size() == 0) {
+                        Log.w("plan", "json格式解析错误:");
+                        if(!isLoad)
+                        {
+                            showDialog("无法获取数据");
+                        }else
+                        {
+                            Toast.makeText(TimeManageActivity.this,"数据更新失败",Toast.LENGTH_SHORT).show();
+                        }
+                    } else // 获取网络数据成功
+                    {
+                        Log.w("plan", "网络获取数据成功:");
+                        planTitles = tempList;
                         if(isLoad)
                         {
-
-                        }else   //获取网络数据前没有本地数据，直接显示布局。
+                            showAllListView();
+                            if(gridViewAdapter != null) {
+                                gridViewAdapter.notifyDataSetChanged();
+                            }
+                        }else
                         {
-                            pd.dismiss();
                             isLoad = true;
                             handler.sendEmptyMessage(0x111);
                         }
                     }
                 }
+
                 @Override
                 public void onError(VolleyError error) {
-                    //Log.w("plan","planall error = "+error.toString());
-                    freshPd.setVisibility(View.INVISIBLE);
-                    if (isLoad) {
-                        Toast.makeText(TimeManageActivity.this, "数据更新失败", Toast.LENGTH_LONG).show();
-                    } else {
-                       getDateFromLocal();
+                    if(pd.isShowing())
+                        pd.dismiss();
+                    Log.w("plan","服务器访问失败"+error.toString());
+                    if(!isLoad)
+                    {
+                        showDialog("无法获取数据");
+                    }else
+                    {
+                        Toast.makeText(TimeManageActivity.this,"数据更新失败",Toast.LENGTH_SHORT).show();
                     }
-                    // if(planTitles.size() != 0)
                 }
             });
         }else
         {
-            freshPd.setVisibility(View.INVISIBLE);
-            //网络无法使用，并且没有加载本地数据，进去数据测试阶段
+            if(pd.isShowing())
+                pd.dismiss();
+            Log.w("plan","网络无法连接");
             if(!isLoad)
             {
-               getDateFromLocal();
+                showDialog("无法获取数据");
+            }else
+            {
+                Toast.makeText(TimeManageActivity.this,"数据更新失败",Toast.LENGTH_SHORT).show();
             }
-            //Toast.makeText(TimeManageActivity.this,"网络无法使用...",Toast.LENGTH_SHORT).show();
         }
-
     }
 
+    //无法获取任何数据时，提示出口对话框
     private void showDialog(String message)
     {
         if (builder != null) {
@@ -602,4 +652,10 @@ public class TimeManageActivity extends BaseActivity implements View.OnClickList
         handler.sendEmptyMessage(0x111);
     }
 
+    @Override
+    protected void onPause() {
+        super.onPause();
+        Log.w("plan", "pause 取消后台访问申请:");
+        MyApplication.getInstance().getMyQueue().cancelAll("getAllDayPlan");
+    }
 }

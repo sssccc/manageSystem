@@ -6,25 +6,19 @@ import android.os.Bundle;
 import android.text.Editable;
 import android.text.TextUtils;
 import android.text.TextWatcher;
-import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.CheckBox;
 import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.TextView;
-import android.widget.Toast;
-
-import com.android.volley.VolleyError;
 
 import cn.pedant.SweetAlert.SweetAlertDialog;
 import demo.yc.formalmanagersystem.MainActivity;
 import demo.yc.formalmanagersystem.MyApplication;
 import demo.yc.formalmanagersystem.R;
-import demo.yc.formalmanagersystem.UpdateListener;
 import demo.yc.formalmanagersystem.models.User;
 import demo.yc.formalmanagersystem.util.ToastUtil;
-import demo.yc.formalmanagersystem.util.VolleyUtil;
 
 /**
  * Created by Administrator on 2016/7/17.
@@ -109,105 +103,70 @@ public class LoginActivity extends BaseActivity implements View.OnClickListener 
                 dialog.show();
 
 //
-//                Intent i1 = new Intent(LoginActivity.this, MainActivity.class);
-//                MyApplication.getUser().setId("");
-//                MyApplication.getUser().setUsername(count);
-//                startActivity(i1);
+                Intent i1 = new Intent(LoginActivity.this, MainActivity.class);
+                MyApplication.getUser().setId("0615bb2424f84ebca0758f387b8daf0c");
+                MyApplication.getUser().setUsername(count);
+                startActivity(i1);
 
-                new VolleyUtil().login(count, password, new UpdateListener() {
-                    @Override
-                    public void onSucceed(String s) {
-                        //账号不存在
-                        //密码错误
-                        //成功登陆
-
-                        Log.w("login",s);
-                        if(s.equals("1"))
-                        {
-                            dialog.dismiss();
-                            Toast.makeText(LoginActivity.this,"用户名不存在",Toast.LENGTH_SHORT).show();
-
-                            Log.w("login","用户名不存在");
-                        }
-                        //密码错误
-                        else if(s.equals("2"))
-                        {
-                            dialog.dismiss();
-                            Toast.makeText(LoginActivity.this,"密码错误",Toast.LENGTH_SHORT).show();
-                            Log.w("login","密码错误");
-                        }
-                        //登录成功
-                        else
-                        {
-                            Log.w("login","登陆成功");
-                            if (rememberCheckBox.isChecked())
-                            {
-                                editor.putString("count", count);
-                                editor.putString("password", password);
-                            } else
-                            {
-                                //不保存账号密码
-                                editor.clear();
-                            }
-                            editor.commit();
-                            Intent i1 = new Intent(LoginActivity.this, MainActivity.class);
-                            MyApplication.getUser().setId(s);
-                            MyApplication.getUser().setUsername(count);
-                            startActivity(i1);
-                        }
-                    }
-
-                    @Override
-                    public void onError(VolleyError error) {
-                        dialog.dismiss();
-                        Toast.makeText(LoginActivity.this,"登录超时",Toast.LENGTH_SHORT).show();
-                        Log.w("login","error login" + error.toString());
-                    }
-                });
-
-//                BmobQuery<User> query = new BmobQuery<>();
-//                query.addWhereEqualTo("count", count);
-//                query.findObjects(this, new FindListener<User>() {
+//                new VolleyUtil().login(count, password, new UpdateListener() {
 //                    @Override
-//                    public void onSuccess(List<User> list) {
-//                        dialog.dismissWithAnimation();
-//                        if (list == null || list.size() == 0) {
-//                            SweetAlertDialog errorDialog = new SweetAlertDialog(LoginActivity.this,SweetAlertDialog.ERROR_TYPE);
-//                            errorDialog.setTitleText("账号不存在，请重试！");
-//                            errorDialog.show();
-//                        } else {
-//                            User user = list.get(0);
-//                            if (user.getPassword().equals(password)) {
+//                    public void onSucceed(String s) {
+//                        //账号不存在
+//                        //密码错误
+//                        //成功登陆
 //
-//                                //登录成功
-//                                //保存账号密码
-//                                if (rememberCheckBox.isChecked()) {
-//                                    editor.putString("count", count);
-//                                    editor.putString("password", password);
-//                                } else {
-//                                    //不保存账号密码
-//                                    editor.clear();
-//                                }
-//                                editor.commit();
-//                                Intent i1 = new Intent(LoginActivity.this, MainActivity.class);
-//                                Bundle b = new Bundle();
-//                                b.putSerializable("user", user);
-//                                i1.putExtras(b);
-//                                startActivity(i1);
-//                                ActivityCollector.removeActivity(LoginActivity.this);
-//                            } else {
-//                                SweetAlertDialog sweetAlertDialog = new SweetAlertDialog(LoginActivity.this,SweetAlertDialog.ERROR_TYPE);
-//                                sweetAlertDialog.setTitleText("账号或密码错误，请重试！");
-//                                sweetAlertDialog.show();
-//                                passwordEditText.setText("");
+//                        Log.w("login",s);
+//                        if(s == null) {
+//                            dialog.dismiss();
+//                            Toast.makeText(LoginActivity.this,"登录异常",Toast.LENGTH_SHORT).show();
+//                            return;
+//                        }
+//                        if(s.equals("1"))
+//                        {
+//                            dialog.dismiss();
+//                            Toast.makeText(LoginActivity.this,"用户名不存在",Toast.LENGTH_SHORT).show();
+//
+//                            Log.w("login","用户名不存在");
+//                        }
+//                        //密码错误
+//                        else if(s.equals("2"))
+//                        {
+//                            dialog.dismiss();
+//                            Toast.makeText(LoginActivity.this,"密码错误",Toast.LENGTH_SHORT).show();
+//                            Log.w("login","密码错误");
+//                        }
+//                        //登录成功
+//                        else if(s.length() == 32)
+//                        {
+//                            Log.w("login","登陆成功");
+//                            if (rememberCheckBox.isChecked())
+//                            {
+//                                editor.putString("count", count);
+//                                editor.putString("password", password);
+//                            }else
+//                            {
+//                                //不保存账号密码
+//                                editor.clear();
 //                            }
+//                            editor.commit();
+//                            Intent i1 = new Intent(LoginActivity.this, MainActivity.class);
+//                            MyApplication.getUser().setId(s);
+//                            MyApplication.getUser().setUsername(count);
+//                            startActivity(i1);
+//                        }
+//                        else
+//                        {
+//                            dialog.dismiss();
+//                            Toast.makeText(LoginActivity.this,"登录异常",Toast.LENGTH_SHORT).show();
+//                            Log.w("login","登录异常");
 //                        }
 //                    }
 //
 //                    @Override
-//                    public void onError(int i, String s) {
-//                        dialog.dismissWithAnimation();
-//                        ToastUtil.createToast(LoginActivity.this,"登录失败，请检查你的网络设置！");
+//                    public void onError(VolleyError error) {
+//                        dialog.dismiss();
+//                        Toast.makeText(LoginActivity.this,"登录超时",Toast.LENGTH_SHORT).show();
+//                        Log.w("login","error login" + error.toString());
 //                    }
 //                });
 
