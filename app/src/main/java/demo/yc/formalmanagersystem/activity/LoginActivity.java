@@ -13,6 +13,7 @@ import android.widget.CheckBox;
 import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.android.volley.VolleyError;
 
@@ -163,52 +164,6 @@ public class LoginActivity extends BaseActivity implements View.OnClickListener 
                         Log.w("login","error login" + error.toString());
                     }
                 });
-
-//                BmobQuery<User> query = new BmobQuery<>();
-//                query.addWhereEqualTo("count", count);
-//                query.findObjects(this, new FindListener<User>() {
-//                    @Override
-//                    public void onSuccess(List<User> list) {
-//                        dialog.dismissWithAnimation();
-//                        if (list == null || list.size() == 0) {
-//                            SweetAlertDialog errorDialog = new SweetAlertDialog(LoginActivity.this,SweetAlertDialog.ERROR_TYPE);
-//                            errorDialog.setTitleText("账号不存在，请重试！");
-//                            errorDialog.show();
-//                        } else {
-//                            User user = list.get(0);
-//                            if (user.getPassword().equals(password)) {
-//
-//                                //登录成功
-//                                //保存账号密码
-//                                if (rememberCheckBox.isChecked()) {
-//                                    editor.putString("count", count);
-//                                    editor.putString("password", password);
-//                                } else {
-//                                    //不保存账号密码
-//                                    editor.clear();
-//                                }
-//                                editor.commit();
-//                                Intent i1 = new Intent(LoginActivity.this, MainActivity.class);
-//                                Bundle b = new Bundle();
-//                                b.putSerializable("user", user);
-//                                i1.putExtras(b);
-//                                startActivity(i1);
-//                                ActivityCollector.removeActivity(LoginActivity.this);
-//                            } else {
-//                                SweetAlertDialog sweetAlertDialog = new SweetAlertDialog(LoginActivity.this,SweetAlertDialog.ERROR_TYPE);
-//                                sweetAlertDialog.setTitleText("账号或密码错误，请重试！");
-//                                sweetAlertDialog.show();
-//                                passwordEditText.setText("");
-//                            }
-//                        }
-//                    }
-//
-//                    @Override
-//                    public void onError(int i, String s) {
-//                        dialog.dismissWithAnimation();
-//                        ToastUtil.createToast(LoginActivity.this,"登录失败，请检查你的网络设置！");
-//                    }
-//                });
 
                 break;
             //注册新用户
