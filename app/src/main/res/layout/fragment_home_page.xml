@@ -138,15 +138,41 @@
             android:layout_height="1dp"
             android:background="#aaaaaa"/>
 
-        <demo.yc.formalmanagersystem.view.MySlideListView
+        <LinearLayout
+            android:orientation="vertical"
             android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:id="@+id/mainListView"
-            android:divider="#aaaaaa"
-            android:dividerHeight="1dp">
-        </demo.yc.formalmanagersystem.view.MySlideListView>
+            android:layout_height="match_parent">
+            <RelativeLayout
+                android:visibility="gone"
+                android:id="@+id/home_frag_nodata_layout"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent">
+                <ImageView
+                    android:id="@+id/home_frag_nodata_image"
+                    android:layout_centerInParent="true"
+                    android:src="@drawable/nodata"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content" />
+                <Button
+                    android:id="@+id/home_frag_nodata_btn"
+                    android:layout_marginTop="-15dp"
+                    android:layout_centerHorizontal="true"
+                    android:layout_below="@id/home_frag_nodata_image"
+                    android:text="刷新"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    />
+            </RelativeLayout>
 
-
+            <demo.yc.formalmanagersystem.view.MySlideListView
+                android:visibility="gone"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:id="@+id/mainListView"
+                android:divider="#aaaaaa"
+                android:dividerHeight="1dp">
+            </demo.yc.formalmanagersystem.view.MySlideListView>
+        </LinearLayout>
         <View
             android:layout_width="match_parent"
             android:layout_height="1dp"

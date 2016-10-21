@@ -57,6 +57,7 @@ public class MainActivity extends BaseActivity implements View.OnClickListener,P
     MyDBHandler db;
 
     String account = "";
+
     ImageView menuBtn;
     TextView title;
 
@@ -93,6 +94,9 @@ public class MainActivity extends BaseActivity implements View.OnClickListener,P
     View pullImage ;
 
     boolean isPerson,isPlan;//isTask;
+
+
+
     ThreadUtil threadUtil = new ThreadUtil(this)
     {
         @Override
@@ -268,17 +272,25 @@ public class MainActivity extends BaseActivity implements View.OnClickListener,P
     private void getPlanInfoFromHttp()
     {
         //星期一
-        new VolleyUtil().getSingleDayPlan(MyApplication.getUser().getId(), 1, new UpdateListener() {
+        new VolleyUtil().getSingleDayPlan(MyApplication.getUser().getId(), todayCode, new UpdateListener() {
             @Override
             public void onSucceed(String s) {
 
-                Log.w("plan",s);
-                if (todayPlanList.size() != 0)
-                    todayPlanList.clear();
+                Log.w("plan","main singleplan 返回数据"+s);
+
+
+                if (s == null || !s.startsWith("[")) {
+                    Log.w("plan", "main singleplan json格式错误:");
+                }
                 ArrayList<Plan> tempList = JsonUtil.parsePlanJson(s);
                 if(tempList != null && tempList.size() != 0) {
+
+                    if (todayPlanList.size() != 0)
+                        todayPlanList.clear();
+
                     todayPlanList = tempList;
                     isPlan = true;
+                    Log.w("plan","main plan todayList.size-->"+todayPlanList.size());
                     showMain();
                 }
                 else
@@ -366,7 +378,7 @@ public class MainActivity extends BaseActivity implements View.OnClickListener,P
     //该方法是在课程表修改了今天的安排，在onactivityresult中调用。
     //因为在课表修改时，已经更新了数据库的数据，直接去数据库获取新数据就好
     private void updatePlanInfo() {
-        threadUtil.getSubPlanInfo(account,todayCode);
+        getPlanInfoFromHttp();
     }
 
     //获取数据成功后显示界面
@@ -374,9 +386,11 @@ public class MainActivity extends BaseActivity implements View.OnClickListener,P
     {
         if (isPlan  && isPerson)
         {
-            Intent intent = new Intent(this,DownLoadService.class);
-            intent.setAction(DownLoadService.ACTION_PROPERTY_NOTIFY);
-            startService(intent);
+            if(!isFirst)
+                ((HomePageFrag) fragments[1]).refreshTodayPlan();
+//            Intent intent = new Intent(this,DownLoadService.class);
+//            intent.setAction(DownLoadService.ACTION_PROPERTY_NOTIFY);
+//            startService(intent);
             setFrags(1);
             pd.dismiss();
         }
@@ -511,6 +525,7 @@ public class MainActivity extends BaseActivity implements View.OnClickListener,P
     }
 
 
+
     //没有网络，用来测试的数据
     private void getPlanDataFromLocal()
     {
@@ -556,15 +571,19 @@ public class MainActivity extends BaseActivity implements View.OnClickListener,P
         @Override
         public void onReceive(Context context, Intent intent) {
 
-            if(intent.getAction().equals(DownLoadService.ACTION_CHANGE_IMAGE))
+            if(intent.getAction().equals(DownLoadService.ACTION_CHANGE_IMAGE)) {
+                Log.w("file", "后台下载图片成功.......");
                 updatePersonInfo();
-            else if(intent.getAction().equals(DownLoadService.ACTION_PROPERTY_NOTIFY))
-            {
-                Log.w("file","notify.......");
-                String msg = intent.getStringExtra("messge");
-                ((HomePageFrag)(fm.getFragments().get(1))).getNotifyDataFromMain(msg);
             }
+            else if(intent.getAction().equals(DownLoadService.ACTION_PROPERTY_NOTIFY)) {
+                Log.w("file", "notify.......");
+                String msg = intent.getStringExtra("messge");
+                ((HomePageFrag) (fm.getFragments().get(1))).getNotifyDataFromMain(msg);
+            }
+            else if(intent.getAction().equals(""))
+            {
 
+            }
         }
     };
 }

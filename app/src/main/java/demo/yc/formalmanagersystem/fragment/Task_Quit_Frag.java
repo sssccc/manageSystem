@@ -5,6 +5,7 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -70,16 +71,32 @@ public class Task_Quit_Frag extends TaskBaseFrag {
         new VolleyUtil().getQuitTaskList(MyApplication.getUser().getId(), new UpdateListener() {
             @Override
             public void onSucceed(String s) {
+
+                Log.w("task","quitTask访问后台服务器成功:"+s);
+
+                if( s == null || !s.startsWith("[")) {
+                    Log.w("task","quitTask后台服务器返回数据异常");
+                    Toast.makeText(getContext(), "获取数据异常", Toast.LENGTH_SHORT).show();
+                            return;
+                }
+
                 list = JsonUtil.parseTaskJson(s);
-                showListView();
+                if(list != null) {
+                    showListView();
+                }
+                else
+                {
+                    Log.w("task","json task wei 空");
+                    Toast.makeText(getContext(),"暂无数据",Toast.LENGTH_SHORT).show();
+                }
             }
 
             @Override
             public void onError(VolleyError error) {
-                getDataFromLocal();
+                Toast.makeText(getContext(),"quitTask数据获取异常",Toast.LENGTH_SHORT).show();
+                Log.w("task","quitTask访问后台服务器失败："+error.toString());
             }
         });
-
     }
 
     private void setUi()
@@ -88,6 +105,7 @@ public class Task_Quit_Frag extends TaskBaseFrag {
         listView = (MySlideListView2) view.findViewById(R.id.task_quit_listView);
         listView.initSlideMode(1);
     }
+
     //网络请求数据之后，绑定adapter 显示listView
     private void showListView()
     {
@@ -109,7 +127,6 @@ public class Task_Quit_Frag extends TaskBaseFrag {
             }
         });
     }
-
 
     @Override
     public void myDelete(int pos,int flag) {

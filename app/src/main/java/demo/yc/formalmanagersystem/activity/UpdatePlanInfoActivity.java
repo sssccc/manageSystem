@@ -171,10 +171,10 @@ public class UpdatePlanInfoActivity extends BaseActivity {
                     p.setContent("无");
                     p.setType(2);
                     p.setIsFixed(1);
-                    p.setIsFixed(0);
+                    p.setIsFree(0);
                 }else
                 {
-                    p.setIsFixed(1);
+                    p.setIsFree(1);
                     p.setTitle(title.getText().toString());
                     p.setContent(describe.getText().toString());
 

@@ -30,7 +30,7 @@ public class VolleyUtil {
     public VolleyUtil() {
     }
 
-    private static final String ROOT_URL = "http://192.168.1.124:8888/";
+    private static final String ROOT_URL = "http://192.168.253.1:8888/";
     private static final String BASE_URL = ROOT_URL+"property/";
 
 
@@ -254,6 +254,7 @@ public class VolleyUtil {
                 map.put("id",plan.getId());
                 map.put("weekDay", plan.getWeekDay()+"");
                 map.put("dayTime",plan.getDayTime()+"");
+                map.put("role",MyApplication.getRole());
                 return map;
             }
 
@@ -301,6 +302,7 @@ public class VolleyUtil {
                 map.put("clazz", person.getClazz());
                 map.put("quartersId", person.getQuartersId());
                 map.put("id", person.getId());
+                map.put("role",MyApplication.getRole());
                 return map;
             }
 
@@ -345,6 +347,7 @@ public class VolleyUtil {
                 Map<String, String> map = new HashMap<String, String>();
 
                 map.put("taskId",taskId);
+                map.put("role",MyApplication.getRole());
                 return map;
             }
 
@@ -378,6 +381,7 @@ public class VolleyUtil {
                 Map<String, String> map = new HashMap<String, String>();
 
                 map.put("taskId",taskId);
+                map.put("role",MyApplication.getRole());
                 return map;
             }
 
@@ -400,7 +404,7 @@ public class VolleyUtil {
      */
     public synchronized void getPersonInfo(final String userId, final UpdateListener updateListener) {
 
-        String url2 = ROOT_URL+"information/show?userId=0615bb2424f84ebca0758f387b8daf0c";
+        String url2 = ROOT_URL+"information/show?userId="+userId+"&role="+MyApplication.getRole();
         Toast.makeText(MyApplication.getContext(),userId,Toast.LENGTH_SHORT).show();
         StringRequest request2 = new StringRequest(Request.Method.GET, url2, new Response.Listener<String>() {
             @Override
@@ -428,7 +432,7 @@ public class VolleyUtil {
      */
     public synchronized void getSingleDayPlan(final String userId, int weekDay, final UpdateListener updateListener) {
 
-        String url2 = ROOT_URL+"plan/get?userId="+userId+"&weekDay="+weekDay;
+        String url2 = ROOT_URL+"plan/getday?userId="+userId+"&weekDay="+weekDay+"&role="+MyApplication.getRole();
         StringRequest request2 = new StringRequest(Request.Method.GET, url2, new Response.Listener<String>() {
             @Override
             public void onResponse(String s) {
@@ -453,8 +457,7 @@ public class VolleyUtil {
      */
     public synchronized void getAllDayPlan(final String userId, final UpdateListener updateListener) {
 
-
-        String url2 = ROOT_URL+"plan/get?userId="+userId;
+        String url2 = ROOT_URL+"plan/get?userId="+userId+"&role="+MyApplication.getRole();
         StringRequest request2 = new StringRequest(Request.Method.GET, url2, new Response.Listener<String>() {
             @Override
             public void onResponse(String s) {
@@ -477,7 +480,7 @@ public class VolleyUtil {
      */
     public synchronized void getAllAcceptableTaskList(final UpdateListener updateListener) {
 
-        String url2 = ROOT_URL+"task/untakenteamtask";
+        String url2 = ROOT_URL+"task/untakenteamtask?role="+MyApplication.getRole();
         StringRequest request2 = new StringRequest(Request.Method.GET, url2, new Response.Listener<String>() {
             @Override
             public void onResponse(String s) {
@@ -501,7 +504,7 @@ public class VolleyUtil {
      */
     public synchronized void getMyAcceptableTaskList(final String userId, final UpdateListener updateListener) {
 
-        String url2 = ROOT_URL+"task/untakenprojecttask?userId="+userId;
+        String url2 = ROOT_URL+"task/untakenprojecttask?userId="+userId+"&role="+MyApplication.getRole();
         StringRequest request2 = new StringRequest(Request.Method.GET, url2, new Response.Listener<String>() {
             @Override
             public void onResponse(String s) {
@@ -525,7 +528,7 @@ public class VolleyUtil {
      */
     public synchronized void getAllInvolveTaskList(final String userId, final UpdateListener updateListener) {
 
-        String url2 = ROOT_URL+"task/acceptedteamtask?userId="+userId;
+        String url2 = ROOT_URL+"task/acceptedteamtask?userId="+userId+"&role="+MyApplication.getRole();
         StringRequest request2 = new StringRequest(Request.Method.GET, url2, new Response.Listener<String>() {
             @Override
             public void onResponse(String s) {
@@ -549,7 +552,7 @@ public class VolleyUtil {
      */
     public synchronized void getMyInvolveTaskList(final String userId, final UpdateListener updateListener) {
 
-        String url2 = ROOT_URL+"task/acceptedprojecttask?userId="+userId;
+        String url2 = ROOT_URL+"task/acceptedprojecttask?userId="+userId+"&role="+MyApplication.getRole();
         StringRequest request2 = new StringRequest(Request.Method.GET, url2, new Response.Listener<String>() {
             @Override
             public void onResponse(String s) {
@@ -573,7 +576,7 @@ public class VolleyUtil {
      */
     public synchronized void getHistoryTaskList(final String userId, final UpdateListener updateListener) {
 
-        String url2 = ROOT_URL+"task/history?userId="+userId;
+        String url2 = ROOT_URL+"task/history?userId="+userId+"&role="+MyApplication.getRole();
         StringRequest request2 = new StringRequest(Request.Method.GET, url2, new Response.Listener<String>() {
             @Override
             public void onResponse(String s) {
@@ -597,7 +600,7 @@ public class VolleyUtil {
      */
     public synchronized void getQuitTaskList(final String userId, final UpdateListener updateListener) {
 
-        String url2 = ROOT_URL+"/task/quitpage?userId="+userId;
+        String url2 = ROOT_URL+"/task/quitpage?userId="+userId+"&role="+MyApplication.getRole();
         StringRequest request2 = new StringRequest(Request.Method.GET, url2, new Response.Listener<String>() {
             @Override
             public void onResponse(String s) {
@@ -620,7 +623,7 @@ public class VolleyUtil {
      */
     public synchronized void getTaskDetail(final String taskId, final UpdateListener updateListener) {
 
-        String url2 = ROOT_URL+"task/taskdetail?taskId="+taskId;
+        String url2 = ROOT_URL+"task/taskdetail?taskId="+taskId+"&role="+MyApplication.getRole();
         StringRequest request2 = new StringRequest(Request.Method.GET, url2, new Response.Listener<String>() {
             @Override
             public void onResponse(String s) {

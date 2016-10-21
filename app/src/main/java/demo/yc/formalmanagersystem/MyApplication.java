@@ -17,6 +17,15 @@ public class MyApplication extends Application
     private static MyApplication instance;
     private static User user;
     private static Context context;
+    private static String role = "";
+
+    public static String getRole() {
+        return role;
+    }
+
+    public static void setRole(String role) {
+        MyApplication.role = role;
+    }
 
     private static String personId = "";
 

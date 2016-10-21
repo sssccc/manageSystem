@@ -59,7 +59,6 @@ import demo.yc.formalmanagersystem.fragment.Day_Frag_WedDay;
 import demo.yc.formalmanagersystem.models.Plan;
 import demo.yc.formalmanagersystem.util.DateUtil;
 import demo.yc.formalmanagersystem.util.JsonUtil;
-import demo.yc.formalmanagersystem.util.NetWorkUtil;
 import demo.yc.formalmanagersystem.util.ThreadUtil;
 import demo.yc.formalmanagersystem.util.VolleyUtil;
 import demo.yc.formalmanagersystem.view.MyLineView;
@@ -389,7 +388,7 @@ public class TimeManageActivity extends BaseActivity implements View.OnClickList
         list.add(map2);
         map3.put("time","显示工作时间");
         list.add(map3);
-        map3.put("time","刷新数据");
+        map4.put("time","刷新数据");
         SimpleAdapter adapter = new SimpleAdapter(this,list,R.layout.popup_list_item,new String[]{"time"},new int[]{R.id.popup_listview_item_title});
         listView.setAdapter(adapter);
         listView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
@@ -397,9 +396,11 @@ public class TimeManageActivity extends BaseActivity implements View.OnClickList
             public void onItemClick(AdapterView<?> adapterView, View view, int i, long l) {
                 if(i == 3)
                 {
+                    pd.show();
                     getPlanInfoFromHttp();
                 }
-                else if(refreshType != i) {
+                else if(refreshType != i)
+                {
                     refreshPlanList(i);
                     refreshType = i;
                     gridViewAdapter = new MyTimeGridViewAdapter(TimeManageActivity.this, weekPlans,refreshType);
@@ -493,6 +494,7 @@ public class TimeManageActivity extends BaseActivity implements View.OnClickList
                 {
                     isTodayPlanChanges = true;
                 }
+                Log.w("plan","需要修改主界面--->"+isTodayPlanChanges);
                 for(int i=0;0<planTitles.size();)
                 {
                     Plan pp = planTitles.get(i);
@@ -516,7 +518,8 @@ public class TimeManageActivity extends BaseActivity implements View.OnClickList
                     }
                 }
                 refreshPlanList(p);
-                gridViewAdapter.notifyDataSetChanged();
+                if(gridViewAdapter != null)
+                    gridViewAdapter.notifyDataSetChanged();
             }
         }
         super.onActivityResult(requestCode, resultCode, data);
@@ -526,13 +529,13 @@ public class TimeManageActivity extends BaseActivity implements View.OnClickList
     //从后台获取数据
     private void getPlanInfoFromHttp()
     {
-        if(NetWorkUtil.getInstance(TimeManageActivity.this).isWork()) {
-            new VolleyUtil().getAllDayPlan(account, new UpdateListener() {
+            new VolleyUtil().getAllDayPlan(MyApplication.getUser().getId(), new UpdateListener() {
                 @Override
                 public void onSucceed(String s) {
                     if(pd.isShowing())
                         pd.dismiss();
-                    Log.w("plan", "后台返回数据json:" + s);
+                    Log.w("plan", "后台返回数据json:" + MyApplication.getUser().getId());
+                    Log.w("plan", "我的account:" + account);
                     if (s == null || !s.startsWith("[")) {
                         Log.w("plan", "json格式错误:");
                         if(!isLoad)
@@ -588,19 +591,19 @@ public class TimeManageActivity extends BaseActivity implements View.OnClickList
                     }
                 }
             });
-        }else
-        {
-            if(pd.isShowing())
-                pd.dismiss();
-            Log.w("plan","网络无法连接");
-            if(!isLoad)
-            {
-                showDialog("无法获取数据");
-            }else
-            {
-                Toast.makeText(TimeManageActivity.this,"数据更新失败",Toast.LENGTH_SHORT).show();
-            }
-        }
+//        }else
+//        {
+//            if(pd.isShowing())
+//                pd.dismiss();
+//            Log.w("plan","网络无法连接");
+//            if(!isLoad)
+//            {
+//                showDialog("无法获取数据");
+//            }else
+//            {
+//                Toast.makeText(TimeManageActivity.this,"数据更新失败",Toast.LENGTH_SHORT).show();
+//            }
+//        }
     }
 
     //无法获取任何数据时，提示出口对话框

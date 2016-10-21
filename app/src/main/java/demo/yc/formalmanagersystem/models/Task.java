@@ -14,7 +14,7 @@ public class Task
     private String dead;
     private String start;
     private int status ;            //状态    任务完成情况，0：未完成，1：已完成
-    private int avaible;
+    private int avaiable;
     //是否冻结任务，1:是，0:否
     private String administor;      //  发布者
 //    private String participator;    //  参与者
@@ -43,12 +43,12 @@ public class Task
     }
 
 
-    public int getAvaible() {
-        return avaible;
+    public int getAvaiable() {
+        return avaiable;
     }
 
-    public void setAvaible(int avaible) {
-        this.avaible = avaible;
+    public void setAvaiable(int avaiable) {
+        this.avaiable = this.avaiable;
     }
 
     public String getContent() {

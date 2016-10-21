@@ -7,6 +7,7 @@ import android.os.Handler;
 import android.os.Message;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -86,13 +87,29 @@ public class Task_History_Frag extends TaskBaseFrag {
         new VolleyUtil().getHistoryTaskList(MyApplication.getUser().getId(), new UpdateListener() {
             @Override
             public void onSucceed(String s) {
+                Log.w("task","historyTask访问后台服务器成功:"+s);
+
+                if( s == null || !s.startsWith("[")) {
+                    Log.w("task","history后台服务器返回数据异常");
+                    Toast.makeText(getContext(), "获取数据异常", Toast.LENGTH_SHORT).show();
+                    return;
+                }
+
                 list = JsonUtil.parseTaskJson(s);
-                showListView();
+                if(list != null) {
+                    Log.w("task","history获取数据成功"+list.size());
+                    showListView();
+                }
+                else
+                {
+                    Log.w("task","json task 为 空");
+                    Toast.makeText(getContext(),"暂无数据",Toast.LENGTH_SHORT).show();
+                }
             }
 
             @Override
             public void onError(VolleyError error) {
-               getDataFromLocal();
+//               getDataFromLocal();
             }
         });
     }

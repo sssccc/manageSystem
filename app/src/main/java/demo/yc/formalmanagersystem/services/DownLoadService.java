@@ -37,29 +37,29 @@ public class DownLoadService extends Service
 
     @Override
     public int onStartCommand(final Intent intent, int flags, int startId) {
-
-        if(intent.getAction().equals(ACTION_DOWNLAOD_IMAGE))
-        {
-            FileInfo fileInfo = (FileInfo) intent.getSerializableExtra("image");
-            new DownLoadThread(fileInfo).start();
-        }else if(intent.getAction().equals(ACTION_PROPERTY_NOTIFY))
-        {
-            new Thread(){
-                @Override
-                public void run() {
-                    try {
-                        Thread.sleep(1000);
-                        Intent intent1 = new Intent();
-                        intent.putExtra("message","购买电脑成功");
-                        intent.setAction(ACTION_PROPERTY_NOTIFY);
-                        sendBroadcast(intent1);
-                        Log.w("file","notify");
-                    } catch (InterruptedException e) {
-                        e.printStackTrace();
-                    }
-                }
-            }.start();
-        }
+//
+//        if(intent.getAction().equals(ACTION_DOWNLAOD_IMAGE))
+//        {
+//            FileInfo fileInfo = (FileInfo) intent.getSerializableExtra("image");
+//            new DownLoadThread(fileInfo).start();
+//        }else if(intent.getAction().equals(ACTION_PROPERTY_NOTIFY))
+//        {
+//            new Thread(){
+//                @Override
+//                public void run() {
+//                    try {
+//                        Thread.sleep(1000);
+//                        Intent intent1 = new Intent();
+//                        intent.putExtra("message","购买电脑成功");
+//                        intent.setAction(ACTION_PROPERTY_NOTIFY);
+//                        sendBroadcast(intent1);
+//                        Log.w("file","notify");
+//                    } catch (InterruptedException e) {
+//                        e.printStackTrace();
+//                    }
+//                }
+//            }.start();
+//        }
         return super.onStartCommand(intent, flags, startId);
     }
 }
