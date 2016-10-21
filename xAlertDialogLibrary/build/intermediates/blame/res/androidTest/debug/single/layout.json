@@ -4,6 +4,10 @@
         "source": "F:\\yc\\FormalManagerSystem\\FormalManagerSystem\\xAlertDialogLibrary\\build\\intermediates\\bundles\\debug\\res\\layout\\alert_dialog.xml"
     },
     {
+        "merged": "F:\\yc\\FormalManagerSystem\\manageSystem\\xAlertDialogLibrary\\build\\intermediates\\res\\merged\\androidTest\\debug\\layout\\alert_dialog.xml",
+        "source": "F:\\yc\\FormalManagerSystem\\manageSystem\\xAlertDialogLibrary\\build\\intermediates\\bundles\\debug\\res\\layout\\alert_dialog.xml"
+    },
+    {
         "merged": "G:\\git hub\\FormalManagerSystem\\xAlertDialogLibrary\\build\\intermediates\\res\\merged\\androidTest\\debug\\layout\\alert_dialog.xml",
         "source": "G:\\git hub\\FormalManagerSystem\\xAlertDialogLibrary\\build\\intermediates\\bundles\\debug\\res\\layout\\alert_dialog.xml"
     },
@@ -14,5 +18,9 @@
     {
         "merged": "G:\\git hub\\FormalManagerSystem\\xAlertDialogLibrary\\build\\intermediates\\res\\merged\\androidTest\\debug\\layout\\activity_main.xml",
         "source": "G:\\git hub\\FormalManagerSystem\\xAlertDialogLibrary\\build\\intermediates\\bundles\\debug\\res\\layout\\activity_main.xml"
+    },
+    {
+        "merged": "F:\\yc\\FormalManagerSystem\\manageSystem\\xAlertDialogLibrary\\build\\intermediates\\res\\merged\\androidTest\\debug\\layout\\activity_main.xml",
+        "source": "F:\\yc\\FormalManagerSystem\\manageSystem\\xAlertDialogLibrary\\build\\intermediates\\bundles\\debug\\res\\layout\\activity_main.xml"
     }
 ]
