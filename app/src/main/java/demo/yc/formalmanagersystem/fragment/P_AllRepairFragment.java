@@ -31,9 +31,6 @@ import java.util.List;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 
-import cn.bmob.push.BmobPush;
-import cn.bmob.v3.Bmob;
-import cn.bmob.v3.BmobInstallation;
 import demo.yc.formalmanagersystem.MainActivity;
 import demo.yc.formalmanagersystem.R;
 import demo.yc.formalmanagersystem.UpdateListener;
@@ -59,14 +56,12 @@ public class P_AllRepairFragment extends Fragment implements View.OnClickListene
             super.handleMessage(msg);
             P_PropertyManagementFragment.isInitial = true;
             executor.shutdownNow();
-            refreshableView.findViewById(R.id.pull_to_refresh_head).setVisibility(View.VISIBLE);
             //更新出错时
             if (msg.what == 1) {
                 Log.d("myTag", "failure");
                 if (getActivity() != null) {
                     Toast.makeText(getActivity(), "更新失败，请重试！", Toast.LENGTH_SHORT).show();
                 }
-                // refreshLayout.setVisibility(View.GONE);
             }
             //更新成功时
             else {
@@ -84,14 +79,12 @@ public class P_AllRepairFragment extends Fragment implements View.OnClickListene
                         if (myAdapterForRepair != null) {
                             listView.setAdapter(myAdapterForRepair);
                             myAdapterForRepair.notifyDataSetChanged();
-
                         }
                     }
                     if (flag) {
                         flag = false;
                         Toast.makeText(getActivity(), "更新成功！", Toast.LENGTH_SHORT).show();
                     }
-                    // refreshLayout.setVisibility(View.GONE);
                     doAfterAsyTask();
                 } else {
                     if (once) {
@@ -124,7 +117,6 @@ public class P_AllRepairFragment extends Fragment implements View.OnClickListene
     private View customView;
     private TextView toBeHandle;
 
-    //private LinearLayout refreshLayout;
     private LinearLayout backToTop;
     private RelativeLayout direction;
     private ImageView directionImg;
@@ -145,7 +137,6 @@ public class P_AllRepairFragment extends Fragment implements View.OnClickListene
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.all_repair_in_fragment, container, false);
         listView = (ListView) view.findViewById(R.id.list_view_in_all_repair_fragment);
-        //refreshLayout = (LinearLayout) view.findViewById(R.id.refresh_layout_in_all_repair);
         refreshableView = (RefreshableView) view.findViewById(R.id.refresh_view);
         refreshableView.findViewById(R.id.pull_to_refresh_head).setVisibility(View.INVISIBLE);
         return view;
@@ -163,24 +154,18 @@ public class P_AllRepairFragment extends Fragment implements View.OnClickListene
                     refreshData();
                 }
             }, 0);
-            Bmob.initialize(getActivity(), "d7149c2e98e36ac492f13255c7f3c9a3");
-            BmobInstallation.getCurrentInstallation(getActivity()).save();
-            BmobPush.startWork(getActivity());
             top_layout_menu =(ImageView) getActivity().findViewById(R.id.top_layout_menu);
             top_layout_menu.setOnClickListener(this);
             direction = (RelativeLayout) getActivity().findViewById(R.id.direction_in_top);
             direction.setOnClickListener(this);
             directionImg = (ImageView) getActivity().findViewById(R.id.direction_img);
             myAdapterForRepair = new MyAdapterForRepair(getActivity(), R.layout.item, repairs);
-            //new MyRepairAsynTask().execute();
-
         }
     }
 
     @Override
     public void onDestroy() {
         super.onDestroy();
-        // P_PropertyManagementFragment.isInitial = true;
     }
 
     //从本地数据库读取数据
@@ -222,7 +207,6 @@ public class P_AllRepairFragment extends Fragment implements View.OnClickListene
                 msg.obj = repairs;
                 msg.what = 0;
                 handler.sendMessage(msg);
-
             }
         };
         executor.execute(task);
@@ -237,26 +221,6 @@ public class P_AllRepairFragment extends Fragment implements View.OnClickListene
                     RepairDetailActivity.startActivity(getActivity(), RepairDetailActivity.USER, temp2.get(position));
                 }
             });
-           /* listView.setOnTouchListener(new View.OnTouchListener() {
-                @Override
-                public boolean onTouch(View v, MotionEvent event) {
-                    switch (event.getAction()) {
-                        case MotionEvent.ACTION_DOWN:
-                            dY = event.getY();
-                            break;
-                        case MotionEvent.ACTION_UP:
-                            uY = event.getY();
-                            if (getScrollY() == 0) {
-                                if ((uY - dY) > 180) {
-                                    flag = true;
-                                    refreshData();
-                                }
-                            }
-                            break;
-                    }
-                    return false;
-                }
-            });*/
 
             listView.setOnScrollListener(new AbsListView.OnScrollListener() {
                 @Override
@@ -360,17 +324,10 @@ public class P_AllRepairFragment extends Fragment implements View.OnClickListene
     public void onClick(View v) {
         switch (v.getId()) {
             case R.id.top_layout_menu:
-//                if (popupwindow != null) {
-//                    down = false;
-//                    directionImg.setImageResource(R.drawable.down);
-//                    popupwindow.dismiss();
-//                    listView.setAlpha(1);
-//                }
                 ((MainActivity)getActivity()).showMenu();
                 break;
             //下拉选择框
             case R.id.direction_in_top:
-                // refreshLayout.setVisibility(View.GONE);
                 if (down == false) {
                     directionImg.setImageResource(R.drawable.up);
                     showPopupWindow();
@@ -392,7 +349,6 @@ public class P_AllRepairFragment extends Fragment implements View.OnClickListene
 
             //返回顶部
             case R.id.back_to_top_in_all_repair:
-                //listView.setSelection(0);
                 listView.smoothScrollByOffset(-getScrollY());
                 backToTop.setVisibility(View.INVISIBLE);
                 break;
@@ -486,7 +442,6 @@ public class P_AllRepairFragment extends Fragment implements View.OnClickListene
     //获取服务器数据
     public void refreshData() {
         if (getActivity() != null) {
-            // refreshLayout.setVisibility(View.VISIBLE);
             //访问服务器数据
             volleyUtil.updateSQLiteFromMySql("repair", new UpdateListener() {
                 @Override
