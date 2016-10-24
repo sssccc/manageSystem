@@ -39,9 +39,10 @@
         android:layout_height="1dp"
         android:background="#aaaaaa"/>
 
-    <FrameLayout
+    <LinearLayout
         android:layout_width="match_parent"
-        android:layout_height="match_parent">
+        android:layout_height="match_parent"
+        android:orientation="horizontal">
         <demo.yc.formalmanagersystem.view.RefreshableView
             android:id="@+id/refresh_view_in_history"
             android:layout_width="match_parent"
@@ -53,10 +54,7 @@
             </demo.yc.formalmanagersystem.view.MySlideListView2>
 
         </demo.yc.formalmanagersystem.view.RefreshableView>
-    </FrameLayout>
-
-
-
+    </LinearLayout>
 
 
 </LinearLayout>
