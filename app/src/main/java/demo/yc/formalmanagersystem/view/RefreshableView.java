@@ -203,6 +203,7 @@ public class RefreshableView extends LinearLayout implements OnTouchListener {
             hideHeaderHeight = -header.getHeight();
             headerLayoutParams = (MarginLayoutParams) header.getLayoutParams();
             headerLayoutParams.topMargin = hideHeaderHeight;
+            header.setLayoutParams(headerLayoutParams);
             listView = (ListView) getChildAt(1);
             listView.setOnTouchListener(this);
             loadOnce = true;
