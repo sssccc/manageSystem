@@ -1,6 +1,5 @@
 package demo.yc.formalmanagersystem.fragment;
 
-import android.content.Context;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.graphics.Color;
@@ -47,9 +46,33 @@ import demo.yc.formalmanagersystem.view.RefreshableView;
  */
 public class P_AllRepairFragment extends Fragment implements View.OnClickListener {
 
-    private ImageView top_layout_menu;
+    private ImageView top_layout_menu;  //切换菜单按钮
     private boolean once = true;    //确保本地数据库无数据时，只自动进行一次服务器访问
+    private List<Repair> repairs = new ArrayList<>();//全部报修
+    private ListView listView;
+    private MyAdapterForRepair myAdapterForRepair;
 
+    //线程池执行从本地数据库读取数据的任务
+    public static ExecutorService executor;
+    //用于筛选
+    private List<Repair> temp2 = new ArrayList<>();
+
+    //用于分类
+    private PopupWindow popupwindow;
+    private TextView allPurchase;
+    private TextView pass;
+    private TextView refuse;
+    private View customView;
+    private TextView toBeHandle;
+
+    private LinearLayout backToTop;     //返回顶部
+    private RelativeLayout direction;  //弹出选择框按钮
+    private ImageView directionImg; //指示选择框的状态
+    private boolean down;   //标志当前选择框的状态
+    private VolleyUtil volleyUtil = new VolleyUtil();
+    private RefreshableView refreshableView;    //下拉刷新
+
+    //当数据更新后，更新UI
     private Handler handler = new Handler() {
         @Override
         public void handleMessage(Message msg) {
@@ -58,17 +81,15 @@ public class P_AllRepairFragment extends Fragment implements View.OnClickListene
             executor.shutdownNow();
             //更新出错时
             if (msg.what == 1) {
-                Log.d("myTag", "failure");
                 if (getActivity() != null) {
                     ToastUtil.createToast(getActivity(),"更新失败，请重试！");
-                    //Toast.makeText(getActivity(), "更新失败，请重试！", Toast.LENGTH_SHORT).show();
                 }
             }
             //更新成功时
             else {
                 repairs = (List<Repair>) msg.obj;
+                //本地有数据
                 if (repairs.size() != 0) {
-                    Log.d("myTag", "success");
                     for (Repair repair : repairs
                             ) {
                         temp2.add(repair);
@@ -82,13 +103,10 @@ public class P_AllRepairFragment extends Fragment implements View.OnClickListene
                             myAdapterForRepair.notifyDataSetChanged();
                         }
                     }
-                    if (flag) {
-                        flag = false;
-                        ToastUtil.createToast(getActivity(),"更新成功！");
-                        //Toast.makeText(getActivity(), "更新成功！", Toast.LENGTH_SHORT).show();
-                    }
                     doAfterAsyTask();
-                } else {
+                }
+                //本地无数据，首次会自动进行一次网络加载
+                else {
                     if (once) {
                         once = false;
                         refreshData();
@@ -97,42 +115,6 @@ public class P_AllRepairFragment extends Fragment implements View.OnClickListene
             }
         }
     };
-    //全部报修
-    private List<Repair> repairs = new ArrayList<>();
-    private ListView listView;
-    private MyAdapterForRepair myAdapterForRepair;
-
-    //线程池执行从本地数据库读取数据的任务
-    public static ExecutorService executor;
-
-    //用于判断在ListView的滑动手势
-    float dY = 0;
-    float uY = 0;
-
-    private List<Repair> temp2 = new ArrayList<>();
-
-    //用于分类
-    private PopupWindow popupwindow;
-    private TextView allPurchase;
-    private TextView pass;
-    private TextView refuse;
-    private View customView;
-    private TextView toBeHandle;
-
-    private LinearLayout backToTop;
-    private RelativeLayout direction;
-    private ImageView directionImg;
-    private boolean down;
-    private boolean flag;
-
-    private VolleyUtil volleyUtil = new VolleyUtil();
-
-    private RefreshableView refreshableView;
-
-    @Override
-    public void onAttach(Context context) {
-        super.onAttach(context);
-    }
 
     @Nullable
     @Override
@@ -149,6 +131,7 @@ public class P_AllRepairFragment extends Fragment implements View.OnClickListene
         if (getActivity() != null) {
             executor = Executors.newFixedThreadPool(2);
             readDataFromSQLite();
+            //设置下拉刷新监听
             refreshableView.setOnRefreshListener(new RefreshableView.PullToRefreshListener() {
                 @Override
                 public void onRefresh() {
@@ -162,11 +145,6 @@ public class P_AllRepairFragment extends Fragment implements View.OnClickListene
             directionImg = (ImageView) getActivity().findViewById(R.id.direction_img);
             myAdapterForRepair = new MyAdapterForRepair(getActivity(), R.layout.item, repairs);
         }
-    }
-
-    @Override
-    public void onDestroy() {
-        super.onDestroy();
     }
 
     //从本地数据库读取数据
@@ -204,6 +182,7 @@ public class P_AllRepairFragment extends Fragment implements View.OnClickListene
                     } while (cursor.moveToNext());
                     cursor.close();
                 }
+                //更新成功，发送通知更新UI
                 Message msg = handler.obtainMessage();
                 msg.obj = repairs;
                 msg.what = 0;
@@ -223,6 +202,7 @@ public class P_AllRepairFragment extends Fragment implements View.OnClickListene
                 }
             });
 
+            //设置滚动监听，当item数大于20时，显示返回顶部指示器
             listView.setOnScrollListener(new AbsListView.OnScrollListener() {
                 @Override
                 public void onScrollStateChanged(AbsListView view, int scrollState) {
@@ -241,7 +221,6 @@ public class P_AllRepairFragment extends Fragment implements View.OnClickListene
     //事件注册
     private void initEvents() {
         if (getActivity() != null) {
-            //注册事件
             allPurchase.setOnClickListener(this);
             pass.setOnClickListener(this);
             refuse.setOnClickListener(this);
@@ -264,16 +243,19 @@ public class P_AllRepairFragment extends Fragment implements View.OnClickListene
     //重置资产状态分类的样式
     public void resetStatusStyle() {
         if (getActivity() != null) {
+            //设置字体默认颜色
             toBeHandle.setTextColor(Color.rgb(90, 90, 90));
             allPurchase.setTextColor(Color.rgb(90, 90, 90));
             pass.setTextColor(Color.rgb(90, 90, 90));
             refuse.setTextColor(Color.rgb(90, 90, 90));
 
+            //设置默认透明度
             toBeHandle.setAlpha(0.5f);
             allPurchase.setAlpha(0.5f);
             pass.setAlpha(0.5f);
             refuse.setAlpha(0.5f);
 
+            //设置默认边框颜色
             toBeHandle.setBackgroundResource(R.drawable.bg_border_gray);
             allPurchase.setBackgroundResource(R.drawable.bg_border_gray);
             pass.setBackgroundResource(R.drawable.bg_border_gray);
@@ -312,7 +294,7 @@ public class P_AllRepairFragment extends Fragment implements View.OnClickListene
     }
 
     private void showPopupWindow() {
-        // 创建PopupWindow实例,200,150分别是宽度和高度
+        // 创建PopupWindow实例
         if (popupwindow == null) {
             if (customView != null) {
                 popupwindow = new PopupWindow(customView, ViewGroup.LayoutParams.MATCH_PARENT,
@@ -324,11 +306,13 @@ public class P_AllRepairFragment extends Fragment implements View.OnClickListene
     @Override
     public void onClick(View v) {
         switch (v.getId()) {
+            //切换侧滑菜单按钮
             case R.id.top_layout_menu:
                 ((MainActivity)getActivity()).showMenu();
                 break;
             //下拉选择框
             case R.id.direction_in_top:
+                //选择框当前为隐藏状态
                 if (down == false) {
                     directionImg.setImageResource(R.drawable.up);
                     showPopupWindow();
@@ -337,7 +321,9 @@ public class P_AllRepairFragment extends Fragment implements View.OnClickListene
                         popupwindow.showAsDropDown(getActivity().findViewById(R.id.direction_img), 0, 0);
                     }
                     down = true;
-                } else {
+                }
+                //选择框当前为弹出状态
+                else {
                     down = false;
                     directionImg.setImageResource(R.drawable.down);
                     if (popupwindow != null) {
@@ -369,6 +355,7 @@ public class P_AllRepairFragment extends Fragment implements View.OnClickListene
                 allPurchase.setTextColor(Color.rgb(95, 187, 176));
                 allPurchase.setBackgroundResource(R.drawable.bg_border_green);
                 break;
+
             //通过审核
             case R.id.pass_in_drop_down_for_all_repair:
                 temp2.clear();
@@ -448,8 +435,6 @@ public class P_AllRepairFragment extends Fragment implements View.OnClickListene
                 @Override
                 public void onSucceed(String s) {
                     refreshableView.finishRefreshing("all_repair");
-                    Log.d("myTag", s);
-
                     if (s.contains("error-business")) {
                         onError(new VolleyError("error-business"));
                     } else {
@@ -470,7 +455,6 @@ public class P_AllRepairFragment extends Fragment implements View.OnClickListene
                     msg.what = 1;
                     handler.sendMessage(msg);
                 }
-
             });
         }
     }
