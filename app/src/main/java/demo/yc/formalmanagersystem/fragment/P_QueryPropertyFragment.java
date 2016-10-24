@@ -886,7 +886,9 @@ public class P_QueryPropertyFragment extends Fragment implements View.OnClickLis
                         onError(new VolleyError(s));
                     } else {
                         //从服务器获取数据
-                        JsonUtil.parsePropertyJson(getActivity(), s);
+                        List<Property> lists = JsonUtil.parsePropertyJson(s);
+                        //更新本地数据库
+                        MyDBHandler.getInstance(getActivity()).updateProperty(getActivity(), lists);
                         //从本地数据库获取数据，更新界面
                         readDataFromSQLite();
                     }

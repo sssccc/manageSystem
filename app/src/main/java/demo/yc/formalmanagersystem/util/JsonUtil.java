@@ -1,7 +1,5 @@
 package demo.yc.formalmanagersystem.util;
 
-import android.content.Context;
-
 import com.google.gson.Gson;
 import com.google.gson.reflect.TypeToken;
 
@@ -11,7 +9,6 @@ import org.json.JSONObject;
 import java.util.ArrayList;
 import java.util.List;
 
-import demo.yc.formalmanagersystem.database.MyDBHandler;
 import demo.yc.formalmanagersystem.models.Person;
 import demo.yc.formalmanagersystem.models.Plan;
 import demo.yc.formalmanagersystem.models.Property;
@@ -25,12 +22,11 @@ import demo.yc.formalmanagersystem.models.Task;
 public class JsonUtil {
 
     /***
-     * 解析Json数据，转化为Property对象，并存入本地数据库
+     * 解析Json数据，转化为Property对象
      *
-     * @param context
      * @param jsonData
      */
-    public static void parsePropertyJson(Context context, String jsonData) {
+    public static List<Property> parsePropertyJson(String jsonData) {
         List<Property> properties = new ArrayList<>();
         try {
             JSONArray jsonArray = new JSONArray(jsonData);
@@ -53,17 +49,16 @@ public class JsonUtil {
         } catch (Exception e) {
             e.printStackTrace();
         }
-        MyDBHandler.getInstance(context).updateProperty(context, properties);
+       return properties;
     }
 
 
     /***
-     * 解析Json数据，转化为Repair对象，并存入本地数据库
+     * 解析Json数据，转化为Repair对象
      *
-     * @param context
      * @param jsonData
      */
-    public static void parseRepairJson(Context context, String jsonData) {
+    public static List<Repair> parseRepairJson(String jsonData) {
         List<Repair> repairList = new ArrayList<>();
         try {
             JSONArray jsonArray = new JSONArray(jsonData);
@@ -82,16 +77,15 @@ public class JsonUtil {
         } catch (Exception e) {
             e.printStackTrace();
         }
-        MyDBHandler.getInstance(context).updateRepair(context, repairList);
+        return repairList;
     }
 
     /***
-     * 解析Json数据，转化为Purchase对象，并存入本地数据库
+     * 解析Json数据，转化为Purchase对象
      *
-     * @param context
      * @param jsonData
      */
-    public static void parsePurchaseJson(Context context, String jsonData) {
+    public static List<Purchase> parsePurchaseJson(String jsonData) {
         List<Purchase> purchases = new ArrayList<>();
         try {
             JSONArray jsonArray = new JSONArray(jsonData);
@@ -113,7 +107,7 @@ public class JsonUtil {
         } catch (Exception e) {
             e.printStackTrace();
         }
-        MyDBHandler.getInstance(context).updatePurchase(context, purchases);
+        return purchases;
     }
 
     //获取一天或者一个周的任务安排
@@ -155,13 +149,5 @@ public class JsonUtil {
         Task task = new Gson().fromJson(result,Task.class);
         return task;
     }
-
-
-
-
-
-
-
-
 
 }

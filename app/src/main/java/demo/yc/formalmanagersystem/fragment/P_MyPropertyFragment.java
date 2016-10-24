@@ -787,8 +787,10 @@ public class P_MyPropertyFragment extends Fragment implements View.OnClickListen
                         if (s.contains("error-business")) {
                             onError(new VolleyError("error-business"));
                         } else {
-                            //从服务器获取数据,,更新本地数据库
-                            JsonUtil.parsePurchaseJson(getActivity(), s);
+                            //解析Json格式的数据
+                            List<Purchase> lists = JsonUtil.parsePurchaseJson(s);
+                            //更新本地数据库
+                            MyDBHandler.getInstance(getActivity()).updatePurchase(getActivity(),lists);
                             //从本地数据库获取数据，更新界面
                             readDataFromSQLite();
                         }
@@ -813,8 +815,10 @@ public class P_MyPropertyFragment extends Fragment implements View.OnClickListen
                         if (s.contains("error-business")) {
                             onError(new VolleyError("error-business"));
                         } else {
-                            //从服务器获取数据
-                            JsonUtil.parseRepairJson(getActivity(), s);
+                            //解析Json格式数据
+                            List<Repair> lists = JsonUtil.parseRepairJson(s);
+                            //更新本地数据库
+                            MyDBHandler.getInstance(getActivity()).updateRepair(getActivity(), lists);
                             //从本地数据库获取数据，更新界面
                             readDataFromSQLite();
                         }

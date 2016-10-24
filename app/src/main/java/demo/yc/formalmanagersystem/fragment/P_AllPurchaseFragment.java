@@ -415,7 +415,10 @@ import demo.yc.formalmanagersystem.view.RefreshableView;
                     if (s.contains("error-business")) {
                         onError(new VolleyError("error-business"));
                     } else {
-                        JsonUtil.parsePurchaseJson(getActivity(), s);
+                        //解析Json格式
+                        List<Purchase> lists = JsonUtil.parsePurchaseJson(s);
+                        //更新本地数据库
+                        MyDBHandler.getInstance(getActivity()).updatePurchase(getActivity(),lists);
                         //从本地数据库获取数据，更新界面
                         readDataFromSQLite();
                     }

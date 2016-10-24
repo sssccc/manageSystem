@@ -449,11 +449,14 @@ public class P_AllRepairFragment extends Fragment implements View.OnClickListene
                 public void onSucceed(String s) {
                     refreshableView.finishRefreshing("all_repair");
                     Log.d("myTag", s);
-                    //从服务器获取数据
+
                     if (s.contains("error-business")) {
                         onError(new VolleyError("error-business"));
                     } else {
-                        JsonUtil.parseRepairJson(getActivity(), s);
+                        //从服务器获取数据
+                        List<Repair> lists = JsonUtil.parseRepairJson(s);
+                        //更新本地数据库
+                        MyDBHandler.getInstance(getActivity()).updateRepair(getActivity(), lists);
                         //从本地数据库获取数据，更新界面
                         readDataFromSQLite();
                     }
