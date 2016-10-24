@@ -106,7 +106,6 @@ public class P_QueryPropertyFragment extends Fragment implements View.OnClickLis
         public void handleMessage(Message msg) {
             P_PropertyManagementFragment.isInitial = true;
             executor.shutdownNow();
-            refreshableView.findViewById(R.id.pull_to_refresh_head).setVisibility(View.VISIBLE);
             //更新失败时
             if (msg.what == 1) {
                 Log.d("myTag", "failure");
@@ -159,7 +158,6 @@ public class P_QueryPropertyFragment extends Fragment implements View.OnClickLis
         direction = (ImageView) view.findViewById(R.id.direction);
         backToTop = (LinearLayout) view.findViewById(R.id.back_to_top_in_query);
         refreshableView = (RefreshableView) view.findViewById(R.id.refresh_view_in_query_property);
-        refreshableView.findViewById(R.id.pull_to_refresh_head).setVisibility(View.INVISIBLE);
         return view;
     }
 
@@ -174,10 +172,11 @@ public class P_QueryPropertyFragment extends Fragment implements View.OnClickLis
         super.onActivityCreated(saveInstanceState);
         //new MyQueryAsynTask().execute();
         List<Repair> repairs = new ArrayList<>();
-        for (int i = 0; i < 100; i++) {
+       /* for (int i = 0; i < 100; i++) {
             Repair repair = new Repair("20160802001", "神舟笔记本", "2016/08/02", "2016/08/02", "通过", "已维修", "硬盘坏了", "201430340601", "曹伟钊");
             repairs.add(repair);
         }
+        */
         MyDBHandler.getInstance(getActivity()).updateRepair(getActivity(), repairs);
 
         List<Purchase> purchases = new ArrayList<>();

@@ -55,7 +55,6 @@ import demo.yc.formalmanagersystem.view.RefreshableView;
             super.handleMessage(msg);
             P_PropertyManagementFragment.isInitial = true;
             executor.shutdownNow();
-            refreshableView.findViewById(R.id.pull_to_refresh_head).setVisibility(View.VISIBLE);
             //更新失败时
             if (msg.what == 1) {
                 Log.d("myTag", "failure");
@@ -139,7 +138,6 @@ import demo.yc.formalmanagersystem.view.RefreshableView;
         Log.d("tag","onPause");
         refreshableView.finishRefreshing("pause");
         P_PropertyManagementFragment.isInitial = true;
-
     }
 
     @Override
@@ -154,7 +152,6 @@ import demo.yc.formalmanagersystem.view.RefreshableView;
         View view = inflater.inflate(R.layout.all_purchase_in_fragment_layout, container, false);
         listView = (ListView) view.findViewById(R.id.list_view_in_all_purchase_fragment);
         refreshableView = (RefreshableView) view.findViewById(R.id.refresh_view_in_all_purchase);
-        refreshableView.findViewById(R.id.pull_to_refresh_head).setVisibility(View.INVISIBLE);
         return view;
     }
 

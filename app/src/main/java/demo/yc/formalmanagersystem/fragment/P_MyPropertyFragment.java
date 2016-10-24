@@ -58,7 +58,6 @@ public class P_MyPropertyFragment extends Fragment implements View.OnClickListen
         @Override
         public void handleMessage(Message msg) {
             P_PropertyManagementFragment.isInitial = true;
-            refreshableView.findViewById(R.id.pull_to_refresh_head).setVisibility(View.VISIBLE);
             //更新失败
             if (msg.what == 1) {
                 Log.d("myTag", "failure");
@@ -186,7 +185,6 @@ public class P_MyPropertyFragment extends Fragment implements View.OnClickListen
         listView = (ListView) view.findViewById(R.id.list_view_in_my_property_fragment);
         backToTop = (LinearLayout) view.findViewById(R.id.back_to_top_in_my_property);
         refreshableView = (RefreshableView) view.findViewById(R.id.refresh_view_in_my_property);
-        refreshableView.findViewById(R.id.pull_to_refresh_head).setVisibility(View.INVISIBLE);
         return view;
     }
 

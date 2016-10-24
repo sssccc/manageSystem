@@ -22,7 +22,6 @@ import android.widget.ListView;
 import android.widget.PopupWindow;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import com.android.volley.VolleyError;
 
@@ -39,6 +38,7 @@ import demo.yc.formalmanagersystem.adapter.MyAdapterForRepair;
 import demo.yc.formalmanagersystem.database.MyDBHandler;
 import demo.yc.formalmanagersystem.models.Repair;
 import demo.yc.formalmanagersystem.util.JsonUtil;
+import demo.yc.formalmanagersystem.util.ToastUtil;
 import demo.yc.formalmanagersystem.util.VolleyUtil;
 import demo.yc.formalmanagersystem.view.RefreshableView;
 
@@ -60,7 +60,8 @@ public class P_AllRepairFragment extends Fragment implements View.OnClickListene
             if (msg.what == 1) {
                 Log.d("myTag", "failure");
                 if (getActivity() != null) {
-                    Toast.makeText(getActivity(), "更新失败，请重试！", Toast.LENGTH_SHORT).show();
+                    ToastUtil.createToast(getActivity(),"更新失败，请重试！");
+                    //Toast.makeText(getActivity(), "更新失败，请重试！", Toast.LENGTH_SHORT).show();
                 }
             }
             //更新成功时
@@ -83,7 +84,8 @@ public class P_AllRepairFragment extends Fragment implements View.OnClickListene
                     }
                     if (flag) {
                         flag = false;
-                        Toast.makeText(getActivity(), "更新成功！", Toast.LENGTH_SHORT).show();
+                        ToastUtil.createToast(getActivity(),"更新成功！");
+                        //Toast.makeText(getActivity(), "更新成功！", Toast.LENGTH_SHORT).show();
                     }
                     doAfterAsyTask();
                 } else {
@@ -138,7 +140,6 @@ public class P_AllRepairFragment extends Fragment implements View.OnClickListene
         View view = inflater.inflate(R.layout.all_repair_in_fragment, container, false);
         listView = (ListView) view.findViewById(R.id.list_view_in_all_repair_fragment);
         refreshableView = (RefreshableView) view.findViewById(R.id.refresh_view);
-        refreshableView.findViewById(R.id.pull_to_refresh_head).setVisibility(View.INVISIBLE);
         return view;
     }
 
