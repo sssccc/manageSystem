@@ -30,7 +30,7 @@ public class VolleyUtil {
     public VolleyUtil() {
     }
 
-    private static final String ROOT_URL = "http://192.168.253.1:8888/";
+    private static final String ROOT_URL = "http://192.168.1.124:8888/";
     private static final String BASE_URL = ROOT_URL+"property/";
 
 
