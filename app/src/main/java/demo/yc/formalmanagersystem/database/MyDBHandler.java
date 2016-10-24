@@ -206,7 +206,7 @@ public class MyDBHandler implements DataBaseInterface
         while(cursor.moveToNext()) {
             Task task = new Task();
             task.setTitle(cursor.getString(cursor.getColumnIndexOrThrow("title")));
-            task.setAvaible(cursor.getInt(cursor.getColumnIndexOrThrow("avaible")));
+            task.setAvaiable(cursor.getInt(cursor.getColumnIndexOrThrow("avaible")));
             task.setId(cursor.getString(cursor.getColumnIndexOrThrow("userId")));
             task.setProjectId(cursor.getString(cursor.getColumnIndexOrThrow("projectId")));
             task.setQuartersId(cursor.getString(cursor.getColumnIndexOrThrow("quartersId")));
@@ -224,7 +224,7 @@ public class MyDBHandler implements DataBaseInterface
     public void updateTaskInfo(String account, Task t) {
         ContentValues values = new ContentValues();
         values.put("title",t.getTitle());
-        values.put("avaible",t.getAvaible());
+        values.put("avaible",t.getAvaiable());
         values.put("userId",t.getId());
         values.put("projectId",t.getProjectId());
         values.put("quartersId",t.getQuartersId());
@@ -245,7 +245,7 @@ public class MyDBHandler implements DataBaseInterface
     public void addTaskInfo(Task t) {
         ContentValues values = new ContentValues();
         values.put("title",t.getTitle());
-        values.put("avaible",t.getAvaible());
+        values.put("avaible",t.getAvaiable());
         values.put("userId",t.getId());
         values.put("projectId",t.getProjectId());
         values.put("quartersId",t.getQuartersId());
