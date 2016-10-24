@@ -1,9 +1,12 @@
 package demo.yc.formalmanagersystem.util;
 
+import android.util.Log;
+
 import com.google.gson.Gson;
 import com.google.gson.reflect.TypeToken;
 
 import org.json.JSONArray;
+import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.util.ArrayList;
@@ -22,6 +25,32 @@ import demo.yc.formalmanagersystem.models.Task;
 public class JsonUtil {
 
     /***
+     * 解析二维码生成的Json数据，获取Property对象
+     * @param json
+     * @return
+     */
+    public static Property parseQRCode(String json){
+        Property property = new Property();
+        try {
+            JSONObject jsonObject = new JSONObject(json);
+            property.setBrand(jsonObject.getString("brand"));
+            property.setModel(jsonObject.getString("model"));
+            property.setName(jsonObject.getString("name"));
+            property.setPrice(jsonObject.getString("price"));
+            property.setCate(jsonObject.getString("cate"));
+            property.setIdentifier(jsonObject.getString("identifier"));
+            property.setProvider(jsonObject.getString("provider"));
+            property.setProviderTel(jsonObject.getString("providerTel"));
+            property.setBorrowedProperty(jsonObject.getInt("isBorrowedProperty") == 0 ? false : true);
+            property.setDate(jsonObject.getString("date"));
+            return property;
+        } catch (JSONException e) {
+            e.printStackTrace();
+        }
+        return null;
+    }
+
+    /***
      * 解析Json数据，转化为Property对象
      *
      * @param jsonData
@@ -30,6 +59,7 @@ public class JsonUtil {
         List<Property> properties = new ArrayList<>();
         try {
             JSONArray jsonArray = new JSONArray(jsonData);
+            Log.d("Json",jsonArray.toString());
             for (int i = 0; i < jsonArray.length(); i++) {
                 Property property = new Property();
                 JSONObject jsonObject = jsonArray.getJSONObject(i);

@@ -31,6 +31,7 @@ import java.io.InputStreamReader;
 import java.util.ArrayList;
 
 import demo.yc.formalmanagersystem.activity.BaseActivity;
+import demo.yc.formalmanagersystem.activity.PropertyInfoActivity;
 import demo.yc.formalmanagersystem.activity.SettingActivity;
 import demo.yc.formalmanagersystem.activity.TimeManageActivity;
 import demo.yc.formalmanagersystem.database.MyDBHandler;
@@ -41,6 +42,7 @@ import demo.yc.formalmanagersystem.fragment.TaskManageFrag;
 import demo.yc.formalmanagersystem.models.FileInfo;
 import demo.yc.formalmanagersystem.models.Person;
 import demo.yc.formalmanagersystem.models.Plan;
+import demo.yc.formalmanagersystem.models.Property;
 import demo.yc.formalmanagersystem.services.DownLoadService;
 import demo.yc.formalmanagersystem.util.ActivityCollector;
 import demo.yc.formalmanagersystem.util.DateUtil;
@@ -49,10 +51,11 @@ import demo.yc.formalmanagersystem.util.JsonUtil;
 import demo.yc.formalmanagersystem.util.PersonUtil;
 import demo.yc.formalmanagersystem.util.QR_Util;
 import demo.yc.formalmanagersystem.util.ThreadUtil;
+import demo.yc.formalmanagersystem.util.ToastUtil;
 import demo.yc.formalmanagersystem.util.VolleyUtil;
 import demo.yc.formalmanagersystem.view.CircleImageView;
 
-public class MainActivity extends BaseActivity implements View.OnClickListener,PersonInfoFrag.PersonListener{
+public class MainActivity extends BaseActivity implements View.OnClickListener, PersonInfoFrag.PersonListener {
 
     MyDBHandler db;
 
@@ -68,21 +71,21 @@ public class MainActivity extends BaseActivity implements View.OnClickListener,P
     TextView personPosition;
 
     DrawerLayout drawerLayout;
-    View leftLayout,rightLayout;
+    View leftLayout, rightLayout;
 
     private LinearLayout qrLayout;
 
     FragmentManager fm;
     FragmentTransaction ft;
-    Fragment[] fragments ;
+    Fragment[] fragments;
 
 
     int currentPager = 0;
-    long currentTime =0;
+    long currentTime = 0;
 
     static boolean isFirst = true;
     String todayName;
-    int  todayCode = 0;
+    int todayCode = 0;
     Person person;
     ArrayList<Plan> todayPlanList = new ArrayList<>();
 
@@ -90,44 +93,40 @@ public class MainActivity extends BaseActivity implements View.OnClickListener,P
     private static final int SEND_DATA_TO_TIME = 0x003;
     public static final int QR_SCAN = 0x005;
 
-    ProgressDialog pd ;
-    View pullImage ;
+    ProgressDialog pd;
+    View pullImage;
 
-    boolean isPerson,isPlan;//isTask;
+    boolean isPerson, isPlan;//isTask;
 
 
-
-    ThreadUtil threadUtil = new ThreadUtil(this)
-    {
+    ThreadUtil threadUtil = new ThreadUtil(this) {
         @Override
         public void error(int code) {
-            switch (code)
-            {
+            switch (code) {
                 case 1:
-                   getPersonDataFromLocal();
+                    getPersonDataFromLocal();
                     break;
                 case 4:
                     getPlanDataFromLocal();
                     break;
             }
         }
+
         @Override
         public void success(int code, Object obj) {
-            switch (code)
-            {
+            switch (code) {
                 case 1:
                     isPerson = true;
-                    person = (Person)obj;
+                    person = (Person) obj;
                     updatePersonInfo(person);
                     showMain();
                     break;
                 case 4:
                     isPlan = true;
-                    todayPlanList = (ArrayList<Plan>)obj;
-                    if(isFirst) {
+                    todayPlanList = (ArrayList<Plan>) obj;
+                    if (isFirst) {
                         showMain();
-                    }
-                    else {
+                    } else {
                         ((HomePageFrag) fragments[1]).refreshTodayPlan();
                     }
                     break;
@@ -160,8 +159,8 @@ public class MainActivity extends BaseActivity implements View.OnClickListener,P
 
     //程序开始，为控件找到id，并且设置监听事件
     private void setUi() {
-        qrLayout =(LinearLayout) findViewById(R.id.qr_scan);
-        pullImage =  findViewById(R.id.direction_in_top);
+        qrLayout = (LinearLayout) findViewById(R.id.qr_scan);
+        pullImage = findViewById(R.id.direction_in_top);
         drawerLayout = (DrawerLayout) findViewById(R.id.drawerlayout);
         leftLayout = drawerLayout.findViewById(R.id.left_layout_of_main);
         rightLayout = drawerLayout.findViewById(R.id.right_layout_of_main);
@@ -194,10 +193,8 @@ public class MainActivity extends BaseActivity implements View.OnClickListener,P
 
     }
 
-    private void setListener()
-    {
-        for(int i =0;i<itemLayouts.length;i++)
-        {
+    private void setListener() {
+        for (int i = 0; i < itemLayouts.length; i++) {
             itemLayouts[i].setOnClickListener(this);
         }
         menuBtn.setOnClickListener(new View.OnClickListener() {
@@ -210,8 +207,7 @@ public class MainActivity extends BaseActivity implements View.OnClickListener,P
     }
 
     //给伟钊调用
-    public void showMenu()
-    {
+    public void showMenu() {
         drawerLayout.openDrawer(leftLayout);
     }
 
@@ -227,17 +223,16 @@ public class MainActivity extends BaseActivity implements View.OnClickListener,P
 
 
         //userId   回调接口
-        Log.w("person",MyApplication.getUser().getId());
+        Log.w("person", MyApplication.getUser().getId());
         new VolleyUtil().getPersonInfo(MyApplication.getUser().getId(), new UpdateListener() {
             @Override
             public void onSucceed(String s) {
                 //解析json
-                Log.w("person",s);
+                Log.w("person", s);
                 Person p = JsonUtil.parsePersonJson(s);
-                if(p != null) {
+                if (p != null) {
                     MyApplication.setPersonId(p.getId());
-                    if (FileUtil.isExternalStorageOk())
-                    {
+                    if (FileUtil.isExternalStorageOk()) {
                         Intent intent = new Intent(DownLoadService.ACTION_DOWNLAOD_IMAGE);
                         FileInfo fileInfo = new FileInfo(MyApplication.getUser().getId(), p.getPicture());
                         intent.putExtra("image", fileInfo);
@@ -250,12 +245,11 @@ public class MainActivity extends BaseActivity implements View.OnClickListener,P
 //                        db.updatePersonInfo(p);
                     updatePersonInfo(p);
 
-                    if(!isPerson){
+                    if (!isPerson) {
                         isPerson = true;
                         showMain();
                     }
-                }else
-                {
+                } else {
                     getPersonDataFromLocal();
                 }
 
@@ -263,46 +257,43 @@ public class MainActivity extends BaseActivity implements View.OnClickListener,P
 
             @Override
             public void onError(VolleyError error) {
-                Log.w("person",error.toString());
+                Log.w("person", error.toString());
                 getPersonDataFromLocal();
             }
         });
     }
 
-    private void getPlanInfoFromHttp()
-    {
+    private void getPlanInfoFromHttp() {
         //星期一
         new VolleyUtil().getSingleDayPlan(MyApplication.getUser().getId(), todayCode, new UpdateListener() {
             @Override
             public void onSucceed(String s) {
 
-                Log.w("plan","main singleplan 返回数据"+s);
+                Log.w("plan", "main singleplan 返回数据" + s);
 
 
                 if (s == null || !s.startsWith("[")) {
                     Log.w("plan", "main singleplan json格式错误:");
                 }
                 ArrayList<Plan> tempList = JsonUtil.parsePlanJson(s);
-                if(tempList != null && tempList.size() != 0) {
+                if (tempList != null && tempList.size() != 0) {
 
                     if (todayPlanList.size() != 0)
                         todayPlanList.clear();
 
                     todayPlanList = tempList;
                     isPlan = true;
-                    Log.w("plan","main plan todayList.size-->"+todayPlanList.size());
+                    Log.w("plan", "main plan todayList.size-->" + todayPlanList.size());
                     showMain();
-                }
-                else
-                {
+                } else {
                     getPlanDataFromLocal();
                 }
             }
 
             @Override
             public void onError(VolleyError error) {
-                Toast.makeText(MainActivity.this,"plan...mainactivity..error",Toast.LENGTH_LONG).show();
-                Log.w("plen",error.toString());
+                Toast.makeText(MainActivity.this, "plan...mainactivity..error", Toast.LENGTH_LONG).show();
+                Log.w("plen", error.toString());
                 getPlanDataFromLocal();
             }
         });
@@ -313,7 +304,7 @@ public class MainActivity extends BaseActivity implements View.OnClickListener,P
     private void setFrags(int index) {
         pullImage.setVisibility(View.GONE);
         ft = fm.beginTransaction();
-        for(int i=0;i<fragments.length;i++) {
+        for (int i = 0; i < fragments.length; i++) {
             if (i == index) {
                 if (!fragments[i].isAdded())
                     ft.add(R.id.frame_layout_of_right, fragments[i]);
@@ -329,14 +320,12 @@ public class MainActivity extends BaseActivity implements View.OnClickListener,P
     }
 
     //设置不同的frag时，修改不同标题
-    public void setMyTitle(String title)
-    {
+    public void setMyTitle(String title) {
         this.title.setText(title);
     }
 
     //将该信息传递给个人信息界面
-    public Person SendPersonInfo()
-    {
+    public Person SendPersonInfo() {
         return this.person;
     }   //一个人的详细信息
 
@@ -352,14 +341,13 @@ public class MainActivity extends BaseActivity implements View.OnClickListener,P
     public void updatePersonInfo(Person p) {
         this.person = p;
 
-    //修改头像,先加载本地图片，如果网络可用，就加载网络图片
-        if(!MyApplication.getPersonHeadPath().equals(""))
+        //修改头像,先加载本地图片，如果网络可用，就加载网络图片
+        if (!MyApplication.getPersonHeadPath().equals(""))
             Glide.with(this).load(MyApplication.getPersonHeadPath()).into(personHead);
-        else
-        {
+        else {
             String tempPath = FileUtil.getUserImagePath(MyApplication.getUser().getId());
             File file = new File(tempPath);
-            if(file.exists())
+            if (file.exists())
                 Glide.with(this).load(tempPath).into(personHead);
             else
                 Glide.with(this).load(p.getPicture()).into(personHead);
@@ -382,11 +370,9 @@ public class MainActivity extends BaseActivity implements View.OnClickListener,P
     }
 
     //获取数据成功后显示界面
-    public synchronized  void showMain()
-    {
-        if (isPlan  && isPerson)
-        {
-            if(!isFirst)
+    public synchronized void showMain() {
+        if (isPlan && isPerson) {
+            if (!isFirst)
                 ((HomePageFrag) fragments[1]).refreshTodayPlan();
 //            Intent intent = new Intent(this,DownLoadService.class);
 //            intent.setAction(DownLoadService.ACTION_PROPERTY_NOTIFY);
@@ -399,9 +385,8 @@ public class MainActivity extends BaseActivity implements View.OnClickListener,P
     //如果本地没有用户信息，并且无法通过网络加载出数据。则无法进行任何操作，提示刷新或者退出
     private AlertDialog dialog;
 
-    public void showDialog()
-    {
-        if(dialog == null) {
+    public void showDialog() {
+        if (dialog == null) {
             AlertDialog.Builder builder = new AlertDialog.Builder(MainActivity.this);
             builder.setTitle("提示")
                     .setMessage("连接出错了...")
@@ -421,8 +406,7 @@ public class MainActivity extends BaseActivity implements View.OnClickListener,P
                     .setCancelable(false);
             dialog = builder.create();
             dialog.show();
-        }
-        else
+        } else
             dialog.show();
 
     }
@@ -432,40 +416,37 @@ public class MainActivity extends BaseActivity implements View.OnClickListener,P
     public void onClick(View view) {
 
         //跳转到设置界面
-        if(view.getId() == R.id.six_of_left_layout)
-        {
+        if (view.getId() == R.id.six_of_left_layout) {
             Intent settingIntent = new Intent(MainActivity.this, SettingActivity.class);
             startActivity(settingIntent);
             //跳转到课程表界面
-        }else if(view.getId() == R.id.five_of_left_layout)
-        {
+        } else if (view.getId() == R.id.five_of_left_layout) {
             startIntetnToTimeManager();
             //跳转到二维码扫描界面
-        }else if(view.getId() == R.id.qr_scan){
+        } else if (view.getId() == R.id.qr_scan) {
             QR_Util.startQRScan(this);
-        }
-        else {
-            switch (view.getId())
-            {
+        } else {
+            switch (view.getId()) {
                 //跳转到个人信息界面
                 case R.id.one_of_left_layout:
-                    currentPager =0;
+                    currentPager = 0;
                     title.setText("个人信息");
                     break;
                 //跳转到首页界面
                 case R.id.two_of_left_layout:
-                    currentPager =1;
+                    currentPager = 1;
                     title.setText("首页");
                     break;
                 //跳转到任务列表界面
                 case R.id.three_of_left_layout:
-                    currentPager =2;
+                    currentPager = 2;
                     break;
                 //跳转到资产管理界面
                 case R.id.four_of_left_layout:
-                    currentPager =3;
+                    currentPager = 3;
                     break;
-                default:break;
+                default:
+                    break;
             }
             setFrags(currentPager);
         }
@@ -476,23 +457,19 @@ public class MainActivity extends BaseActivity implements View.OnClickListener,P
     //双击退出界面
     @Override
     public boolean onKeyDown(int keyCode, KeyEvent event) {
-        if(keyCode == KeyEvent.KEYCODE_BACK)
-        {
-            if(drawerLayout.isDrawerOpen(leftLayout))
+        if (keyCode == KeyEvent.KEYCODE_BACK) {
+            if (drawerLayout.isDrawerOpen(leftLayout))
                 drawerLayout.closeDrawer(leftLayout);
-            else
-            {
-                if(currentPager == 1)
-                {
-                    if(System.currentTimeMillis() - currentTime >3000) {
+            else {
+                if (currentPager == 1) {
+                    if (System.currentTimeMillis() - currentTime > 3000) {
                         Toast.makeText(MainActivity.this, "再按一次退出程序", Toast.LENGTH_SHORT).show();
                         currentTime = System.currentTimeMillis();
-                    }else
+                    } else
                         ActivityCollector.finishAll();
-                }else
-                {
+                } else {
                     setFrags(1);
-                    currentPager =1;
+                    currentPager = 1;
                 }
             }
             return true;
@@ -502,7 +479,7 @@ public class MainActivity extends BaseActivity implements View.OnClickListener,P
 
     public void startIntetnToTimeManager() {
         Intent timeIntent = new Intent(MainActivity.this, TimeManageActivity.class);
-        startActivityForResult(timeIntent,SEND_DATA_TO_TIME);
+        startActivityForResult(timeIntent, SEND_DATA_TO_TIME);
     }
 
     @Override
@@ -513,10 +490,22 @@ public class MainActivity extends BaseActivity implements View.OnClickListener,P
                 isFirst = false;
                 updatePlanInfo();
             }
-            else if(requestCode == QR_SCAN){
-                //处理二维码
-            }
-            else {
+            //处理二维码扫描
+            else if (requestCode == QR_SCAN) {
+                String result = data.getStringExtra("result");
+                //解析二维码
+                Property p = JsonUtil.parseQRCode(result);
+                //解析错误
+                if (p == null) {
+                    ToastUtil.createToast(this, "解析错误！");
+                }
+                //解析成功，跳转至PropertyInfo Activity显示详情页面
+                else {
+                    Intent intent = new Intent(MainActivity.this, PropertyInfoActivity.class);
+                    intent.putExtra("data_extra", p);
+                    startActivity(intent);
+                }
+            } else {
                 super.onActivityResult(requestCode, resultCode, data);
 //                Toast.makeText(MainActivity.this,"MainActivity。。HomePager",Toast.LENGTH_LONG).show();
 //               ((HomePageFrag)fragments[1]).myRefresh(requestCode,data);
@@ -525,18 +514,15 @@ public class MainActivity extends BaseActivity implements View.OnClickListener,P
     }
 
 
-
     //没有网络，用来测试的数据
-    private void getPlanDataFromLocal()
-    {
+    private void getPlanDataFromLocal() {
 
-        StringBuffer sb =new StringBuffer();
+        StringBuffer sb = new StringBuffer();
         try {
             InputStream is = getResources().getAssets().open("singleplan.txt");
             BufferedReader br = new BufferedReader(new InputStreamReader(is));
-            String line ;
-            while((line = br.readLine()) != null)
-            {
+            String line;
+            while ((line = br.readLine()) != null) {
                 sb.append(line);
             }
         } catch (FileNotFoundException e) {
@@ -548,9 +534,9 @@ public class MainActivity extends BaseActivity implements View.OnClickListener,P
         isPlan = true;
         showMain();
     }
+
     //没有网络，用来测试的数据
-    private void getPersonDataFromLocal()
-    {
+    private void getPersonDataFromLocal() {
 
         Person p = new Person(20, "2", "数学与信息", "软件工程", "heyongcai", "201430330210", "sdfsdf.jpg", "dfdf", "1", "1", account);
         updatePersonInfo(p);
@@ -571,17 +557,14 @@ public class MainActivity extends BaseActivity implements View.OnClickListener,P
         @Override
         public void onReceive(Context context, Intent intent) {
 
-            if(intent.getAction().equals(DownLoadService.ACTION_CHANGE_IMAGE)) {
+            if (intent.getAction().equals(DownLoadService.ACTION_CHANGE_IMAGE)) {
                 Log.w("file", "后台下载图片成功.......");
                 updatePersonInfo();
-            }
-            else if(intent.getAction().equals(DownLoadService.ACTION_PROPERTY_NOTIFY)) {
+            } else if (intent.getAction().equals(DownLoadService.ACTION_PROPERTY_NOTIFY)) {
                 Log.w("file", "notify.......");
                 String msg = intent.getStringExtra("messge");
                 ((HomePageFrag) (fm.getFragments().get(1))).getNotifyDataFromMain(msg);
-            }
-            else if(intent.getAction().equals(""))
-            {
+            } else if (intent.getAction().equals("")) {
 
             }
         }
