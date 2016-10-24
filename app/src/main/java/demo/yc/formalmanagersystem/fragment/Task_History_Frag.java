@@ -48,19 +48,16 @@ public class Task_History_Frag extends TaskBaseFrag {
     ArrayList<Task> list = new ArrayList<>();
 
 
+    TextView numTv;
 
-    TextView numTv ;
     public Task_History_Frag() {
         // Required empty public constructor
     }
 
 
-
-    private Handler handler = new Handler()
-    {
+    private Handler handler = new Handler() {
         @Override
         public void handleMessage(Message msg) {
-            refreshableView.findViewById(R.id.pull_to_refresh_head).setVisibility(View.VISIBLE);
         }
 
     };
@@ -71,6 +68,7 @@ public class Task_History_Frag extends TaskBaseFrag {
         TaskManageFrag taskManageFrag = (TaskManageFrag) getParentFragment();
         taskManageFrag.setMyTitle("历史任务");
     }
+
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
@@ -82,66 +80,61 @@ public class Task_History_Frag extends TaskBaseFrag {
     }
 
     //网络请求数据
-    private void setData()
-    {
+    private void setData() {
         new VolleyUtil().getHistoryTaskList(MyApplication.getUser().getId(), new UpdateListener() {
             @Override
             public void onSucceed(String s) {
-                Log.w("task","historyTask访问后台服务器成功:"+s);
+                Log.w("task", "historyTask访问后台服务器成功:" + s);
 
-                if( s == null || !s.startsWith("[")) {
-                    Log.w("task","history后台服务器返回数据异常");
+                if (s == null || !s.startsWith("[")) {
+                    Log.w("task", "history后台服务器返回数据异常");
                     Toast.makeText(getContext(), "获取数据异常", Toast.LENGTH_SHORT).show();
                     return;
                 }
 
                 list = JsonUtil.parseTaskJson(s);
-                if(list != null) {
-                    Log.w("task","history获取数据成功"+list.size());
+                if (list != null) {
+                    Log.w("task", "history获取数据成功" + list.size());
                     showListView();
-                }
-                else
-                {
-                    Log.w("task","json task 为 空");
-                    Toast.makeText(getContext(),"暂无数据",Toast.LENGTH_SHORT).show();
+                } else {
+                    Log.w("task", "json task 为 空");
+                    Toast.makeText(getContext(), "暂无数据", Toast.LENGTH_SHORT).show();
                 }
             }
 
             @Override
             public void onError(VolleyError error) {
-//               getDataFromLocal();
+                getDataFromLocal();
+                refreshableView.finishRefreshing("task_history");
             }
         });
     }
-    private void setUi()
-    {
+
+    private void setUi() {
         refreshableView = (RefreshableView) view.findViewById(R.id.refresh_view_in_history);
-        refreshableView.findViewById(R.id.pull_to_refresh_head).setVisibility(View.INVISIBLE);
         numTv = (TextView) view.findViewById(R.id.history_list_num);
         listView = (MySlideListView2) view.findViewById(R.id.task_history_listView);
         listView.initSlideMode(1);
     }
 
     //请求数据之后，绑定adapter
-    private void showListView()
-    {
-        refreshableView.findViewById(R.id.pull_to_refresh_head).setVisibility(View.GONE);
+    private void showListView() {
         refreshableView.finishRefreshing("history");
-        adapter = new MySlideListViewAdapter(this,getContext(),list);
+        adapter = new MySlideListViewAdapter(this, getContext(), list);
         listView.setAdapter(adapter);
         adapter.notifyDataSetChanged();
-        numTv.setText(list.size()+"");
+        numTv.setText(list.size() + "");
     }
 
     @Override
-    public void myDelete(int pos,int flag) {
+    public void myDelete(int pos, int flag) {
         //网络请求删除记录
-        Toast.makeText(getContext(),"该任务记录已删除",Toast.LENGTH_SHORT).show();
+        Toast.makeText(getContext(), "该任务记录已删除", Toast.LENGTH_SHORT).show();
         list.remove(pos);
         adapter.notifyDataSetChanged();
         listView.slideBack();
 
-        numTv.setText(list.size()+"");
+        numTv.setText(list.size() + "");
     }
 
     @Override
@@ -149,14 +142,13 @@ public class Task_History_Frag extends TaskBaseFrag {
 
     }
 
-    private void setListener()
-    {
+    private void setListener() {
         listView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView<?> adapterView, View view, int i, long l) {
                 Intent intent = new Intent(getContext(), TaskDetailActivity.class);
-                intent.putExtra("taskId",list.get(i).getId());
-                intent.putExtra("pos",i);
+                intent.putExtra("taskId", list.get(i).getId());
+                intent.putExtra("pos", i);
                 getParentFragment().startActivityForResult(intent, 1);
             }
         });
@@ -178,16 +170,14 @@ public class Task_History_Frag extends TaskBaseFrag {
 
 
     //没有网络，用来测试的数据
-    private void getDataFromLocal()
-    {
+    private void getDataFromLocal() {
 
-        StringBuffer sb =new StringBuffer();
+        StringBuffer sb = new StringBuffer();
         try {
             InputStream is = getResources().getAssets().open("task.txt");
             BufferedReader br = new BufferedReader(new InputStreamReader(is));
-            String line ;
-            while((line = br.readLine()) != null)
-            {
+            String line;
+            while ((line = br.readLine()) != null) {
                 sb.append(line);
             }
         } catch (FileNotFoundException e) {
