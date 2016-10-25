@@ -2,7 +2,6 @@ package demo.yc.formalmanagersystem.fragment;
 
 import android.animation.AnimatorSet;
 import android.animation.ObjectAnimator;
-import android.content.Context;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Message;
@@ -31,6 +30,19 @@ import demo.yc.formalmanagersystem.util.VolleyUtil;
  */
 public class P_ApplyPurchaseFragment extends Fragment implements View.OnClickListener {
 
+    private LinearLayout mContainer;
+    private View topMenu;   //切换侧滑菜单按钮
+    //网络操作
+    private VolleyUtil volleyUtil = new VolleyUtil();
+    private Purchase purchase;
+    private Button applyPurchase;   //确认按钮
+    //填写信息
+    private EditText nameEdit;
+    private EditText brandEdit;
+    private EditText priceEdit;
+    private EditText modelEdit;
+    private EditText describeEdit;
+
     //提交成功后，所有信息重置
     private Handler handler = new Handler() {
         @Override
@@ -51,26 +63,6 @@ public class P_ApplyPurchaseFragment extends Fragment implements View.OnClickLis
     };
 
 
-    //网络操作
-    private VolleyUtil volleyUtil = new VolleyUtil();
-
-    private Purchase purchase;
-    private Button applyPurchase;
-    private EditText nameEdit;
-    private EditText brandEdit;
-    private EditText priceEdit;
-    private EditText modelEdit;
-    private EditText describeEdit;
-
-    private LinearLayout mContainer;
-
-    private View topMenu;
-
-    @Override
-    public void onAttach(Context context) {
-        super.onAttach(context);
-    }
-
     @Nullable
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
@@ -86,7 +78,7 @@ public class P_ApplyPurchaseFragment extends Fragment implements View.OnClickLis
         topMenu.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                ((MainActivity)getActivity()).showMenu();
+                ((MainActivity) getActivity()).showMenu();
             }
         });
         applyPurchase.setOnClickListener(this);
@@ -97,10 +89,11 @@ public class P_ApplyPurchaseFragment extends Fragment implements View.OnClickLis
     @Override
     public void onActivityCreated(Bundle savedInstanceState) {
         super.onActivityCreated(savedInstanceState);
+        //设置动画
         float currentTranslationX = mContainer.getTranslationX();
-        ObjectAnimator animator = ObjectAnimator.ofFloat(mContainer,"translationX",-1000f,currentTranslationX);
+        ObjectAnimator animator = ObjectAnimator.ofFloat(mContainer, "translationX", -1000f, currentTranslationX);
         animator.setDuration(3000);
-        ObjectAnimator animator1 = ObjectAnimator.ofFloat(mContainer,"alpha",0f,1f);
+        ObjectAnimator animator1 = ObjectAnimator.ofFloat(mContainer, "alpha", 0f, 1f);
         AnimatorSet set = new AnimatorSet();
         set.play(animator).with(animator1);
         set.setDuration(600);
@@ -111,6 +104,7 @@ public class P_ApplyPurchaseFragment extends Fragment implements View.OnClickLis
     @Override
     public void onClick(View v) {
         switch (v.getId()) {
+            //确认采购
             case R.id.confirm_to_apply_purchase:
                 final String name = nameEdit.getText().toString();
                 final String brand = brandEdit.getText().toString();
@@ -133,7 +127,9 @@ public class P_ApplyPurchaseFragment extends Fragment implements View.OnClickLis
                         dialog.show();
                         break;
                     }
-                } else {
+                }
+                //信息填写完整
+                else {
                     final SweetAlertDialog alarmDialog = new SweetAlertDialog(getActivity(), SweetAlertDialog.WARNING_TYPE);
                     alarmDialog.setTitleText("确认申请？");
                     alarmDialog.setCancelText("取消");
@@ -164,6 +160,7 @@ public class P_ApplyPurchaseFragment extends Fragment implements View.OnClickLis
                             purchase.setDescribe(describe);
                             purchase.setCreaterIdentifier(MyApplication.getUser().getUsername());
 
+                            //提交数据库
                             volleyUtil.updatePurchaseInMySql(purchase, new UpdateListener() {
                                 @Override
                                 public void onSucceed(String s) {
