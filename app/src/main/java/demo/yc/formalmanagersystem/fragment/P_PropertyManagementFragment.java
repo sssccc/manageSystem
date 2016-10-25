@@ -1,7 +1,6 @@
 package demo.yc.formalmanagersystem.fragment;
 
 
-import android.content.Context;
 import android.graphics.Color;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
@@ -26,15 +25,17 @@ import demo.yc.formalmanagersystem.R;
  */
 public class P_PropertyManagementFragment extends Fragment implements View.OnClickListener {
 
-    private RelativeLayout direction;
-    private TextView hint;
+    private RelativeLayout direction;   //弹出选择框按钮
+    private TextView hint;      //我的资产中页面提示信息
 
+    //底部导航按钮
     private LinearLayout applyPurchase;
     private LinearLayout queryProperty;
     private LinearLayout allPurchase;
     private LinearLayout allRepair;
     private LinearLayout myProperty;
 
+    //底部导航栏
     private ImageView queryImg;
     private TextView queryText;
     private ImageView purchaseImg;
@@ -43,14 +44,16 @@ public class P_PropertyManagementFragment extends Fragment implements View.OnCli
     private TextView repairText;
     private ImageView myPropertyImg;
     private TextView myPropertyText;
+    private ImageView applyImg;
+
+    //指示条
     private View view1;
     private ImageView view2;
     private View view4;
     private View view5;
     private View view3;
-    private ImageView applyImg;
 
-
+    //五个功能Fragment
     private P_QueryPropertyFragment queryPropertyFragment;
     private P_AllRepairFragment allRepairFragment;
     private P_MyPropertyFragment myPropertyFragment;
@@ -58,16 +61,9 @@ public class P_PropertyManagementFragment extends Fragment implements View.OnCli
     private P_ApplyPurchaseFragment applyPurchaseFragment;
 
     public static boolean isInitial = true;
-
     private int page = 0;   //记录当前页面
-
     FragmentManager fm;
     FragmentTransaction ft;
-
-    @Override
-    public void onAttach(Context context) {
-        super.onAttach(context);
-    }
 
     @Nullable
     @Override
@@ -120,7 +116,6 @@ public class P_PropertyManagementFragment extends Fragment implements View.OnCli
         fm = getChildFragmentManager();
         ft = fm.beginTransaction();
         ft.add(R.id.frame_layout_in_property_management, queryPropertyFragment).commit();
-
         ((TextView) (getActivity().findViewById(R.id.top_layout_title))).setText("资产查询");
         direction.setVisibility(View.VISIBLE);
     }
@@ -130,11 +125,9 @@ public class P_PropertyManagementFragment extends Fragment implements View.OnCli
         switch (v.getId()) {
             //查询资产页面
             case R.id.query_property_layout:
-
                 //取消其他页面中的网络访问
                 MyApplication.getInstance().getMyQueue().cancelAll("repair");
                 MyApplication.getInstance().getMyQueue().cancelAll("purchase");
-
                 if (page == 0) {
                     break;
                 }
