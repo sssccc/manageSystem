@@ -18,6 +18,7 @@ public class MyApplication extends Application
     private static User user;
     private static Context context;
     private static String role = "";
+    private static String personName;
 
     public static String getRole() {
         return role;
@@ -73,5 +74,12 @@ public class MyApplication extends Application
         personHeadPath = mPersonHeadPath;
     }
 
+    public static String getPersonName() {
+        return personName;
+    }
+
+    public static void setPersonName(String personName) {
+        MyApplication.personName = personName;
+    }
 }
 

@@ -123,12 +123,12 @@ public class Task_All_Frag extends TaskBaseFrag {
         allListView.setAdapter(allAdapter);
         allNumTv.setText(allList.size()+"");
     }
+
     private void showMyListView(int flag)
     {
         myAdapter = new MySlideListViewAdapter(this,getContext(),myList,-1);
         myListView.setAdapter(myAdapter);
         myNumTv.setText(myList.size()+"");
-
     }
 
 
@@ -179,6 +179,7 @@ public class Task_All_Frag extends TaskBaseFrag {
             public void onItemClick(AdapterView<?> adapterView, View view, int i, long l) {
                 Intent intent = new Intent(getContext(), TaskDetailActivity.class);
                 intent.putExtra("taskId",allList.get(i).getId());
+                intent.putExtra("status",0);
                 intent.putExtra("pos",i);
                 getParentFragment().startActivityForResult(intent,ALL_INVOLVE);
             }
@@ -190,6 +191,7 @@ public class Task_All_Frag extends TaskBaseFrag {
                 Intent intent = new Intent(getContext(), TaskDetailActivity.class);
                 intent.putExtra("taskId",myList.get(i).getId());
                 intent.putExtra("pos",i);
+                intent.putExtra("status",0);
                 getParentFragment().startActivityForResult(intent,MY_INVOLVE);
             }
         });

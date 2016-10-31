@@ -11,6 +11,7 @@ import android.widget.TextView;
 import java.util.ArrayList;
 
 import demo.yc.formalmanagersystem.R;
+import demo.yc.formalmanagersystem.models.TaskProcess;
 
 
 /**
@@ -19,10 +20,10 @@ import demo.yc.formalmanagersystem.R;
 public class MyTaskProgressListViewAdapter extends BaseAdapter {
 
     LayoutInflater inflater;
-    ArrayList<String> list = new ArrayList<>();
+    ArrayList<TaskProcess> list = new ArrayList<>();
     String[] colors = {"#e9cf6a","#7bc957","#6ad9bb","#9a77d6","#c2a561"};
 
-    public MyTaskProgressListViewAdapter(Context context, ArrayList<String> list)
+    public MyTaskProgressListViewAdapter(Context context, ArrayList<TaskProcess> list)
     {
         inflater = LayoutInflater.from(context);
         this.list = list;
@@ -58,7 +59,10 @@ public class MyTaskProgressListViewAdapter extends BaseAdapter {
         }else
             holder = (ViewHolder) view1.getTag();
 
-           holder.title.setText(list.get(i));
+           TaskProcess tp = list.get(i);
+           holder.title.setText(tp.getContent());
+           holder.name.setText(tp.getName());
+           holder.time.setText(tp.getTime());
            holder.point.setBackgroundColor(Color.parseColor(colors[i%colors.length]));
         return view1;
     }

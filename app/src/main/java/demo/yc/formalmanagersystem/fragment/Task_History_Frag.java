@@ -149,6 +149,7 @@ public class Task_History_Frag extends TaskBaseFrag {
                 Intent intent = new Intent(getContext(), TaskDetailActivity.class);
                 intent.putExtra("taskId", list.get(i).getId());
                 intent.putExtra("pos", i);
+                intent.putExtra("status",2);
                 getParentFragment().startActivityForResult(intent, 1);
             }
         });

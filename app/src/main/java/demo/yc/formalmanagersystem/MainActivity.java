@@ -352,7 +352,7 @@ public class MainActivity extends BaseActivity implements View.OnClickListener, 
             else
                 Glide.with(this).load(p.getPicture()).into(personHead);
         }
-
+        MyApplication.setPersonName(person.getName());
         personPosition.setText(PersonUtil.getPositonName(person.getQuartersId()));
         personName.setText(person.getName());
     }
@@ -550,7 +550,7 @@ public class MainActivity extends BaseActivity implements View.OnClickListener, 
     @Override
     protected void onDestroy() {
         super.onDestroy();
-        unregisterReceiver(mReceiver);
+//        unregisterReceiver(mReceiver);
     }
 
     BroadcastReceiver mReceiver = new BroadcastReceiver() {

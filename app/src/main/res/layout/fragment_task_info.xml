@@ -19,7 +19,7 @@
         <View
             android:id="@+id/task_line"
             android:layout_width="100dp"
-            android:layout_height="5dp"
+            android:layout_height="2dp"
             android:background="#5fbbb0"/>
     </FrameLayout>
 

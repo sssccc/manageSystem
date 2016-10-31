@@ -123,17 +123,18 @@ public class Task_Quit_Frag extends TaskBaseFrag {
                 Intent intent = new Intent(getContext(), TaskDetailActivity.class);
                 intent.putExtra("taskId", list.get(i).getId());
                 intent.putExtra("pos",i);
+                intent.putExtra("status",3);
                 getParentFragment().startActivityForResult(intent, 1);
             }
         });
     }
+
 
     @Override
     public void myDelete(int pos,int flag) {
         Toast.makeText(getContext(), "改任务记录已删除", Toast.LENGTH_SHORT).show();
         list.remove(pos);
         adapter.notifyDataSetChanged();
-
         numTv.setText(list.size()+"");
         listView.slideBack();
     }
@@ -147,12 +148,9 @@ public class Task_Quit_Frag extends TaskBaseFrag {
     public void myRefresh(int requestCode, Intent intent) {
 
     }
-
-
     //没有网络，用来测试的数据
     private void getDataFromLocal()
     {
-
         StringBuffer sb =new StringBuffer();
         try {
             InputStream is = getResources().getAssets().open("task.txt");

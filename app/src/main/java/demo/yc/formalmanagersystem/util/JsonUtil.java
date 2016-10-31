@@ -18,6 +18,7 @@ import demo.yc.formalmanagersystem.models.Property;
 import demo.yc.formalmanagersystem.models.Purchase;
 import demo.yc.formalmanagersystem.models.Repair;
 import demo.yc.formalmanagersystem.models.Task;
+import demo.yc.formalmanagersystem.models.TaskProcess;
 
 /**
  * Created by Administrator on 2016/8/3.
@@ -179,5 +180,21 @@ public class JsonUtil {
         Task task = new Gson().fromJson(result,Task.class);
         return task;
     }
+
+    //获取任务进度描述
+    public static ArrayList<TaskProcess> parseTaskProcess(String result)
+    {
+        ArrayList<TaskProcess> tpList ;
+        tpList = new Gson().fromJson(result,new TypeToken<List<TaskProcess>>()
+        {
+
+        }.getType());
+
+        if(tpList == null)
+            tpList =  new ArrayList<>();
+
+        return tpList;
+    }
+
 
 }
