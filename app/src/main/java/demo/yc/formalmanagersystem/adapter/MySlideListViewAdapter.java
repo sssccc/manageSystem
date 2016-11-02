@@ -3,7 +3,6 @@ package demo.yc.formalmanagersystem.adapter;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.graphics.Color;
-import android.os.Build;
 import android.support.v7.app.AlertDialog;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -16,6 +15,7 @@ import com.android.volley.VolleyError;
 
 import java.util.ArrayList;
 
+import demo.yc.formalmanagersystem.MyApplication;
 import demo.yc.formalmanagersystem.R;
 import demo.yc.formalmanagersystem.UpdateListener;
 import demo.yc.formalmanagersystem.fragment.TaskBaseFrag;
@@ -23,6 +23,7 @@ import demo.yc.formalmanagersystem.models.Task;
 import demo.yc.formalmanagersystem.util.DateUtil;
 import demo.yc.formalmanagersystem.util.DialogUtil;
 import demo.yc.formalmanagersystem.util.VolleyUtil;
+import demo.yc.formalmanagersystem.view.DialogCancelListener;
 
 /**
  * Created by user on 2016/7/25.
@@ -34,25 +35,23 @@ public class MySlideListViewAdapter extends BaseAdapter {
     ArrayList<Task> list;
     Context context;
     TaskBaseFrag fragment;
-    int isAll = 0;
+    int isAll = -1;   // 表示数据来自all 0  还是my1   -1 没有
+    int status = -1; //表示数据来自待处理0，已参与1，已完成2，已放弃3
     String[] colors = {"#e9cf6a","#7bc957","#6ad9bb","#9a77d6","#c2a561","#ffd56a"};
-    public MySlideListViewAdapter(TaskBaseFrag fragment, Context context, ArrayList<Task> list)
+    public MySlideListViewAdapter(TaskBaseFrag fragment, Context context, ArrayList<Task> list,int status)
     {
-
-        this.fragment = fragment;
-        this.context = context;
-        inflater = LayoutInflater.from(context);
-        this.list = list;
+        this(fragment,context,list,status,0);
     }
 
-    public MySlideListViewAdapter(TaskBaseFrag fragment, Context context, ArrayList<Task> list,int isAll)
+    public MySlideListViewAdapter(TaskBaseFrag fragment, Context context, ArrayList<Task> list,int status,int isAll)
     {
 
         this.fragment = fragment;
         this.context = context;
         inflater = LayoutInflater.from(context);
         this.list = list;
-        this.isAll = -1;
+        this.isAll = isAll;
+        this.status = status;
     }
 
     @Override
@@ -83,12 +82,6 @@ public class MySlideListViewAdapter extends BaseAdapter {
             holder.finish = view.findViewById(R.id.layout_right);
             holder.point = view.findViewById(R.id.item_point);
             holder.finishTv = (TextView) view.findViewById(R.id.item_finish);
-
-            if(Build.VERSION.SDK_INT <= Build.VERSION_CODES.JELLY_BEAN )
-            {
-                view.findViewById(R.id.layout_left).setVisibility(View.GONE);
-                view.findViewById(R.id.layout_right).setVisibility(View.GONE);
-            }
             view.setTag(holder);
         }else
             holder = (ViewHolder) view.getTag();
@@ -96,7 +89,7 @@ public class MySlideListViewAdapter extends BaseAdapter {
         Task task = list.get(position);
 
         holder.title.setText(task.getTitle());
-        if(task.getStatus() == 0)//待处理
+        if(status == 0)//待处理
             holder.finishTv.setText("参与");
         else
             holder.finishTv.setText("完成");
@@ -125,7 +118,6 @@ public class MySlideListViewAdapter extends BaseAdapter {
     {
         final Task task = getItem(pos);
         AlertDialog.Builder builder = new AlertDialog.Builder(context);
-        int  status = task.getStatus();
         if(choice == 1) {//删除
            switch (status)
            {
@@ -158,25 +150,31 @@ public class MySlideListViewAdapter extends BaseAdapter {
         builder.setPositiveButton("确定", new DialogInterface.OnClickListener() {
             @Override
             public void onClick(DialogInterface dialogInterface, int i) {
-                DialogUtil.showDialog(context,null);
+                DialogUtil.showDialog(context,null).show();
+                DialogUtil.onCancelListener(new DialogCancelListener() {
+                    @Override
+                    public void onCancel() {
+                        MyApplication.getInstance().getMyQueue().cancelAll("quitTask");
+                        MyApplication.getInstance().getMyQueue().cancelAll("finishTask");
+                    }
+                });
                 if(choice == 1)
                 {
                     new VolleyUtil().quitTask(task.getId(), new UpdateListener() {
                         @Override
                         public void onSucceed(String s) {
                             DialogUtil.dissmiss();
-                            if(choice == 1)
+                            if(s == null || s.isEmpty() || s.equals("0"))
                             {
-                                fragment.myDelete(pos,isAll);
-                            }else
-                            {
-                                fragment.myFinish(pos,isAll);
+                                Toast.makeText(context,"操作失败...",Toast.LENGTH_SHORT).show();
+                            }else {
+                                fragment.myDelete(pos, isAll);
                             }
                         }
 
                         @Override
                         public void onError(VolleyError error) {
-
+                            DialogUtil.dissmiss();
                             Toast.makeText(context,"操作失败...",Toast.LENGTH_SHORT).show();
                         }
                     });
@@ -186,18 +184,17 @@ public class MySlideListViewAdapter extends BaseAdapter {
                         @Override
                         public void onSucceed(String s) {
                             DialogUtil.dissmiss();
-                            if(choice == 1)
+                            if(s == null || s.isEmpty() || s.equals("0"))
                             {
-                                fragment.myDelete(pos,isAll);
-                            }else
-                            {
-                                fragment.myFinish(pos,isAll);
+                                Toast.makeText(context,"操作失败...",Toast.LENGTH_SHORT).show();
+                            }else if(s.equals("1")){
+                                fragment.myFinish(pos, isAll);
                             }
                         }
 
                         @Override
                         public void onError(VolleyError error) {
-
+                            DialogUtil.dissmiss();
                             Toast.makeText(context,"操作失败...",Toast.LENGTH_SHORT).show();
                         }
                     });
@@ -215,7 +212,6 @@ public class MySlideListViewAdapter extends BaseAdapter {
         View delete ,finish;
         View point;
         TextView title,time,finishTv;
-
     }
 
 }

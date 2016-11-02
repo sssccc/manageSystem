@@ -109,6 +109,7 @@ public class LoginActivity extends BaseActivity implements View.OnClickListener 
                 MyApplication.getUser().setId("0615bb2424f84ebca0758f387b8daf0c");
                 MyApplication.getUser().setUsername(count);
                 startActivity(i1);
+                finish();
 
 //                new VolleyUtil().login(count, password, new UpdateListener() {
 //                    @Override

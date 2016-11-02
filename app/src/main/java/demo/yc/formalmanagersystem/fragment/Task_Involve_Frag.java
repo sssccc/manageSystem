@@ -2,9 +2,11 @@ package demo.yc.formalmanagersystem.fragment;
 
 
 import android.content.Intent;
+import android.graphics.Color;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
+import android.support.v4.widget.SwipeRefreshLayout;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -23,6 +25,7 @@ import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.util.ArrayList;
 
+import demo.yc.formalmanagersystem.MainActivity;
 import demo.yc.formalmanagersystem.MyApplication;
 import demo.yc.formalmanagersystem.R;
 import demo.yc.formalmanagersystem.UpdateListener;
@@ -36,7 +39,7 @@ import demo.yc.formalmanagersystem.view.MySlideListView;
 /**
  * A simple {@link Fragment} subclass.
  */
-public class Task_Involve_Frag extends TaskBaseFrag {
+public class Task_Involve_Frag extends TaskBaseFrag implements SwipeRefreshLayout.OnRefreshListener{
 
     MySlideListView allListView,myListView;
     ScrollView scrollView;
@@ -47,6 +50,10 @@ public class Task_Involve_Frag extends TaskBaseFrag {
     MySlideListViewAdapter allAdapter,myAdapter;
 
     TextView allNumTv,myNumTv;
+
+    SwipeRefreshLayout refreshLayout;
+
+    boolean isAll ,isMy;
     public Task_Involve_Frag() {
         // Required empty public constructor
     }
@@ -64,12 +71,23 @@ public class Task_Involve_Frag extends TaskBaseFrag {
         // Inflate the layout for this fragment
         view = inflater.inflate(R.layout.fragment_task_involve, container, false);
         setUi();
-        setData();
         setListener();
         return view;
     }
     private void setUi()
     {
+        refreshLayout = (SwipeRefreshLayout) view.findViewById(R.id.task_involve_refresh_layout);
+        refreshLayout.setColorSchemeColors(Color.BLUE,Color.GREEN);
+        refreshLayout.setDistanceToTriggerSync(250);
+        refreshLayout.setOnRefreshListener(this);
+        refreshLayout.post(new Runnable() {
+            @Override
+            public void run() {
+                refreshLayout.setRefreshing(true);
+            }
+        });
+        onRefresh();
+
         allNumTv = (TextView) view.findViewById(R.id.involve_all_list_num);
         myNumTv = (TextView) view.findViewById(R.id.involve_my_list_num);
 
@@ -85,6 +103,7 @@ public class Task_Involve_Frag extends TaskBaseFrag {
         new VolleyUtil().getAllInvolveTaskList(MyApplication.getUser().getId(), new UpdateListener() {
             @Override
             public void onSucceed(String s) {
+                isAll = true;
                 Log.w("task","all involve = "+s);
                 allList = JsonUtil.parseTaskJson(s);
                 if(allList != null)
@@ -95,7 +114,9 @@ public class Task_Involve_Frag extends TaskBaseFrag {
 
         @Override
         public void onError(VolleyError error) {
-                getDataFromLocal(0);
+
+            isAll = true;
+            getDataFromLocal(0);
             }
         });
          //获取我的任务
@@ -103,6 +124,7 @@ public class Task_Involve_Frag extends TaskBaseFrag {
             @Override
             public void onSucceed(String s) {
                 Log.w("task","my involve = "+s);
+                isMy = true;
                 myList = JsonUtil.parseTaskJson(s);
                 if(myList != null)
                     showMyListView(0);
@@ -112,6 +134,8 @@ public class Task_Involve_Frag extends TaskBaseFrag {
 
         @Override
         public void onError(VolleyError error) {
+
+            isMy = true;
             getDataFromLocal(1);
         }
     });
@@ -145,18 +169,25 @@ public class Task_Involve_Frag extends TaskBaseFrag {
         });
     }
 
+    /**
+     * pos  item位置  isAll 0 all  1 my
+     * @param pos
+     * @param isAll
+     */
     @Override
-    public void myDelete(int pos,int flag) {
+    public void myDelete(int pos,int isAll) {
         //网络请求放弃任务
         //网络将该任务添加到放弃任务列表
         Toast.makeText(getContext(),"involve...该任务已放弃",Toast.LENGTH_SHORT).show();
-        if(flag == -1) {
+        if(isAll == 0) {
+            ((MainActivity)getParentFragment().getActivity()).updateHomePageTaskList(allList.get(pos).getId());
             allList.remove(pos);
             allAdapter.notifyDataSetChanged();
             allListView.slideBack();
             allNumTv.setText(allList.size()+"");
         }else
         {
+            ((MainActivity)getParentFragment().getActivity()).updateHomePageTaskList(myList.get(pos).getId());
             myList.remove(pos);
             myAdapter.notifyDataSetChanged();
             myListView.slideBack();
@@ -165,15 +196,17 @@ public class Task_Involve_Frag extends TaskBaseFrag {
     }
 
     @Override
-    public void myFinish(int pos,int flag) {
+    public void myFinish(int pos,int isAll) {
         Toast.makeText(getContext(),"involve...该任务已完成",Toast.LENGTH_SHORT).show();
-        if(flag == -1) {
+        if(isAll == 0) {
+            ((MainActivity)getParentFragment().getActivity()).updateHomePageTaskList(allList.get(pos).getId());
             allList.remove(pos);
             allAdapter.notifyDataSetChanged();
             allListView.slideBack();
             allNumTv.setText(allList.size()+"");
         }else
         {
+            ((MainActivity)getParentFragment().getActivity()).updateHomePageTaskList(myList.get(pos).getId());
             myList.remove(pos);
             myAdapter.notifyDataSetChanged();
             myListView.slideBack();
@@ -183,6 +216,7 @@ public class Task_Involve_Frag extends TaskBaseFrag {
 
 
     //在detail 操作后，刷新
+
     @Override
     public void myRefresh(int requestCode, Intent data) {
         Toast.makeText(getContext(),"involve。。",Toast.LENGTH_SHORT).show();
@@ -233,18 +267,21 @@ public class Task_Involve_Frag extends TaskBaseFrag {
     //绑定dapter显示listView
     private void showAllListView(int flag)
     {
+        showList();
         //判断是否为空。。然后显示图片  还是listView
-        allAdapter = new MySlideListViewAdapter(this,getContext(),allList,-1);
+        allAdapter = new MySlideListViewAdapter(this,getContext(),allList,1,0);
         allListView.setAdapter(allAdapter);
         allNumTv.setText(allList.size()+"");
     }
     private void showMyListView(int flag)
     {
-        myAdapter = new MySlideListViewAdapter(this,getContext(),myList,-1);
+        showList();
+        myAdapter = new MySlideListViewAdapter(this,getContext(),myList,1,1);
         myListView.setAdapter(myAdapter);
         myNumTv.setText(myList.size()+"");
 
     }
+
 
 
     //网络请求数据失败，用于测试的数据
@@ -277,5 +314,45 @@ public class Task_Involve_Frag extends TaskBaseFrag {
 
 
 
+    }
+
+    public void updateTaskList(String taskId)
+    {
+        boolean flag = false;
+        for(int i = 0;i<allList.size();i++) {
+            if (allList.get(i).getId().equals(taskId)) {
+                allList.remove(i);
+                flag = true;
+                allAdapter.notifyDataSetChanged();
+                break;
+            }
+        }
+        if(!flag)
+        {
+            for(int i = 0;i<myList.size();i++) {
+                if (myList.get(i).getId().equals(taskId)) {
+                    myList.remove(i);
+                    myAdapter.notifyDataSetChanged();
+                    break;
+                }
+            }
+        }
+
+    }
+
+
+    @Override
+    public void onRefresh() {
+        setData();
+    }
+
+    private synchronized void showList()
+    {
+        if(isAll && isMy)
+        {
+            refreshLayout.setRefreshing(false);
+            isAll = false;
+            isAll = false;
+        }
     }
 }

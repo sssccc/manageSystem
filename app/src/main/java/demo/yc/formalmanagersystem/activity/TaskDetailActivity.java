@@ -295,6 +295,7 @@ public class TaskDetailActivity extends BaseActivity {
             new VolleyUtil().quitTask(task.getId(), new UpdateListener() {
                 @Override
                 public void onSucceed(String s) {
+                    lastIntent.putExtra("reback",-1);
                     onsuccess(s);
                 }
 
@@ -309,6 +310,7 @@ public class TaskDetailActivity extends BaseActivity {
             new VolleyUtil().finishTask(task.getId(), new UpdateListener() {
                 @Override
                 public void onSucceed(String s) {
+                    lastIntent.putExtra("reback",-1);
                     onsuccess(s);
                 }
 
@@ -323,10 +325,10 @@ public class TaskDetailActivity extends BaseActivity {
     //操作成后的回调
     private void onsuccess(String s)
     {
-        if(s.equals("1")) {
+        if( s!= null && s.equals("1")) {
             DialogUtil.dissmiss();
             Toast.makeText(TaskDetailActivity.this, "操作成功", Toast.LENGTH_SHORT).show();
-            lastIntent.putExtra("reback", 1);
+
             lastIntent.putExtra("status", status);
             lastIntent.putExtra("pos", pos);
             setResult(RESULT_OK, lastIntent);
