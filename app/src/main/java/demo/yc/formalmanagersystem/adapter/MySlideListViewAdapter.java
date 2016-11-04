@@ -4,6 +4,7 @@ import android.content.Context;
 import android.content.DialogInterface;
 import android.graphics.Color;
 import android.support.v7.app.AlertDialog;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -37,6 +38,7 @@ public class MySlideListViewAdapter extends BaseAdapter {
     TaskBaseFrag fragment;
     int isAll = -1;   // 表示数据来自all 0  还是my1   -1 没有
     int status = -1; //表示数据来自待处理0，已参与1，已完成2，已放弃3
+    int taken = -1;  //0 未接， 1 已接
     String[] colors = {"#e9cf6a","#7bc957","#6ad9bb","#9a77d6","#c2a561","#ffd56a"};
     public MySlideListViewAdapter(TaskBaseFrag fragment, Context context, ArrayList<Task> list,int status)
     {
@@ -52,6 +54,8 @@ public class MySlideListViewAdapter extends BaseAdapter {
         this.list = list;
         this.isAll = isAll;
         this.status = status;
+
+
     }
 
     @Override
@@ -160,41 +164,53 @@ public class MySlideListViewAdapter extends BaseAdapter {
                 });
                 if(choice == 1)
                 {
-                    new VolleyUtil().quitTask(task.getId(), new UpdateListener() {
+                    new VolleyUtil().quitTask(task.getId(),task.getTaken(),status, new UpdateListener() {
                         @Override
                         public void onSucceed(String s) {
+                            Log.w("task","task_delete---->ok--->"+s);
                             DialogUtil.dissmiss();
                             if(s == null || s.isEmpty() || s.equals("0"))
                             {
                                 Toast.makeText(context,"操作失败...",Toast.LENGTH_SHORT).show();
-                            }else {
+                            }else if(s.equals("1")){
+                              //  Toast.makeText(context,"操作成功...",Toast.LENGTH_SHORT).show();
                                 fragment.myDelete(pos, isAll);
+                            }else
+                            {
+                                Toast.makeText(context,"操作失败...",Toast.LENGTH_SHORT).show();
                             }
                         }
 
                         @Override
                         public void onError(VolleyError error) {
+                            Log.w("task","task_delete---->error-->"+error.toString());
                             DialogUtil.dissmiss();
                             Toast.makeText(context,"操作失败...",Toast.LENGTH_SHORT).show();
                         }
                     });
                 }else
                 {
-                    new VolleyUtil().finishTask(task.getId(), new UpdateListener() {
+                    new VolleyUtil().finishTask(task.getId(),task.getTaken(),task.getStatus(), new UpdateListener() {
                         @Override
                         public void onSucceed(String s) {
                             DialogUtil.dissmiss();
+                            Log.w("task","task_finish---->ok--->"+s);
                             if(s == null || s.isEmpty() || s.equals("0"))
                             {
                                 Toast.makeText(context,"操作失败...",Toast.LENGTH_SHORT).show();
                             }else if(s.equals("1")){
+                                Toast.makeText(context,"操作成功...",Toast.LENGTH_SHORT).show();
                                 fragment.myFinish(pos, isAll);
+                            }else
+                            {
+                                Toast.makeText(context,"操作失败...",Toast.LENGTH_SHORT).show();
                             }
                         }
 
                         @Override
                         public void onError(VolleyError error) {
                             DialogUtil.dissmiss();
+                            Log.w("task","task_finish---->error--->"+error.toString());
                             Toast.makeText(context,"操作失败...",Toast.LENGTH_SHORT).show();
                         }
                     });

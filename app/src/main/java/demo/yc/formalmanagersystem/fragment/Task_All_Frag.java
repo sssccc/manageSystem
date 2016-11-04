@@ -101,11 +101,19 @@ public class Task_All_Frag extends TaskBaseFrag implements SwipeRefreshLayout.On
             @Override
             public void onSucceed(String s) {
                 Log.w("task","all accept ok:"+s);
-                allList = JsonUtil.parseTaskJson(s);
-                isAll = true;
-                if(allList != null) {
-                    showAllListView(0);
+                if(JsonUtil.isListCorrected(s))
+                {
+                    allList = JsonUtil.parseTaskJson(s);
+                    isAll = true;
+                    if(allList != null) {
+                        showAllListView(0);
+                    }
+                }else
+                {
+                    Log.w("task","taskAll解析错误");
+                    getDataFromLocal(0);
                 }
+
         }
 
             @Override

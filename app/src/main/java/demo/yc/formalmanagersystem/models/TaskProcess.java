@@ -6,18 +6,18 @@ package demo.yc.formalmanagersystem.models;
 
 public class TaskProcess {
 
-    private String name;
-    private String time;
+    private String username;
+    private String createAt;
     private String content;
 
     public TaskProcess()
     {}
 
 
-    public TaskProcess(String content, String name, String time) {
+    public TaskProcess(String content, String username, String time) {
         this.content = content;
-        this.name = name;
-        this.time = time;
+        this.username = username;
+        this.createAt = time;
     }
 
     public String getContent() {
@@ -28,19 +28,19 @@ public class TaskProcess {
         this.content = content;
     }
 
-    public String getName() {
-        return name;
+    public String getusername() {
+        return username;
     }
 
-    public void setName(String name) {
-        this.name = name;
+    public void setusername(String username) {
+        this.username = username;
     }
 
-    public String getTime() {
-        return time;
+    public String getCreateAt() {
+        return createAt;
     }
 
-    public void setTime(String time) {
-        this.time = time;
+    public void setCreateAt(String createAt) {
+        this.createAt = createAt;
     }
 }

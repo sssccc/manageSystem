@@ -105,8 +105,18 @@ public class DateUtil {
 
     public static String getDateFromMillions(String mill)
     {
+
+        if(mill == null)
+            return "null";
         SimpleDateFormat format = new SimpleDateFormat("yy-MM-dd");
-        Date date = new Date(Long.parseLong(mill));
+        Date date = null;
+        try {
+           date = new Date(mill);
+        }catch (Exception c)
+        {
+            date = new Date(Long.parseLong(mill));
+        }
+
         return format.format(date);
     }
 

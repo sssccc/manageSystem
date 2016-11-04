@@ -12,6 +12,7 @@ import java.util.ArrayList;
 
 import demo.yc.formalmanagersystem.R;
 import demo.yc.formalmanagersystem.models.TaskProcess;
+import demo.yc.formalmanagersystem.util.DateUtil;
 
 
 /**
@@ -58,12 +59,11 @@ public class MyTaskProgressListViewAdapter extends BaseAdapter {
             view1.setTag(holder);
         }else
             holder = (ViewHolder) view1.getTag();
-
-           TaskProcess tp = list.get(i);
-           holder.title.setText(tp.getContent());
-           holder.name.setText(tp.getName());
-           holder.time.setText(tp.getTime());
-           holder.point.setBackgroundColor(Color.parseColor(colors[i%colors.length]));
+            TaskProcess tp = list.get(i);
+            holder.title.setText(tp.getContent());
+            holder.name.setText(tp.getusername());
+            holder.time.setText( DateUtil.getDateFromMillions(tp.getCreateAt()));
+            holder.point.setBackgroundColor(Color.parseColor(colors[i%colors.length]));
         return view1;
     }
 

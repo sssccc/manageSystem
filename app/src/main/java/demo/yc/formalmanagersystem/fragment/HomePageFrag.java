@@ -161,6 +161,7 @@ public class HomePageFrag extends TaskBaseFrag {
                 }
             }
 
+
             @Override
             public void onError(VolleyError error) {
                 //Toast.makeText(getContext(), "网络连接失败。。。", Toast.LENGTH_SHORT).show();

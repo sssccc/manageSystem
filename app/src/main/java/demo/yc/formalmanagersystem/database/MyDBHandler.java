@@ -206,13 +206,13 @@ public class MyDBHandler implements DataBaseInterface
         while(cursor.moveToNext()) {
             Task task = new Task();
             task.setTitle(cursor.getString(cursor.getColumnIndexOrThrow("title")));
-            task.setAvaiable(cursor.getInt(cursor.getColumnIndexOrThrow("avaible")));
+           // task.setAvaiable(cursor.getInt(cursor.getColumnIndexOrThrow("avaible")));
             task.setId(cursor.getString(cursor.getColumnIndexOrThrow("userId")));
-            task.setProjectId(cursor.getString(cursor.getColumnIndexOrThrow("projectId")));
-            task.setQuartersId(cursor.getString(cursor.getColumnIndexOrThrow("quartersId")));
-            task.setTaken(cursor.getInt(cursor.getColumnIndexOrThrow("taken")));
-            task.setStatus(cursor.getInt(cursor.getColumnIndexOrThrow("status")));
-            task.setStartData(cursor.getString(cursor.getColumnIndexOrThrow("startData")));
+           // task.setProjectId(cursor.getString(cursor.getColumnIndexOrThrow("projectId")));
+           // task.setQuartersId(cursor.getString(cursor.getColumnIndexOrThrow("quartersId")));
+           // task.setTaken(cursor.getInt(cursor.getColumnIndexOrThrow("taken")));
+          //  task.setStatus(cursor.getInt(cursor.getColumnIndexOrThrow("status")));
+            task.setStartDate(cursor.getString(cursor.getColumnIndexOrThrow("startData")));
             task.setDeadline(cursor.getString(cursor.getColumnIndexOrThrow("deadline")));
             task.setContent(cursor.getString(cursor.getColumnIndexOrThrow("content")));
             task.setEnclosure(cursor.getString(cursor.getColumnIndexOrThrow("enclosure")));
@@ -224,13 +224,13 @@ public class MyDBHandler implements DataBaseInterface
     public void updateTaskInfo(String account, Task t) {
         ContentValues values = new ContentValues();
         values.put("title",t.getTitle());
-        values.put("avaible",t.getAvaiable());
+      //  values.put("avaible",t.getAvaiable());
         values.put("userId",t.getId());
-        values.put("projectId",t.getProjectId());
-        values.put("quartersId",t.getQuartersId());
-        values.put("taken",t.getTaken());
-        values.put("status",t.getStatus());
-        values.put("startData",t.getStartData());
+      //  values.put("projectId",t.getProjectId());
+      //  values.put("quartersId",t.getQuartersId());
+      //  values.put("taken",t.getTaken());
+       // values.put("status",t.getStatus());
+        values.put("startData",t.getStartDate());
         values.put("deadline",t.getDeadline());
         values.put("content",t.getContent());
         values.put("enclosure",t.getEnclosure());
@@ -245,13 +245,13 @@ public class MyDBHandler implements DataBaseInterface
     public void addTaskInfo(Task t) {
         ContentValues values = new ContentValues();
         values.put("title",t.getTitle());
-        values.put("avaible",t.getAvaiable());
+      //  values.put("avaible",t.getAvaiable());
         values.put("userId",t.getId());
-        values.put("projectId",t.getProjectId());
-        values.put("quartersId",t.getQuartersId());
-        values.put("taken",t.getTaken());
-        values.put("status",t.getStatus());
-        values.put("startData",t.getStartData());
+       // values.put("projectId",t.getProjectId());
+       // values.put("quartersId",t.getQuartersId());
+       // values.put("taken",t.getTaken());
+       // values.put("status",t.getStatus());
+        values.put("startData",t.getStartDate());
         values.put("deadline",t.getDeadline());
         values.put("content",t.getContent());
         values.put("enclosure",t.getEnclosure());

@@ -21,6 +21,7 @@ import demo.yc.formalmanagersystem.models.Plan;
 import demo.yc.formalmanagersystem.models.Property;
 import demo.yc.formalmanagersystem.models.Purchase;
 import demo.yc.formalmanagersystem.models.Repair;
+import demo.yc.formalmanagersystem.models.TaskProcess;
 
 /**
  * Created by Administrator on 2016/8/2.
@@ -31,7 +32,7 @@ public class VolleyUtil {
     public VolleyUtil() {
     }
 
-    private static final String ROOT_URL = "http://172.18.204.165:8888/";
+    private static final String ROOT_URL = "http://192.168.1.124:8888/";
     private static final String BASE_URL = ROOT_URL+"property/";
 
 
@@ -352,7 +353,7 @@ public class VolleyUtil {
      * @param taskId
      * @param updateListener
      */
-    public synchronized void quitTask(final String taskId, final UpdateListener updateListener) {
+    public synchronized void quitTask(final String taskId, final int taken,final int status,final UpdateListener updateListener) {
 
         String url2 = ROOT_URL+"task/quit";
         StringRequest request2 = new StringRequest(Request.Method.POST, url2, new Response.Listener<String>() {
@@ -369,7 +370,8 @@ public class VolleyUtil {
             @Override
             protected Map<String, String> getParams() throws AuthFailureError {
                 Map<String, String> map = new HashMap<String, String>();
-
+                map.put("taken",taken+"");
+                map.put("status",status+"");
                 map.put("taskId",taskId);
                 map.put("role",MyApplication.getRole());
                 return map;
@@ -386,7 +388,7 @@ public class VolleyUtil {
         MyApplication.getInstance().getMyQueue().add(request2);
     }
 
-    public synchronized void finishTask(final String taskId, final UpdateListener updateListener) {
+    public synchronized void finishTask(final String taskId,final int taken,final int status, final UpdateListener updateListener) {
 
         String url2 = ROOT_URL+"task/finish";
         StringRequest request2 = new StringRequest(Request.Method.POST, url2, new Response.Listener<String>() {
@@ -403,7 +405,8 @@ public class VolleyUtil {
             @Override
             protected Map<String, String> getParams() throws AuthFailureError {
                 Map<String, String> map = new HashMap<String, String>();
-
+                map.put("taken",taken+"");
+                map.put("status",status+"");
                 map.put("taskId",taskId);
                 map.put("role",MyApplication.getRole());
                 return map;
@@ -666,7 +669,7 @@ public class VolleyUtil {
     public synchronized void getTaskProcessRecord(final String taskId,final UpdateListener updateListener)
     {
 
-        String url2 = ROOT_URL+"task/process?taskId="+taskId+"&role="+MyApplication.getRole();
+        String url2 = ROOT_URL+"task/scheduledetail?taskId="+taskId+"&role="+MyApplication.getRole();
         StringRequest request2 = new StringRequest(Request.Method.GET, url2, new Response.Listener<String>() {
             @Override
             public void onResponse(String s) {
@@ -681,6 +684,43 @@ public class VolleyUtil {
         request2.setTag("getTaskPrecess");
         MyApplication.getInstance().getMyQueue().add(request2);
     }
+    public synchronized void updateTaskProcessRecord(final String taskId, final TaskProcess process, final UpdateListener updateListener)
+    {
+        String url = ROOT_URL + "task/add/schedule";
+        StringRequest request = new StringRequest(Request.Method.POST, url, new Response.Listener<String>() {
+            @Override
+            public void onResponse(String s) {
+                    updateListener.onSucceed(s);
+            }
+        },
+        new ErrorListener() {
+            @Override
+            public void onErrorResponse(VolleyError volleyError) {
+                updateListener.onError(volleyError);
+            }
+        }){
+            @Override
+            protected Map<String, String> getParams() throws AuthFailureError {
+                Map<String, String> map = new HashMap<String, String>();
+                map.put("content",process.getContent());
+                map.put("username",process.getusername());
+                map.put("userId",MyApplication.getUser().getId());
+                map.put("taskId",taskId);
+                map.put("role",MyApplication.getRole());
+                return map;
+            }
+
+            @Override
+            public Map<String, String> getHeaders() throws AuthFailureError {
+                Map<String, String> params = new HashMap<String, String>();
+                params.put("Content-Type", "application/x-www-form-urlencoded");
+                return params;
+            }
+        };
+        request.setTag("updateTaskProcessRecord");
+        MyApplication.getInstance().getMyQueue().add(request);
+    }
+
 
 
     /**
@@ -704,7 +744,6 @@ public class VolleyUtil {
             public void onErrorResponse(VolleyError volleyError) {
                 updateListener.onError(volleyError);
             }
-
         }){
             @Override
             protected Map<String, String> getParams() throws AuthFailureError {
@@ -716,5 +755,4 @@ public class VolleyUtil {
         request2.setTag("login");
         MyApplication.getInstance().getMyQueue().add(request2);
     }
-
 }
