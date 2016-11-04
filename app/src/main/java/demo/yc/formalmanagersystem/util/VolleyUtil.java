@@ -42,7 +42,7 @@ public class VolleyUtil {
      * @param listener 操作更新的回调
      */
     public synchronized void updateSQLiteFromMySql(String table, final UpdateListener listener) {
-        String url1 = BASE_URL + "show" + table;
+        String url1 = BASE_URL + "show" + table+"?role="+MyApplication.getRole();
         StringRequest request1 = new StringRequest(Request.Method.GET, url1, new Response.Listener<String>() {
             @Override
             public void onResponse(String s) {
@@ -96,6 +96,7 @@ public class VolleyUtil {
                 map.put("describe", describe);
                 map.put("finishTime", finishTime);
                 map.put("createrIdentifier", createrIdentifier);
+                map.put("role",MyApplication.getRole());
                 return map;
             }
 
@@ -145,6 +146,7 @@ public class VolleyUtil {
                 map.put("model", model);
                 map.put("describe", describe);
                 map.put("createrIdentifier", createrIdentifier);
+                map.put("role",MyApplication.getRole());
                 return map;
             }
 
@@ -206,6 +208,7 @@ public class VolleyUtil {
                 map.put("providerTel", providerTel);
                 map.put("brand", brand);
                 map.put("id", id);
+                map.put("role",MyApplication.getRole());
                 return map;
             }
 
@@ -228,7 +231,31 @@ public class VolleyUtil {
      */
     public synchronized void getCreaterName(String createrIdentifier, final UpdateListener updateListener) {
 
-        String url2 = BASE_URL+"get/name?studentId="+createrIdentifier;
+        String url2 = BASE_URL+"get/name?studentId="+createrIdentifier+"&role="+MyApplication.getRole();
+        StringRequest request3 = new StringRequest(Request.Method.GET, url2, new Response.Listener<String>() {
+            @Override
+            public void onResponse(String s) {
+                updateListener.onSucceed(s);
+            }
+        }, new ErrorListener() {
+            @Override
+            public void onErrorResponse(VolleyError volleyError) {
+                updateListener.onError(volleyError);
+            }
+        }) ;
+
+        request3.addMarker("getName");
+        MyApplication.getInstance().getMyQueue().add(request3);
+    }
+
+    /***
+     * 根据createrIdentifier获取名字
+     * @param identifier
+     * @param updateListener
+     */
+    public synchronized void getPropertyName(String identifier, final UpdateListener updateListener) {
+
+        String url2 = BASE_URL+"get/name?studentId="+identifier+"&role="+MyApplication.getRole();
         StringRequest request3 = new StringRequest(Request.Method.GET, url2, new Response.Listener<String>() {
             @Override
             public void onResponse(String s) {

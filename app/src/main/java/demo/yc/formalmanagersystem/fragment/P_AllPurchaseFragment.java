@@ -422,7 +422,6 @@ public class P_AllPurchaseFragment extends Fragment implements View.OnClickListe
                     purchases.clear();
                     temp2.clear();
                     if (cursor.moveToFirst()) {
-                        final Cursor personCursor = null;
                         do {
                             final Purchase purchase = new Purchase();
                             purchase.setName(cursor.getString(cursor.getColumnIndex("name")));

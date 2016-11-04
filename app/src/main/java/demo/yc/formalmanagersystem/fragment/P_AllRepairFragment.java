@@ -30,12 +30,10 @@ import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 
 import demo.yc.formalmanagersystem.MainActivity;
-import demo.yc.formalmanagersystem.MyApplication;
 import demo.yc.formalmanagersystem.R;
 import demo.yc.formalmanagersystem.UpdateListener;
 import demo.yc.formalmanagersystem.activity.RepairDetailActivity;
 import demo.yc.formalmanagersystem.adapter.MyAdapterForRepair;
-import demo.yc.formalmanagersystem.contentvalues.DBContent;
 import demo.yc.formalmanagersystem.database.MyDBHandler;
 import demo.yc.formalmanagersystem.models.Repair;
 import demo.yc.formalmanagersystem.util.JsonUtil;
@@ -83,7 +81,7 @@ public class P_AllRepairFragment extends Fragment implements View.OnClickListene
             //更新出错时
             if (msg.what == 1) {
                 if (getActivity() != null) {
-                    ToastUtil.createToast(getActivity(),"更新失败，请重试！");
+                    ToastUtil.createToast(getActivity(), "更新失败，请重试！");
                 }
             }
             //更新成功时
@@ -139,7 +137,7 @@ public class P_AllRepairFragment extends Fragment implements View.OnClickListene
                     refreshData();
                 }
             }, 0);
-            top_layout_menu =(ImageView) getActivity().findViewById(R.id.top_layout_menu);
+            top_layout_menu = (ImageView) getActivity().findViewById(R.id.top_layout_menu);
             top_layout_menu.setOnClickListener(this);
             direction = (RelativeLayout) getActivity().findViewById(R.id.direction_in_top);
             direction.setOnClickListener(this);
@@ -154,36 +152,41 @@ public class P_AllRepairFragment extends Fragment implements View.OnClickListene
             @Override
             public void run() {
                 SQLiteDatabase db = MyDBHandler.getInstance(getActivity()).getDBInstance();
-                Cursor cursor = db.query("Repair", null, null, null, null, null, "applyTime"+" desc", null);
+                Cursor cursor = db.query("Repair", null, null, null, null, null, "applyTime" + " desc", null);
                 repairs.clear();
                 temp2.clear();
                 if (cursor.moveToFirst()) {
                     Cursor propertyCursor = null;
-                    Cursor personCursor = null;
                     do {
-                        Repair repair = new Repair();
+                        final Repair repair = new Repair();
                         repair.setIdentifier(cursor.getString(cursor.getColumnIndex("identifier")));
                         repair.setApplyTime(cursor.getString(cursor.getColumnIndex("applyTime")));
                         repair.setFinishTime(cursor.getString(cursor.getColumnIndex("finishTime")));
                         try {
-                            personCursor = db.query(DBContent.TB_PERSON,null,"userId=?",new String[]{MyApplication.getPersonId()},null,null,null);
-                            if(personCursor.moveToFirst()){
-                                repair.setCreaterName(personCursor.getString(personCursor.getColumnIndex("name")));
-                            }
                             propertyCursor = db.query("Property", null, "identifier=?", new String[]{cursor.getString(cursor.getColumnIndex("identifier"))}, null, null, null, null);
                             if (propertyCursor.moveToFirst()) {
                                 repair.setName(propertyCursor.getString(propertyCursor.getColumnIndex("name")));
                             }
                         } catch (Exception e) {
-
+                            repair.setName("未知");
                         } finally {
                             propertyCursor.close();
-                            personCursor.close();
                         }
                         repair.setDescribe(cursor.getString(cursor.getColumnIndex("describe")));
                         repair.setCheckState(cursor.getString(cursor.getColumnIndex("checkState")));
                         repair.setRepairState(cursor.getString(cursor.getColumnIndex("repairState")));
                         repair.setCreaterIdentifier(cursor.getString(cursor.getColumnIndex("createrIdentifier")));
+                        volleyUtil.getCreaterName(repair.getCreaterIdentifier(), new UpdateListener() {
+                            @Override
+                            public void onSucceed(String s) {
+                                repair.setCreaterName(s);
+                            }
+
+                            @Override
+                            public void onError(VolleyError error) {
+                                repair.setCreaterName("未知");
+                            }
+                        });
                         repairs.add(repair);
                     } while (cursor.moveToNext());
                     cursor.close();
@@ -320,7 +323,7 @@ public class P_AllRepairFragment extends Fragment implements View.OnClickListene
                     popupwindow.dismiss();
                     listView.setAlpha(1);
                 }
-                ((MainActivity)getActivity()).showMenu();
+                ((MainActivity) getActivity()).showMenu();
                 break;
             //下拉选择框
             case R.id.direction_in_top:
@@ -446,7 +449,7 @@ public class P_AllRepairFragment extends Fragment implements View.OnClickListene
             volleyUtil.updateSQLiteFromMySql("repair", new UpdateListener() {
                 @Override
                 public void onSucceed(String s) {
-                    ToastUtil.createToast(getActivity(),"更新成功!");
+                    ToastUtil.createToast(getActivity(), "更新成功!");
                     refreshableView.finishRefreshing("all_repair");
                     if (s.contains("error-business")) {
                         onError(new VolleyError("error-business"));

@@ -271,9 +271,8 @@ public class P_MyPropertyFragment extends Fragment implements View.OnClickListen
                     repairs.clear();
                     if (cursor.moveToFirst()) {
                         Cursor propertyCursor;
-                        Cursor personCursor;
                         do {
-                            Repair repair = new Repair();
+                            final Repair repair = new Repair();
                             repair.setIdentifier(cursor.getString(cursor.getColumnIndex("identifier")));
                             repair.setApplyTime(cursor.getString(cursor.getColumnIndex("applyTime")));
                             repair.setFinishTime(cursor.getString(cursor.getColumnIndex("finishTime")));
@@ -283,21 +282,27 @@ public class P_MyPropertyFragment extends Fragment implements View.OnClickListen
                             if (propertyCursor.moveToFirst()) {
                                 repair.setName(propertyCursor.getString(propertyCursor.getColumnIndex("name")));
                             }
-                            personCursor = db.query(DBContent.TB_PERSON,null,"userId=?",new String[]{MyApplication.getPersonId()},null,null,null);
-                            if(personCursor.moveToFirst()){
-                                repair.setCreaterName(personCursor.getString(personCursor.getColumnIndex("name")));
-                            }
                             repair.setDescribe(cursor.getString(cursor.getColumnIndex("describe")));
                             repair.setCheckState(cursor.getString(cursor.getColumnIndex("checkState")));
                             repair.setRepairState(cursor.getString(cursor.getColumnIndex("repairState")));
                             if (cursor.getString(cursor.getColumnIndex("createrIdentifier")) != null) {
                                 repair.setCreaterIdentifier(cursor.getString(cursor.getColumnIndex("createrIdentifier")));
                             } else repair.setCreaterIdentifier("");
+                            volleyUtil.getCreaterName(repair.getCreaterIdentifier(), new UpdateListener() {
+                                @Override
+                                public void onSucceed(String s) {
+                                    repair.setCreaterName(s);
+                                }
+
+                                @Override
+                                public void onError(VolleyError error) {
+                                    repair.setCreaterName("未知");
+                                }
+                            });
                             repairs.add(repair);
                         } while (cursor.moveToNext());
                         cursor.close();
                         propertyCursor.close();
-                        personCursor.close();
                         P_PropertyManagementFragment.isInitial = true;
                     }
                     Message msg = handler.obtainMessage();

@@ -289,7 +289,7 @@ public class P_QueryPropertyFragment extends Fragment implements View.OnClickLis
             listView.setOnScrollListener(new AbsListView.OnScrollListener() {
                 @Override
                 public void onScrollStateChanged(AbsListView view, int scrollState) {
-
+                    input.clearFocus();
                 }
 
                 @Override
@@ -807,12 +807,13 @@ public class P_QueryPropertyFragment extends Fragment implements View.OnClickLis
             volleyUtil.updateSQLiteFromMySql("property", new UpdateListener() {
                 @Override
                 public void onSucceed(String s) {
-                    ToastUtil.createToast(getActivity(),"更新成功!");
+                    Log.d("aaa",s);
                     refreshableView.finishRefreshing("query_property");
                     //服务器错误
                     if (s.contains("error-business")) {
                         onError(new VolleyError(s));
                     } else {
+                        ToastUtil.createToast(getActivity(),"更新成功!");
                         //从服务器获取数据
                         List<Property> lists = JsonUtil.parsePropertyJson(s);
                         //更新本地数据库
