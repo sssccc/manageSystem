@@ -30,10 +30,12 @@ import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 
 import demo.yc.formalmanagersystem.MainActivity;
+import demo.yc.formalmanagersystem.MyApplication;
 import demo.yc.formalmanagersystem.R;
 import demo.yc.formalmanagersystem.UpdateListener;
 import demo.yc.formalmanagersystem.activity.PurchaseDetailActivity;
 import demo.yc.formalmanagersystem.adapter.MyAdapterForPurchase;
+import demo.yc.formalmanagersystem.contentvalues.DBContent;
 import demo.yc.formalmanagersystem.database.MyDBHandler;
 import demo.yc.formalmanagersystem.models.Purchase;
 import demo.yc.formalmanagersystem.util.JsonUtil;
@@ -77,7 +79,6 @@ public class P_AllPurchaseFragment extends Fragment implements View.OnClickListe
         public void handleMessage(Message msg) {
             super.handleMessage(msg);
             P_PropertyManagementFragment.isInitial = true;
-            executor.shutdownNow();
             //更新失败时
             if (msg.what == 1) {
                 Log.d("myTag", "failure");
@@ -418,11 +419,11 @@ public class P_AllPurchaseFragment extends Fragment implements View.OnClickListe
             public void run() {
                 if (getActivity() != null) {
                     SQLiteDatabase db = MyDBHandler.getInstance(getActivity()).getDBInstance();
-                    Cursor cursor = db.query("Purchase", null, null, null, null, null, null, null);
+                    Cursor cursor = db.query("Purchase", null, null, null, null, null, "applyTime"+" desc", null);
                     purchases.clear();
                     temp2.clear();
                     if (cursor.moveToFirst()) {
-                        Cursor userCursor = null;
+                        Cursor personCursor = null;
                         do {
                             Purchase purchase = new Purchase();
                             purchase.setName(cursor.getString(cursor.getColumnIndex("name")));
@@ -437,16 +438,14 @@ public class P_AllPurchaseFragment extends Fragment implements View.OnClickListe
                             purchase.setFinishTime(cursor.getString(cursor.getColumnIndex("finishTime")));
 
                             try {
-                                String createrIdentifier = cursor.getString(cursor.getColumnIndex("createrIdentifier"));
-                                userCursor = db.query("User", null, "count=?", new String[]{createrIdentifier}, null, null, null, null);
-                                userCursor.moveToFirst();
-                                if (userCursor.moveToFirst()) {
-                                    purchase.setCreaterName(userCursor.getString(userCursor.getColumnIndex("name")));
+                                personCursor = db.query(DBContent.TB_PERSON,null,"userId=?",new String[]{MyApplication.getPersonId()},null,null,null);
+                                if(personCursor.moveToFirst()){
+                                    purchase.setCreaterName(personCursor.getString(personCursor.getColumnIndex("name")));
                                 }
                             } catch (Exception e) {
                                 purchase.setCreaterIdentifier("未知");
                             } finally {
-                                userCursor.close();
+                                personCursor.close();
                             }
                             purchases.add(purchase);
                         } while (cursor.moveToNext());

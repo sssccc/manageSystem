@@ -59,7 +59,7 @@ public class VolleyUtil {
     }
 
     /***
-     * 提交Repair记录到服务器
+     * 提交Repair记录到服务器(Add)
      *
      * @param repair         待提交的repair 对象
      * @param updateListener 操作更新的回调
@@ -111,7 +111,7 @@ public class VolleyUtil {
     }
 
     /***
-     * 提交Purchase记录到服务器
+     * 提交Purchase记录到服务器（Add）
      *
      * @param purchase       待提交的Purchase对象
      * @param updateListener 操作更新的回调
@@ -160,7 +160,7 @@ public class VolleyUtil {
     }
 
     /***
-     * 提交Property记录到服务器
+     * 提交Property记录到服务器(Update)
      *
      * @param property       待提交的property 对象
      * @param updateListener 操作更新的回调

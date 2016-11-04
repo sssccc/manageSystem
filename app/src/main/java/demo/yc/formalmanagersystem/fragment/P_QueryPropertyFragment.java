@@ -46,8 +46,6 @@ import demo.yc.formalmanagersystem.activity.PropertyInfoActivity;
 import demo.yc.formalmanagersystem.adapter.MyAdapterForProperty;
 import demo.yc.formalmanagersystem.database.MyDBHandler;
 import demo.yc.formalmanagersystem.models.Property;
-import demo.yc.formalmanagersystem.models.Purchase;
-import demo.yc.formalmanagersystem.models.Repair;
 import demo.yc.formalmanagersystem.util.JsonUtil;
 import demo.yc.formalmanagersystem.util.VolleyUtil;
 import demo.yc.formalmanagersystem.view.RefreshableView;
@@ -105,7 +103,6 @@ public class P_QueryPropertyFragment extends Fragment implements View.OnClickLis
         @Override
         public void handleMessage(Message msg) {
             P_PropertyManagementFragment.isInitial = true;
-            executor.shutdownNow();
             //更新失败时
             if (msg.what == 1) {
                 Log.d("myTag", "failure");
@@ -170,29 +167,6 @@ public class P_QueryPropertyFragment extends Fragment implements View.OnClickLis
     @Override
     public void onActivityCreated(Bundle saveInstanceState) {
         super.onActivityCreated(saveInstanceState);
-        //new MyQueryAsynTask().execute();
-        List<Repair> repairs = new ArrayList<>();
-       /* for (int i = 0; i < 100; i++) {
-            Repair repair = new Repair("20160802001", "神舟笔记本", "2016/08/02", "2016/08/02", "通过", "已维修", "硬盘坏了", "201430340601", "曹伟钊");
-            repairs.add(repair);
-        }
-        */
-        MyDBHandler.getInstance(getActivity()).updateRepair(getActivity(), repairs);
-
-        List<Purchase> purchases = new ArrayList<>();
-        for (int i = 0; i < 100; i++) {
-            Purchase purchase = new Purchase("神舟笔记本","2016/08/09","2016/08/10","通过","已购买","购买测试","admin","曹伟钊","神舟","K620c");
-            purchases.add(purchase);
-        }
-        MyDBHandler.getInstance(getActivity()).updatePurchase(getActivity(), purchases);
-
-        List<Property> p = new ArrayList<>();
-        for (int i = 0; i < 99; i++) {
-            Property property = new Property("神舟笔记本", "电脑", "2016/08/02", "20160802001", false, "K620c", "战神", "5200", "神舟供应商", "13560321319", "已修理");
-            p.add(property);
-        }
-
-        MyDBHandler.getInstance(getActivity()).updateProperty(getActivity(), p);
 
         if (getActivity() != null) {
             refreshableView.setOnRefreshListener(new RefreshableView.PullToRefreshListener() {
@@ -310,26 +284,7 @@ public class P_QueryPropertyFragment extends Fragment implements View.OnClickLis
                     startActivityForResult(intent, 0);
                 }
             });
-            /*listView.setOnTouchListener(new View.OnTouchListener() {
-                @Override
-                public boolean onTouch(View v, MotionEvent event) {
-                    switch (event.getAction()) {
-                        case MotionEvent.ACTION_DOWN:
-                            dY = event.getY();
-                            break;
-                        case MotionEvent.ACTION_UP:
-                            uY = event.getY();
-                            if (getScrollY() == 0) {
-                                if ((uY - dY) > 180) {
-                                    flag = true;
-                                    refreshData();
-                                }
-                            }
-                            break;
-                    }
-                    return false;
-                }
-            });*/
+
             listView.setOnScrollListener(new AbsListView.OnScrollListener() {
                 @Override
                 public void onScrollStateChanged(AbsListView view, int scrollState) {
@@ -833,32 +788,6 @@ public class P_QueryPropertyFragment extends Fragment implements View.OnClickLis
         }
     }
 
-    /*class MyQueryAsynTask extends AsyncTask<Void, Void, List<Property>> {
-
-        @Override
-        protected void onPreExecute() {
-            super.onPreExecute();
-        }
-
-        @Override
-        protected List<Property> doInBackground(Void... params) {
-
-            //进行数据库查询
-            properties.add(new Property("华硕", "电脑", "2016/7/23", "201412", false, "k620c", "神舟笔记本", "5999", "神舟", "13560321319", "无"));
-            return properties;
-        }
-
-        @Override
-        protected void onPostExecute(List<Property> properties) {
-            super.onPostExecute(properties);
-            if (getActivity() != null) {
-                allPropertyAdapter = new MyAdapterForProperty(getActivity(), R.layout.item, properties);
-                doAfterAsyTask();
-            }
-        }
-
-    }*/
-
     @Override
     public void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
@@ -913,7 +842,7 @@ public class P_QueryPropertyFragment extends Fragment implements View.OnClickLis
             @Override
             public void run() {
                 SQLiteDatabase db = MyDBHandler.getInstance(getActivity()).getDBInstance();
-                Cursor cursor = db.query("Property", null, null, null, null, null, null, null);
+                Cursor cursor = db.query("Property", null, null, null, null, null, "date"+" desc", null);
                 properties.clear();
                 temp2.clear();
                 if (cursor.moveToFirst()) {
@@ -930,9 +859,11 @@ public class P_QueryPropertyFragment extends Fragment implements View.OnClickLis
                         property.setDate(cursor.getString(cursor.getColumnIndex("date")));
                         property.setProviderTel(cursor.getString(cursor.getColumnIndex("providerTel")));
                         try {
-                            repairCursor = db.query("Repair", null, "identifier=?", new String[]{cursor.getString(cursor.getColumnIndex("identifier"))}, null, null, null, null);
+                            repairCursor = db.query("Repair", null, "identifier=?", new String[]{property.getIdentifier()}, null, null, null, null);
                             if (repairCursor.moveToFirst()) {
+
                                 String repairState = repairCursor.getString(repairCursor.getColumnIndex("repairState"));
+                                Log.d("ffff",repairState);
                                 if (!TextUtils.isEmpty(repairState)) {
                                     property.setRepairStatus(repairState);
                                 }

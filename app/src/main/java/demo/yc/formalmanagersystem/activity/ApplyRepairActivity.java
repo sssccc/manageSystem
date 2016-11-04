@@ -1,5 +1,6 @@
 package demo.yc.formalmanagersystem.activity;
 
+import android.content.Intent;
 import android.os.Bundle;
 import android.text.TextUtils;
 import android.view.View;
@@ -31,7 +32,6 @@ public class ApplyRepairActivity extends BaseActivity implements View.OnClickLis
     private Button confirmApplyRepair;
     private RelativeLayout back;
     private Property property;
-    private Repair repair;
     private VolleyUtil volleyUtil = new VolleyUtil();
 
     @Override
@@ -45,7 +45,6 @@ public class ApplyRepairActivity extends BaseActivity implements View.OnClickLis
     }
 
     private void initValues() {
-        repair = new Repair();
         property = (Property) getIntent().getSerializableExtra("data_extra");
         if (property != null) {
             name.setText(property.getName());
@@ -92,21 +91,6 @@ public class ApplyRepairActivity extends BaseActivity implements View.OnClickLis
                     repair.setDescribe(detailOfRepair.getText().toString());
                     repair.setDescribe(detailOfRepair.getText().toString());
 
-                /*volleyUtil.updateRepairInMySql(repair, new UpdateListener() {
-                    @Override
-                    public void onSucceed(String s) {
-                        Toast.makeText(ApplyRepairActivity.this,"提交成功！",Toast.LENGTH_SHORT).show();
-                        setResult(RESULT_OK);
-                        ActivityCollector.removeActivity(ApplyRepairActivity.this);
-                    }
-
-                    @Override
-                    public void onError(VolleyError error) {
-                        Toast.makeText(ApplyRepairActivity.this,"提交失败，请稍后重试！",Toast.LENGTH_SHORT).show();
-                    }
-                });*/
-
-
                     final SweetAlertDialog alarmDialog = new SweetAlertDialog(ApplyRepairActivity.this, SweetAlertDialog.WARNING_TYPE);
                     alarmDialog.setTitleText("确认申请？");
                     alarmDialog.setCancelText("取消");
@@ -134,16 +118,43 @@ public class ApplyRepairActivity extends BaseActivity implements View.OnClickLis
                             volleyUtil.updateRepairInMySql(repair, new UpdateListener() {
                                 @Override
                                 public void onSucceed(String s) {
-                                    progressDialog.dismiss();
-                                    SweetAlertDialog successDialog = new SweetAlertDialog(ApplyRepairActivity.this, SweetAlertDialog.SUCCESS_TYPE);
-                                    successDialog.setTitleText("申请成功!");
-                                    successDialog.setConfirmClickListener(new SweetAlertDialog.OnSweetClickListener() {
+                                    //提交成功，设置维修状态为 待维修
+                                    property.setRepairStatus("待审核");
+                                    //更新Property表
+                                    volleyUtil.updatePropertyInMySql(property, new UpdateListener() {
                                         @Override
-                                        public void onClick(SweetAlertDialog sweetAlertDialog) {
-                                            sweetAlertDialog.dismissWithAnimation();
+                                        public void onSucceed(String s) {
+                                            progressDialog.dismiss();
+                                            SweetAlertDialog successDialog = new SweetAlertDialog(ApplyRepairActivity.this, SweetAlertDialog.SUCCESS_TYPE);
+                                            successDialog.setTitleText("申请成功!");
+                                            successDialog.setConfirmClickListener(new SweetAlertDialog.OnSweetClickListener() {
+                                                @Override
+                                                public void onClick(SweetAlertDialog sweetAlertDialog) {
+                                                    sweetAlertDialog.dismissWithAnimation();
+                                                    Intent intent = new Intent();
+                                                    setResult(RESULT_OK,intent);
+                                                    ActivityCollector.removeActivity(ApplyRepairActivity.this);
+                                                }
+                                            });
+                                            successDialog.show();
+                                        }
+
+                                        //更新Property失败
+                                        @Override
+                                        public void onError(VolleyError error) {
+                                            progressDialog.dismiss();
+                                            SweetAlertDialog errorDialog = new SweetAlertDialog(ApplyRepairActivity.this, SweetAlertDialog.ERROR_TYPE);
+                                            errorDialog.setTitleText("资产数据异常，请回首页刷新！");
+                                            errorDialog.setConfirmText("确认");
+                                            errorDialog.setConfirmClickListener(new SweetAlertDialog.OnSweetClickListener() {
+                                                @Override
+                                                public void onClick(SweetAlertDialog sweetAlertDialog) {
+                                                    sweetAlertDialog.dismissWithAnimation();
+                                                }
+                                            });
+                                            errorDialog.show();
                                         }
                                     });
-                                    successDialog.show();
                                 }
 
                                 @Override

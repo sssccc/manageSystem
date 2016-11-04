@@ -38,6 +38,7 @@ import demo.yc.formalmanagersystem.activity.PurchaseDetailActivity;
 import demo.yc.formalmanagersystem.activity.RepairDetailActivity;
 import demo.yc.formalmanagersystem.adapter.MyAdapterForPurchase;
 import demo.yc.formalmanagersystem.adapter.MyAdapterForRepair;
+import demo.yc.formalmanagersystem.contentvalues.DBContent;
 import demo.yc.formalmanagersystem.database.MyDBHandler;
 import demo.yc.formalmanagersystem.models.Purchase;
 import demo.yc.formalmanagersystem.models.Repair;
@@ -105,8 +106,11 @@ public class P_MyPropertyFragment extends Fragment implements View.OnClickListen
             }
             //更新成功时(我的采购页面)
             else if (position1 == 0) {
+                count++;
+                doAfterAsyTask();
                 purchases = (List<Purchase>) msg.obj;
                 if (purchases.size() != 0) {
+                    pTemp2.clear();
                     for (Purchase purchase : purchases
                             ) {
                         pTemp2.add(purchase);
@@ -120,8 +124,7 @@ public class P_MyPropertyFragment extends Fragment implements View.OnClickListen
                             myAdapterForPurchase.notifyDataSetChanged();
                         }
                     }
-                    count++;
-                    doAfterAsyTask();
+
                 }
                 //本地数据库无数据，自动进行一次网络加载
                 else {
@@ -135,6 +138,7 @@ public class P_MyPropertyFragment extends Fragment implements View.OnClickListen
             else if (position1 == 1) {
                 {
                     repairs = (List<Repair>) msg.obj;
+                    rTemp2.clear();
                     for (Repair repair : repairs
                             ) {
                         rTemp2.add(repair);
@@ -215,11 +219,10 @@ public class P_MyPropertyFragment extends Fragment implements View.OnClickListen
                 public void run() {
                     if (getActivity() != null) {
                         SQLiteDatabase db = MyDBHandler.getInstance(getActivity()).getDBInstance();
-                        Cursor cursor = db.query("Purchase", null, "createrIdentifier=?", new String[]{MyApplication.getUser().getUsername()}, null, null, null, null);
+                        Cursor cursor = db.query("Purchase", null, "createrIdentifier=?", new String[]{MyApplication.getUser().getUsername()}, null, null, "applyTime"+" desc", null);
                         purchases.clear();
-                        pTemp2.clear();
                         if (cursor.moveToFirst()) {
-                            Cursor userCursor = null;
+                            Cursor personCursor = null;
                             do {
                                 Purchase purchase = new Purchase();
                                 purchase.setName(cursor.getString(cursor.getColumnIndex("name")));
@@ -233,16 +236,16 @@ public class P_MyPropertyFragment extends Fragment implements View.OnClickListen
                                 purchase.setPurchaseState(cursor.getString(cursor.getColumnIndex("purchaseState")));
                                 purchase.setFinishTime(cursor.getString(cursor.getColumnIndex("finishTime")));
                                 try {
-                                    userCursor = db.query("User", null, "count=?", new String[]{cursor.getString(cursor.getColumnIndex("createrIdentifier"))}, null, null, null, null);
-                                    userCursor.moveToFirst();
-                                    if (userCursor.moveToFirst()) {
-                                        purchase.setCreaterName(userCursor.getString(userCursor.getColumnIndex("name")));
+                                    personCursor = db.query(DBContent.TB_PERSON,null,"userId=?",new String[]{MyApplication.getPersonId()},null,null,null);
+                                    if(personCursor.moveToFirst()){
+                                        purchase.setCreaterName(personCursor.getString(personCursor.getColumnIndex("name")));
                                     }
                                 } catch (Exception e) {
                                     Log.d("tag", "error occurred in query User");
                                 } finally {
-                                    if (userCursor != null)
-                                        userCursor.close();
+                                    if(personCursor != null){
+                                        personCursor.close();
+                                    }
                                 }
                                 purchases.add(purchase);
                             } while (cursor.moveToNext());
@@ -264,11 +267,11 @@ public class P_MyPropertyFragment extends Fragment implements View.OnClickListen
                 @Override
                 public void run() {
                     SQLiteDatabase db = MyDBHandler.getInstance(getActivity()).getDBInstance();
-                    Cursor cursor = db.query("Repair", null, "createrIdentifier=?", new String[]{MyApplication.getUser().getUsername()}, null, null, null, null);
+                    Cursor cursor = db.query("Repair", null, "createrIdentifier=?", new String[]{MyApplication.getUser().getUsername()}, null, null,  "applyTime"+" desc", null);
                     repairs.clear();
-                    pTemp2.clear();
                     if (cursor.moveToFirst()) {
                         Cursor propertyCursor;
+                        Cursor personCursor;
                         do {
                             Repair repair = new Repair();
                             repair.setIdentifier(cursor.getString(cursor.getColumnIndex("identifier")));
@@ -280,8 +283,10 @@ public class P_MyPropertyFragment extends Fragment implements View.OnClickListen
                             if (propertyCursor.moveToFirst()) {
                                 repair.setName(propertyCursor.getString(propertyCursor.getColumnIndex("name")));
                             }
-                            propertyCursor.close();
-                            repair.setCreaterName("");
+                            personCursor = db.query(DBContent.TB_PERSON,null,"userId=?",new String[]{MyApplication.getPersonId()},null,null,null);
+                            if(personCursor.moveToFirst()){
+                                repair.setCreaterName(personCursor.getString(personCursor.getColumnIndex("name")));
+                            }
                             repair.setDescribe(cursor.getString(cursor.getColumnIndex("describe")));
                             repair.setCheckState(cursor.getString(cursor.getColumnIndex("checkState")));
                             repair.setRepairState(cursor.getString(cursor.getColumnIndex("repairState")));
@@ -292,6 +297,7 @@ public class P_MyPropertyFragment extends Fragment implements View.OnClickListen
                         } while (cursor.moveToNext());
                         cursor.close();
                         propertyCursor.close();
+                        personCursor.close();
                         P_PropertyManagementFragment.isInitial = true;
                     }
                     Message msg = handler.obtainMessage();
@@ -668,6 +674,7 @@ public class P_MyPropertyFragment extends Fragment implements View.OnClickListen
                 volleyUtil.updateSQLiteFromMySql("purchase", new UpdateListener() {
                     @Override
                     public void onSucceed(String s) {
+                        ToastUtil.createToast(getActivity(), "更新成功！");
                         refreshableView.finishRefreshing("my_property");
                         if (s.contains("error-business")) {
                             onError(new VolleyError("error-business"));
@@ -696,6 +703,7 @@ public class P_MyPropertyFragment extends Fragment implements View.OnClickListen
                 volleyUtil.updateSQLiteFromMySql("repair", new UpdateListener() {
                     @Override
                     public void onSucceed(String s) {
+                        ToastUtil.createToast(getActivity(), "更新成功！");
                         refreshableView.finishRefreshing("my_property");
                         if (s.contains("error-business")) {
                             onError(new VolleyError("error-business"));

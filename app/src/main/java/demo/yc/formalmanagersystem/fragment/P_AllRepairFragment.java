@@ -30,10 +30,12 @@ import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 
 import demo.yc.formalmanagersystem.MainActivity;
+import demo.yc.formalmanagersystem.MyApplication;
 import demo.yc.formalmanagersystem.R;
 import demo.yc.formalmanagersystem.UpdateListener;
 import demo.yc.formalmanagersystem.activity.RepairDetailActivity;
 import demo.yc.formalmanagersystem.adapter.MyAdapterForRepair;
+import demo.yc.formalmanagersystem.contentvalues.DBContent;
 import demo.yc.formalmanagersystem.database.MyDBHandler;
 import demo.yc.formalmanagersystem.models.Repair;
 import demo.yc.formalmanagersystem.util.JsonUtil;
@@ -78,7 +80,6 @@ public class P_AllRepairFragment extends Fragment implements View.OnClickListene
         public void handleMessage(Message msg) {
             super.handleMessage(msg);
             P_PropertyManagementFragment.isInitial = true;
-            executor.shutdownNow();
             //更新出错时
             if (msg.what == 1) {
                 if (getActivity() != null) {
@@ -129,7 +130,7 @@ public class P_AllRepairFragment extends Fragment implements View.OnClickListene
     public void onActivityCreated(Bundle savedInstanceState) {
         super.onActivityCreated(savedInstanceState);
         if (getActivity() != null) {
-            executor = Executors.newFixedThreadPool(2);
+            executor = Executors.newSingleThreadExecutor();
             readDataFromSQLite();
             //设置下拉刷新监听
             refreshableView.setOnRefreshListener(new RefreshableView.PullToRefreshListener() {
@@ -153,26 +154,31 @@ public class P_AllRepairFragment extends Fragment implements View.OnClickListene
             @Override
             public void run() {
                 SQLiteDatabase db = MyDBHandler.getInstance(getActivity()).getDBInstance();
-                Cursor cursor = db.query("Repair", null, null, null, null, null, null, null);
+                Cursor cursor = db.query("Repair", null, null, null, null, null, "applyTime"+" desc", null);
                 repairs.clear();
                 temp2.clear();
                 if (cursor.moveToFirst()) {
                     Cursor propertyCursor = null;
+                    Cursor personCursor = null;
                     do {
                         Repair repair = new Repair();
                         repair.setIdentifier(cursor.getString(cursor.getColumnIndex("identifier")));
                         repair.setApplyTime(cursor.getString(cursor.getColumnIndex("applyTime")));
                         repair.setFinishTime(cursor.getString(cursor.getColumnIndex("finishTime")));
                         try {
+                            personCursor = db.query(DBContent.TB_PERSON,null,"userId=?",new String[]{MyApplication.getPersonId()},null,null,null);
+                            if(personCursor.moveToFirst()){
+                                repair.setCreaterName(personCursor.getString(personCursor.getColumnIndex("name")));
+                            }
                             propertyCursor = db.query("Property", null, "identifier=?", new String[]{cursor.getString(cursor.getColumnIndex("identifier"))}, null, null, null, null);
-                            propertyCursor.moveToFirst();
                             if (propertyCursor.moveToFirst()) {
                                 repair.setName(propertyCursor.getString(propertyCursor.getColumnIndex("name")));
                             }
                         } catch (Exception e) {
-                            repair.setName("未知");
+
                         } finally {
                             propertyCursor.close();
+                            personCursor.close();
                         }
                         repair.setDescribe(cursor.getString(cursor.getColumnIndex("describe")));
                         repair.setCheckState(cursor.getString(cursor.getColumnIndex("checkState")));
