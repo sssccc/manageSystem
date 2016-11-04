@@ -36,6 +36,7 @@
             android:layout_height="match_parent"
             android:layout_centerInParent="true"
             android:gravity="center"
+            android:textSize="20sp"
             android:text="采购详情" />
     </RelativeLayout>
 

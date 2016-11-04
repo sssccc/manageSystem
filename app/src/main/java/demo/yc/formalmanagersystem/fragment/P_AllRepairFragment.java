@@ -314,6 +314,12 @@ public class P_AllRepairFragment extends Fragment implements View.OnClickListene
         switch (v.getId()) {
             //切换侧滑菜单按钮
             case R.id.top_layout_menu:
+                if (popupwindow != null) {
+                    down = false;
+                    directionImg.setImageResource(R.drawable.down);
+                    popupwindow.dismiss();
+                    listView.setAlpha(1);
+                }
                 ((MainActivity)getActivity()).showMenu();
                 break;
             //下拉选择框
@@ -440,6 +446,7 @@ public class P_AllRepairFragment extends Fragment implements View.OnClickListene
             volleyUtil.updateSQLiteFromMySql("repair", new UpdateListener() {
                 @Override
                 public void onSucceed(String s) {
+                    ToastUtil.createToast(getActivity(),"更新成功!");
                     refreshableView.finishRefreshing("all_repair");
                     if (s.contains("error-business")) {
                         onError(new VolleyError("error-business"));

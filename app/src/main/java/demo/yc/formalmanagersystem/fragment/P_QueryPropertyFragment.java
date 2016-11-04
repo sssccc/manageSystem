@@ -47,6 +47,7 @@ import demo.yc.formalmanagersystem.adapter.MyAdapterForProperty;
 import demo.yc.formalmanagersystem.database.MyDBHandler;
 import demo.yc.formalmanagersystem.models.Property;
 import demo.yc.formalmanagersystem.util.JsonUtil;
+import demo.yc.formalmanagersystem.util.ToastUtil;
 import demo.yc.formalmanagersystem.util.VolleyUtil;
 import demo.yc.formalmanagersystem.view.RefreshableView;
 
@@ -342,9 +343,7 @@ public class P_QueryPropertyFragment extends Fragment implements View.OnClickLis
     @Override
     public void onClick(View v) {
         switch (v.getId()) {
-
             case R.id.top_layout_menu:
-
                 ((MainActivity)getActivity()).showMenu();
             case R.id.top_layout_root:
                 input.clearFocus();
@@ -808,8 +807,8 @@ public class P_QueryPropertyFragment extends Fragment implements View.OnClickLis
             volleyUtil.updateSQLiteFromMySql("property", new UpdateListener() {
                 @Override
                 public void onSucceed(String s) {
+                    ToastUtil.createToast(getActivity(),"更新成功!");
                     refreshableView.finishRefreshing("query_property");
-                    Log.d("myTag", s);
                     //服务器错误
                     if (s.contains("error-business")) {
                         onError(new VolleyError(s));

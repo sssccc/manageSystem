@@ -19,7 +19,6 @@ import com.android.volley.VolleyError;
 
 import cn.pedant.SweetAlert.SweetAlertDialog;
 import demo.yc.formalmanagersystem.MainActivity;
-import demo.yc.formalmanagersystem.MyApplication;
 import demo.yc.formalmanagersystem.R;
 import demo.yc.formalmanagersystem.UpdateListener;
 import demo.yc.formalmanagersystem.models.Purchase;
@@ -82,7 +81,6 @@ public class P_ApplyPurchaseFragment extends Fragment implements View.OnClickLis
             }
         });
         applyPurchase.setOnClickListener(this);
-        purchase = new Purchase();
         return view;
     }
 
@@ -144,24 +142,24 @@ public class P_ApplyPurchaseFragment extends Fragment implements View.OnClickLis
                     alarmDialog.setConfirmText("确认");
                     alarmDialog.setConfirmClickListener(new SweetAlertDialog.OnSweetClickListener() {
                         @Override
-                        public void onClick(final SweetAlertDialog alarmDialog) {
-                            alarmDialog.dismissWithAnimation();
+                        public void onClick(SweetAlertDialog sweetAlertDialog) {
+                            sweetAlertDialog.dismissWithAnimation();
+
                             final SweetAlertDialog progressDialog = new SweetAlertDialog(getActivity(), SweetAlertDialog.PROGRESS_TYPE);
                             progressDialog.setCanceledOnTouchOutside(false);
                             progressDialog.setCancelable(false);
                             progressDialog.setTitleText("");
                             progressDialog.setContentText("提交申请中，请稍等...");
                             progressDialog.show();
-
+                            purchase = new Purchase();
                             purchase.setName(name);
                             purchase.setBrand(brand);
                             purchase.setPrice(price);
                             purchase.setModel(model);
                             purchase.setDescribe(describe);
-                            purchase.setCreaterIdentifier(MyApplication.getUser().getUsername());
-
+                            //purchase.setCreaterIdentifier(MyApplication.getUser().getUsername());
                             //提交数据库
-                            volleyUtil.updatePurchaseInMySql(purchase, new UpdateListener() {
+                            volleyUtil.addPurchaseToMySql(purchase, new UpdateListener() {
                                 @Override
                                 public void onSucceed(String s) {
                                     progressDialog.dismiss();
@@ -195,8 +193,8 @@ public class P_ApplyPurchaseFragment extends Fragment implements View.OnClickLis
                         }
                     });
                     alarmDialog.show();
+                    break;
                 }
-                break;
         }
     }
 }

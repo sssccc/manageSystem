@@ -31,19 +31,18 @@ public class VolleyUtil {
     public VolleyUtil() {
     }
 
-    private static final String ROOT_URL = "http://192.168.1.124:8888/";
+    private static final String ROOT_URL = "http://172.18.204.165:8888/";
     private static final String BASE_URL = ROOT_URL+"property/";
 
 
     /***
      * 从服务器获取数据，更新本地数据库
      *
-     * @param table    获取的数据表名
+     * @param table    所需要获取的数据的表名
      * @param listener 操作更新的回调
      */
     public synchronized void updateSQLiteFromMySql(String table, final UpdateListener listener) {
         String url1 = BASE_URL + "show" + table;
-        Log.d("myTag", url1);
         StringRequest request1 = new StringRequest(Request.Method.GET, url1, new Response.Listener<String>() {
             @Override
             public void onResponse(String s) {
@@ -65,7 +64,7 @@ public class VolleyUtil {
      * @param repair         待提交的repair 对象
      * @param updateListener 操作更新的回调
      */
-    public synchronized void updateRepairInMySql(final Repair repair, final UpdateListener updateListener) {
+    public synchronized void addRepairToMySql(final Repair repair, final UpdateListener updateListener) {
         final String identifier = repair.getIdentifier();
         final String applyTime = repair.getApplyTime();
         final String finishTime = repair.getFinishTime();
@@ -117,7 +116,7 @@ public class VolleyUtil {
      * @param purchase       待提交的Purchase对象
      * @param updateListener 操作更新的回调
      */
-    public synchronized void updatePurchaseInMySql(final Purchase purchase, final UpdateListener updateListener) {
+    public synchronized void addPurchaseToMySql(final Purchase purchase, final UpdateListener updateListener) {
         final String name = purchase.getName();
         final String brand = purchase.getBrand();
         final String price = purchase.getPrice();
@@ -221,6 +220,30 @@ public class VolleyUtil {
         MyApplication.getInstance().getMyQueue().add(request2);
     }
 
+
+    /***
+     * 根据createrIdentifier获取名字
+     * @param createrIdentifier
+     * @param updateListener
+     */
+    public synchronized void getCreaterName(String createrIdentifier, final UpdateListener updateListener) {
+
+        String url2 = BASE_URL+"get/name?studentId="+createrIdentifier;
+        StringRequest request3 = new StringRequest(Request.Method.GET, url2, new Response.Listener<String>() {
+            @Override
+            public void onResponse(String s) {
+                updateListener.onSucceed(s);
+            }
+        }, new ErrorListener() {
+            @Override
+            public void onErrorResponse(VolleyError volleyError) {
+                updateListener.onError(volleyError);
+            }
+        }) ;
+
+        request3.addMarker("getName");
+        MyApplication.getInstance().getMyQueue().add(request3);
+    }
 
     //以上是伟钊的
     //-----------------------------------------------------------------------------

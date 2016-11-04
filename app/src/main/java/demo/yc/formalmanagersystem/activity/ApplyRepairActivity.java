@@ -115,7 +115,7 @@ public class ApplyRepairActivity extends BaseActivity implements View.OnClickLis
                             progressDialog.show();
 
 
-                            volleyUtil.updateRepairInMySql(repair, new UpdateListener() {
+                            volleyUtil.addRepairToMySql(repair, new UpdateListener() {
                                 @Override
                                 public void onSucceed(String s) {
                                     //提交成功，设置维修状态为 待维修

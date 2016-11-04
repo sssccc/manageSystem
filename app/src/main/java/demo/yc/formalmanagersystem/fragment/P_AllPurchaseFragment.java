@@ -30,12 +30,10 @@ import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 
 import demo.yc.formalmanagersystem.MainActivity;
-import demo.yc.formalmanagersystem.MyApplication;
 import demo.yc.formalmanagersystem.R;
 import demo.yc.formalmanagersystem.UpdateListener;
 import demo.yc.formalmanagersystem.activity.PurchaseDetailActivity;
 import demo.yc.formalmanagersystem.adapter.MyAdapterForPurchase;
-import demo.yc.formalmanagersystem.contentvalues.DBContent;
 import demo.yc.formalmanagersystem.database.MyDBHandler;
 import demo.yc.formalmanagersystem.models.Purchase;
 import demo.yc.formalmanagersystem.util.JsonUtil;
@@ -365,7 +363,7 @@ public class P_AllPurchaseFragment extends Fragment implements View.OnClickListe
                 temp2.clear();
                 for (Purchase purchase : purchases
                         ) {
-                    if (purchase.getCheckState().equals("审核中")) {
+                    if (purchase.getCheckState().equals("待审核")) {
                         temp2.add(purchase);
                     }
                 }
@@ -393,6 +391,7 @@ public class P_AllPurchaseFragment extends Fragment implements View.OnClickListe
                     if (s.contains("error-business")) {
                         onError(new VolleyError("error-business"));
                     } else {
+                        ToastUtil.createToast(getActivity(), "更新成功！");
                         //解析Json格式
                         List<Purchase> lists = JsonUtil.parsePurchaseJson(s);
                         //更新本地数据库
@@ -423,9 +422,9 @@ public class P_AllPurchaseFragment extends Fragment implements View.OnClickListe
                     purchases.clear();
                     temp2.clear();
                     if (cursor.moveToFirst()) {
-                        Cursor personCursor = null;
+                        final Cursor personCursor = null;
                         do {
-                            Purchase purchase = new Purchase();
+                            final Purchase purchase = new Purchase();
                             purchase.setName(cursor.getString(cursor.getColumnIndex("name")));
                             purchase.setDescribe(cursor.getString(cursor.getColumnIndex("describe")));
                             purchase.setApplyTime(cursor.getString(cursor.getColumnIndex("applyTime")));
@@ -436,17 +435,18 @@ public class P_AllPurchaseFragment extends Fragment implements View.OnClickListe
                             purchase.setPrice(cursor.getString(cursor.getColumnIndex("price")));
                             purchase.setPurchaseState(cursor.getString(cursor.getColumnIndex("purchaseState")));
                             purchase.setFinishTime(cursor.getString(cursor.getColumnIndex("finishTime")));
-
-                            try {
-                                personCursor = db.query(DBContent.TB_PERSON,null,"userId=?",new String[]{MyApplication.getPersonId()},null,null,null);
-                                if(personCursor.moveToFirst()){
-                                    purchase.setCreaterName(personCursor.getString(personCursor.getColumnIndex("name")));
+                            volleyUtil.getCreaterName(purchase.getCreaterIdentifier(), new UpdateListener() {
+                                @Override
+                                public void onSucceed(String s) {
+                                    purchase.setCreaterName(s);
                                 }
-                            } catch (Exception e) {
-                                purchase.setCreaterIdentifier("未知");
-                            } finally {
-                                personCursor.close();
-                            }
+
+                                @Override
+                                public void onError(VolleyError error) {
+                                    Log.d("error",error.toString());
+                                    purchase.setCreaterName("未知");
+                                }
+                            });
                             purchases.add(purchase);
                         } while (cursor.moveToNext());
                         cursor.close();

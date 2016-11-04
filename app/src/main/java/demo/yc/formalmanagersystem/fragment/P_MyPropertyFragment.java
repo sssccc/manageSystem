@@ -674,11 +674,11 @@ public class P_MyPropertyFragment extends Fragment implements View.OnClickListen
                 volleyUtil.updateSQLiteFromMySql("purchase", new UpdateListener() {
                     @Override
                     public void onSucceed(String s) {
-                        ToastUtil.createToast(getActivity(), "更新成功！");
                         refreshableView.finishRefreshing("my_property");
                         if (s.contains("error-business")) {
                             onError(new VolleyError("error-business"));
                         } else {
+                            ToastUtil.createToast(getActivity(), "更新成功！");
                             //解析Json格式的数据
                             List<Purchase> lists = JsonUtil.parsePurchaseJson(s);
                             //更新本地数据库
@@ -708,6 +708,7 @@ public class P_MyPropertyFragment extends Fragment implements View.OnClickListen
                         if (s.contains("error-business")) {
                             onError(new VolleyError("error-business"));
                         } else {
+                            ToastUtil.createToast(getActivity(), "更新成功！");
                             //解析Json格式数据
                             List<Repair> lists = JsonUtil.parseRepairJson(s);
                             //更新本地数据库
