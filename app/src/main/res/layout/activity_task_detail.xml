@@ -93,7 +93,6 @@
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:id="@+id/task_detail_administor_name"
-                        android:text="何永财"
                         android:layout_toRightOf="@id/name_tag"/>
 
                     <TextView
@@ -101,7 +100,6 @@
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:id="@+id/task_detail_time"
-                        android:text="16/07/21至16/08/10"
                         android:textColor="#888"
                         android:textSize="13sp"
                         android:layout_below="@id/name_tag" />
@@ -225,7 +223,9 @@
             </LinearLayout>
 
             <!--进度记录-->
+
             <LinearLayout
+                android:id="@+id/task_detail_progress_layout"
                 android:background="#aae2e2e2"
                 android:gravity="center_vertical"
                 android:layout_width="match_parent"
@@ -249,36 +249,85 @@
                 android:layout_marginTop="10dp"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:id="@+id/task_detail_progress_listView">
-            </demo.yc.formalmanagersystem.view.MyHeightListView>
+                android:id="@+id/task_detail_progress_listView"/>
 
         </LinearLayout>
     </ScrollView>
 
 
     <LinearLayout
+        android:orientation="horizontal"
         android:id="@+id/task_detail_btn_layout"
         android:layout_margin="5dp"
         android:layout_width="match_parent"
-        android:layout_height="30dp"
-        android:layout_gravity="center"
-        android:gravity="center">
-        <Button
-            android:id="@+id/task_detail_quit_btn"
-            android:textColor="#000"
-            android:background="@drawable/btn_click_un"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="放弃"
-            android:layout_marginRight="40dp"
-           />
-        <Button
-            android:id="@+id/task_detail_involve_btn"
-            android:textColor="#fff"
-            android:background="@drawable/btn_click"
-            android:layout_marginLeft="40dp"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="参与"/>
+        android:layout_height="30dp">
+
+        <FrameLayout
+            android:id="@+id/task_detail_bottom_oper_layout"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent">
+            <ImageView
+                android:layout_gravity="center_vertical"
+                android:id="@+id/task_detail_bottom_text_btn"
+                android:paddingLeft="10dp"
+                android:layout_width="40dp"
+                android:layout_height="40dp"
+                android:src="@drawable/detail_bottom_back"/>
+            <LinearLayout
+
+                android:gravity="center"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent">
+                <Button
+                    android:id="@+id/task_detail_quit_btn"
+                    android:textColor="#000"
+                    android:background="@drawable/btn_click_un"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="放弃"
+                    android:layout_marginRight="40dp"
+                    />
+                <Button
+                    android:id="@+id/task_detail_involve_btn"
+                    android:textColor="#fff"
+                    android:background="@drawable/btn_click"
+                    android:layout_marginLeft="40dp"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="参与"/>
+            </LinearLayout>
+        </FrameLayout>
+
+        <LinearLayout
+            android:visibility="gone"
+            android:id="@+id/task_detail_bottom_text_layout"
+            android:orientation="horizontal"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent">
+            <ImageView
+                android:layout_gravity="center_vertical"
+                android:id="@+id/task_detail_bottom_oper_btn"
+                android:layout_width="40dp"
+                android:layout_height="40dp"
+                android:src="@drawable/detail_bottom_cycle"
+                android:paddingLeft="10dp"/>
+            <EditText
+                android:paddingLeft="10dp"
+                android:hint="说说你的进度"
+                android:background="@null"
+                android:id="@+id/task_detail_bottom_edit"
+                android:layout_weight="1"
+                android:layout_width="wrap_content"
+                android:layout_height="match_parent" />
+            <ImageView
+                android:layout_marginRight="10dp"
+                android:layout_gravity="center_vertical"
+                android:id="@+id/task_detail_bottom_send_btn"
+                android:layout_width="40dp"
+                android:layout_height="40dp"
+                android:src="@drawable/detail_bottom_send"
+                android:paddingLeft="10dp"/>
+        </LinearLayout>
+
     </LinearLayout>
 </LinearLayout>

@@ -164,6 +164,7 @@ public class UpdatePersonInfoActivity extends BaseActivity implements View.OnCli
                 DialogUtil.dissmiss();
                 Toast.makeText(UpdatePersonInfoActivity.this,"保存成功",Toast.LENGTH_SHORT).show();
                 db.updatePersonInfo(p);
+                MyApplication.setPersonName(p.getName());
                 lastIntent.putExtra(PersonInfoContent.UPTADE_PERSON_INFO_TAG, p);
                 if(isChange)
                     lastIntent.putExtra("isChange",true);

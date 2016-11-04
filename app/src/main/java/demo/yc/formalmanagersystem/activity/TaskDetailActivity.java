@@ -4,9 +4,13 @@ import android.app.ProgressDialog;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Bundle;
+import android.os.Handler;
 import android.support.v7.app.AlertDialog;
+import android.util.Log;
 import android.view.View;
+import android.view.inputmethod.InputMethodManager;
 import android.widget.Button;
+import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.ScrollView;
 import android.widget.TextView;
@@ -21,14 +25,18 @@ import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.util.ArrayList;
 
+import demo.yc.formalmanagersystem.MyApplication;
 import demo.yc.formalmanagersystem.R;
 import demo.yc.formalmanagersystem.UpdateListener;
 import demo.yc.formalmanagersystem.adapter.MyTaskProgressListViewAdapter;
 import demo.yc.formalmanagersystem.models.Task;
+import demo.yc.formalmanagersystem.models.TaskProcess;
+import demo.yc.formalmanagersystem.util.DateUtil;
 import demo.yc.formalmanagersystem.util.DialogUtil;
 import demo.yc.formalmanagersystem.util.JsonUtil;
 import demo.yc.formalmanagersystem.util.VolleyUtil;
 import demo.yc.formalmanagersystem.view.CircleImageView;
+import demo.yc.formalmanagersystem.view.DialogCancelListener;
 import demo.yc.formalmanagersystem.view.MyHeightListView;
 
 public class TaskDetailActivity extends BaseActivity {
@@ -36,23 +44,25 @@ public class TaskDetailActivity extends BaseActivity {
     ImageView backBtn,images;
     CircleImageView head;
     Button involveBtn,quitBtn,imagesBtn;
+
     View bottomLayout;
+    View processLayout;
+    ImageView textBtn,sendBtn,cycleBtn;
+    View textLayout,operLayout;
+    EditText editText ;
 
     TextView title,name,describe,cateName,groupName,time;
 
     MyHeightListView listView;
     ScrollView scrollView;
     MyTaskProgressListViewAdapter adapter;
-    ArrayList<String> list= new ArrayList<>();
+    ArrayList<TaskProcess> list= new ArrayList<>();
     Intent lastIntent ;
 
     Task task ;
-
-
     String taskId;
-    int status ;  //0 未处理  1 已参与  2已完成  3 已放弃
+    int status = -1;
     int pos;    //当前item position
-   // int reback;//  >0 delete   <0  finish
 
 
     private ProgressDialog pd ;
@@ -61,9 +71,17 @@ public class TaskDetailActivity extends BaseActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         pd = new ProgressDialog(this);
+        pd.setOnCancelListener(new DialogInterface.OnCancelListener() {
+            @Override
+            public void onCancel(DialogInterface dialogInterface) {
+                setResult(RESULT_OK);
+                finish();
+            }
+        });
         pd.show();
         getMyIntent();
     }
+
 
     private void setUi()
     {
@@ -86,7 +104,16 @@ public class TaskDetailActivity extends BaseActivity {
 
         scrollView = (ScrollView) findViewById(R.id.task_detail_scrollView);
         scrollView.smoothScrollTo(0,0);
+
         listView = (MyHeightListView) findViewById(R.id.task_detail_progress_listView);
+        processLayout = findViewById(R.id.task_detail_progress_layout);
+
+        textBtn = (ImageView) findViewById(R.id.task_detail_bottom_text_btn);
+        cycleBtn = (ImageView) findViewById(R.id.task_detail_bottom_oper_btn);
+        sendBtn = (ImageView) findViewById(R.id.task_detail_bottom_send_btn);
+        textLayout = findViewById(R.id.task_detail_bottom_text_layout);
+        operLayout = findViewById(R.id.task_detail_bottom_oper_layout);
+        editText = (EditText) findViewById(R.id.task_detail_bottom_edit);
     }
 
     private void setListener()
@@ -113,24 +140,54 @@ public class TaskDetailActivity extends BaseActivity {
 
             }
         });
+
+
+        sendBtn.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                addTaskRecodeToProcess();
+            }
+        });
+
+        cycleBtn.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                textLayout.setVisibility(View.GONE);
+                operLayout.setVisibility(View.VISIBLE);
+            }
+        });
+
+        textBtn.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                textLayout.setVisibility(View.VISIBLE);
+                operLayout.setVisibility(View.GONE);
+            }
+        });
     }
 
     private void setData()
     {
-//        list.add("界面设计");
-//        list.add("界面实现");
-//        list.add("头像修改");
-
-
-        switch (task.getStatus())
+        switch (status)
         {
             case 0:
+                processLayout.setVisibility(View.GONE);
+                listView.setVisibility(View.GONE);
+                textBtn.setVisibility(View.GONE);
                 break;
             case 1:
+                getTaskRecode();
+                textLayout.setVisibility(View.VISIBLE);
+                operLayout.setVisibility(View.GONE);
                 involveBtn.setText("完成");
                 break;
             case 2:
+                getTaskRecode();
+                bottomLayout.setVisibility(View.GONE);
+                break;
             case 3:
+                processLayout.setVisibility(View.GONE);
+                listView.setVisibility(View.GONE);
                 bottomLayout.setVisibility(View.GONE);
                 break;
         }
@@ -148,19 +205,28 @@ public class TaskDetailActivity extends BaseActivity {
         listView.setAdapter(adapter);
     }
 
+    //接收  待处理，， 已参与，，已完成，，已放弃的  详情查询
     private void getMyIntent() {
         lastIntent = getIntent();
+        status = lastIntent.getExtras().getInt("status");
         pos = lastIntent.getExtras().getInt("pos");
         taskId = lastIntent.getExtras().getString("taskId");
+        Log.w("detail",status + "-----" + pos + "-----" + taskId);
         new VolleyUtil().getTaskDetail(taskId, new UpdateListener() {
             @Override
             public void onSucceed(String s) {
                 task = JsonUtil.parseSingleJson(s);
                 if (task == null) {
                     //获取失败
+                    Toast.makeText(TaskDetailActivity.this,"获取失败",Toast.LENGTH_SHORT).show();
                     getDataFromLocal();
                 } else {
                     task = JsonUtil.parseSingleJson(s);
+                    if(task == null)
+                    {
+                        Toast.makeText(TaskDetailActivity.this,"解析失败",Toast.LENGTH_SHORT).show();
+                        getDataFromLocal();
+                    }
                     setContentView(R.layout.activity_task_detail);
                     setUi();
                     setListener();
@@ -176,77 +242,164 @@ public class TaskDetailActivity extends BaseActivity {
         });
     }
 
+
+    /**
+     * choice  表示是要放弃  还是参与（接收） 1 放弃   2参与
+     * status  表示从哪个地方传进来的请求
+     * @param choice
+     */
     public void myDialog(final int choice)
     {
-        //final Task task = getItem(pos);
         AlertDialog.Builder builder = new AlertDialog.Builder(this);
-        if(choice == 1) {//删除
-            switch (task.getStatus())
-            {
-                // 0  待处理（接受 或 拒绝）
-                // 1  已接受（中途放弃 或 任务完成）
-                // 2  已完成 （ 删除任务记录）
-                // 3  已放弃  （删除任务记录）
-
-                case 0:
-                case 1:
-                    builder.setTitle("是否放弃本次任务？");
-                    break;
-                case 2:
-                case 3:
-                    builder.setTitle("是否删除该任务记录？");
-                    break;
-            }
-        }else         //2完成
+        if(choice == 1)
+            builder.setTitle("是否放弃本次任务？");
+        else         //2完成
         {
-            if(task.getStatus() == 0 )
+            if(status == 0 )
             {
                 builder.setTitle("是否接受该任务？");
             }else
             {
                 builder.setTitle("是否完成该任务？");
             }
-            this.getExternalCacheDir();
         }
-
         builder.setMessage(task.getTitle());
         builder.setPositiveButton("确定", new DialogInterface.OnClickListener() {
             @Override
             public void onClick(DialogInterface dialogInterface, int i) {
 
                 DialogUtil.showDialog(TaskDetailActivity.this,null).show();
-
-                new VolleyUtil().quitTask(task.getId(), new UpdateListener() {
+                DialogUtil.onCancelListener(new DialogCancelListener() {
                     @Override
-                    public void onSucceed(String s) {
-                        DialogUtil.dissmiss();
-                        Toast.makeText(TaskDetailActivity.this,"操作成功",Toast.LENGTH_SHORT).show();
-                        if(choice == 1)
-                        {
-                            lastIntent.putExtra("reback",1);
-                        }else
-                        {
-                            lastIntent.putExtra("reback",-1);
-                        }
-                        //status = lastIntent.getExtras().getInt("status");
-                        lastIntent.putExtra("status",task.getStatus());
-                        lastIntent.putExtra("pos",pos);
-                        setResult(RESULT_OK,lastIntent);
-                        finish();
-                    }
+                    public void onCancel() {
 
-                    @Override
-                    public void onError(VolleyError error) {
                         DialogUtil.dissmiss();
-                        Toast.makeText(TaskDetailActivity.this,"操作失败",Toast.LENGTH_SHORT).show();
+                        Toast.makeText(TaskDetailActivity.this,"操作已取消",Toast.LENGTH_SHORT).show();
+                        MyApplication.getInstance().getMyQueue().cancelAll("quitTask");
+                        MyApplication.getInstance().getMyQueue().cancelAll("finishTask");
                     }
                 });
-
+               quitOrInvolve(choice);
             }
         });
         builder.setNegativeButton("取消",null);
         builder.create().show();
     }
+
+    //网络申请放弃获取参与任务
+    private void quitOrInvolve(int choice)
+    {
+        //删除
+        if(choice == 1)
+        {
+            new VolleyUtil().quitTask(task.getId(), new UpdateListener() {
+                @Override
+                public void onSucceed(String s) {
+                    lastIntent.putExtra("reback",-1);
+                    onsuccess(s);
+                }
+
+                @Override
+                public void onError(VolleyError error) {
+                    DialogUtil.dissmiss();
+                    Toast.makeText(TaskDetailActivity.this,"操作失败",Toast.LENGTH_SHORT).show();
+                }
+            });
+        }else
+        {
+            new VolleyUtil().finishTask(task.getId(), new UpdateListener() {
+                @Override
+                public void onSucceed(String s) {
+                    lastIntent.putExtra("reback",-1);
+                    onsuccess(s);
+                }
+
+                @Override
+                public void onError(VolleyError error) {
+                    DialogUtil.dissmiss();
+                    Toast.makeText(TaskDetailActivity.this,"操作失败",Toast.LENGTH_SHORT).show();
+                }
+            });
+        }
+    }
+    //操作成后的回调
+    private void onsuccess(String s)
+    {
+        if( s!= null && s.equals("1")) {
+            DialogUtil.dissmiss();
+            Toast.makeText(TaskDetailActivity.this, "操作成功", Toast.LENGTH_SHORT).show();
+
+            lastIntent.putExtra("status", status);
+            lastIntent.putExtra("pos", pos);
+            setResult(RESULT_OK, lastIntent);
+            finish();
+        }else
+        {
+            DialogUtil.dissmiss();
+            Toast.makeText(TaskDetailActivity.this,"操作失败",Toast.LENGTH_SHORT).show();
+        }
+    }
+
+    //如果是参与任务，则添加任务进度描述
+    private void addTaskRecodeToProcess()
+    {
+        String content = editText.getText().toString();
+        if(content == null || content.isEmpty())
+        {
+            Toast.makeText(TaskDetailActivity.this,"内容不能为空",Toast.LENGTH_SHORT).show();
+        }else
+        {
+            TaskProcess t = new TaskProcess(content,MyApplication.getPersonName(), DateUtil.getDateFromMillions(System.currentTimeMillis()+""));
+            list.add(t);
+            DialogUtil.showDialog(this,"正在添加").show();
+            ((InputMethodManager)getSystemService(INPUT_METHOD_SERVICE))
+                    .hideSoftInputFromWindow(TaskDetailActivity.this.getCurrentFocus().getWindowToken(), InputMethodManager.HIDE_NOT_ALWAYS);
+            new Handler().postDelayed(new Runnable() {
+                @Override
+                public void run() {
+
+                    if(adapter == null)
+                    {
+                        adapter = new MyTaskProgressListViewAdapter(TaskDetailActivity.this,list);
+                        listView.setAdapter(adapter);
+                    }else
+                        adapter.notifyDataSetChanged();
+                    DialogUtil.dissmiss();
+                    editText.setText("");
+                  //  Toast.makeText(TaskDetailActivity.this,t.getTime(),Toast.LENGTH_SHORT).show();
+                }
+            },3000);
+
+
+        }
+    }
+    //如果是参与任务和历史完成任务，查询进度记录
+    private void getTaskRecode()
+    {
+        new VolleyUtil().getTaskProcessRecord(taskId, new UpdateListener() {
+            @Override
+            public void onSucceed(String s) {
+                if(s == null || s.equals(""))
+                {
+
+                }else
+                {
+                    list = JsonUtil.parseTaskProcess(s);
+                    if(list.size() != 0)
+                    {
+                        setAdapter();
+                    }
+                }
+            }
+
+            @Override
+            public void onError(VolleyError error) {
+
+            }
+        });
+    }
+
+
 
     //没有网络，用来测试的数据
     private void getDataFromLocal()

@@ -39,10 +39,12 @@ import demo.yc.formalmanagersystem.fragment.HomePageFrag;
 import demo.yc.formalmanagersystem.fragment.P_PropertyManagementFragment;
 import demo.yc.formalmanagersystem.fragment.PersonInfoFrag;
 import demo.yc.formalmanagersystem.fragment.TaskManageFrag;
+import demo.yc.formalmanagersystem.fragment.Task_Involve_Frag;
 import demo.yc.formalmanagersystem.models.FileInfo;
 import demo.yc.formalmanagersystem.models.Person;
 import demo.yc.formalmanagersystem.models.Plan;
 import demo.yc.formalmanagersystem.models.Property;
+import demo.yc.formalmanagersystem.models.Task;
 import demo.yc.formalmanagersystem.services.DownLoadService;
 import demo.yc.formalmanagersystem.util.ActivityCollector;
 import demo.yc.formalmanagersystem.util.DateUtil;
@@ -352,7 +354,7 @@ public class MainActivity extends BaseActivity implements View.OnClickListener, 
             else
                 Glide.with(this).load(p.getPicture()).into(personHead);
         }
-
+        MyApplication.setPersonName(person.getName());
         personPosition.setText(PersonUtil.getPositonName(person.getQuartersId()));
         personName.setText(person.getName());
     }
@@ -550,7 +552,7 @@ public class MainActivity extends BaseActivity implements View.OnClickListener, 
     @Override
     protected void onDestroy() {
         super.onDestroy();
-        unregisterReceiver(mReceiver);
+//        unregisterReceiver(mReceiver);
     }
 
     BroadcastReceiver mReceiver = new BroadcastReceiver() {
@@ -569,4 +571,18 @@ public class MainActivity extends BaseActivity implements View.OnClickListener, 
             }
         }
     };
+
+    public void updateHomePageTaskList(ArrayList<Task> newList)
+    {
+       ((HomePageFrag)fragments[1]).updateAllTaskList(newList);
+    }
+    public void updateHomePageTaskList(String taskId)
+    {
+        ((HomePageFrag)fragments[1]).updateSingleTaskList(taskId);
+    }
+
+    public void updateInvolveTaskList(String taskId)
+    {
+        ((Task_Involve_Frag)(((TaskManageFrag)fragments[2]).list.get(1))).updateTaskList(taskId);
+    }
 }

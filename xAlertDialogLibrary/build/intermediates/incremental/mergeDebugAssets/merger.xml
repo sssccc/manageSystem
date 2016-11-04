@@ -1,2 +1,2 @@
 <?xml version="1.0" encoding="utf-8"?>
-<merger version="3"><dataSet config="main"><source path="G:\git hub\manageSystem\xAlertDialogLibrary\src\main\assets"/><source path="G:\git hub\manageSystem\xAlertDialogLibrary\build\generated\assets\shaders\debug"/></dataSet><dataSet config="debug"><source path="G:\git hub\manageSystem\xAlertDialogLibrary\src\debug\assets"/></dataSet></merger>
+<merger version="3"><dataSet config="main"><source path="F:\yc\FormalManagerSystem\manageSystem\xAlertDialogLibrary\src\main\assets"/><source path="F:\yc\FormalManagerSystem\manageSystem\xAlertDialogLibrary\build\generated\assets\shaders\debug"/></dataSet><dataSet config="debug"><source path="F:\yc\FormalManagerSystem\manageSystem\xAlertDialogLibrary\src\debug\assets"/></dataSet></merger>

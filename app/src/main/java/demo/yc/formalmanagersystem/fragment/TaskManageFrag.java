@@ -29,7 +29,7 @@ public class TaskManageFrag extends Fragment implements View.OnClickListener{
 
     MainActivity activity;
     View view;
-    ArrayList<TaskBaseFrag> list = new ArrayList<>();
+    public ArrayList<TaskBaseFrag> list = new ArrayList<>();
     FragmentManager fm;
     FragmentTransaction ft;
     int currentPager = 0;

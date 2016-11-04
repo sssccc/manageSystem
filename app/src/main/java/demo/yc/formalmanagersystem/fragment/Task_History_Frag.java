@@ -2,11 +2,11 @@ package demo.yc.formalmanagersystem.fragment;
 
 
 import android.content.Intent;
+import android.graphics.Color;
 import android.os.Bundle;
-import android.os.Handler;
-import android.os.Message;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
+import android.support.v4.widget.SwipeRefreshLayout;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -33,34 +33,27 @@ import demo.yc.formalmanagersystem.models.Task;
 import demo.yc.formalmanagersystem.util.JsonUtil;
 import demo.yc.formalmanagersystem.util.VolleyUtil;
 import demo.yc.formalmanagersystem.view.MySlideListView2;
-import demo.yc.formalmanagersystem.view.RefreshableView;
 
 /**
  * A simple {@link Fragment} subclass.
  */
-public class Task_History_Frag extends TaskBaseFrag {
+public class Task_History_Frag extends TaskBaseFrag implements SwipeRefreshLayout.OnRefreshListener{
 
 
     View view;
-    RefreshableView refreshableView;
     MySlideListView2 listView;
     MySlideListViewAdapter adapter;
     ArrayList<Task> list = new ArrayList<>();
 
 
     TextView numTv;
+    SwipeRefreshLayout refreshLayout;
 
     public Task_History_Frag() {
         // Required empty public constructor
     }
 
 
-    private Handler handler = new Handler() {
-        @Override
-        public void handleMessage(Message msg) {
-        }
-
-    };
 
     @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {
@@ -105,13 +98,24 @@ public class Task_History_Frag extends TaskBaseFrag {
             @Override
             public void onError(VolleyError error) {
                 getDataFromLocal();
-                refreshableView.finishRefreshing("task_history");
+
             }
         });
     }
 
     private void setUi() {
-        refreshableView = (RefreshableView) view.findViewById(R.id.refresh_view_in_history);
+        refreshLayout = (SwipeRefreshLayout) view.findViewById(R.id.task_history_refresh_layout);
+        refreshLayout.setColorSchemeColors(Color.BLUE,Color.GREEN);
+        refreshLayout.setDistanceToTriggerSync(250);
+        refreshLayout.setOnRefreshListener(this);
+        refreshLayout.post(new Runnable() {
+            @Override
+            public void run() {
+                refreshLayout.setRefreshing(true);
+            }
+        });
+        onRefresh();
+       // refreshableView = (RefreshableView) view.findViewById(R.id.refresh_view_in_history);
         numTv = (TextView) view.findViewById(R.id.history_list_num);
         listView = (MySlideListView2) view.findViewById(R.id.task_history_listView);
         listView.initSlideMode(1);
@@ -119,8 +123,9 @@ public class Task_History_Frag extends TaskBaseFrag {
 
     //请求数据之后，绑定adapter
     private void showListView() {
-        refreshableView.finishRefreshing("history");
-        adapter = new MySlideListViewAdapter(this, getContext(), list);
+       // refreshableView.finishRefreshing("history");
+        refreshLayout.setRefreshing(false);
+        adapter = new MySlideListViewAdapter(this, getContext(), list,2);
         listView.setAdapter(adapter);
         adapter.notifyDataSetChanged();
         numTv.setText(list.size() + "");
@@ -149,17 +154,10 @@ public class Task_History_Frag extends TaskBaseFrag {
                 Intent intent = new Intent(getContext(), TaskDetailActivity.class);
                 intent.putExtra("taskId", list.get(i).getId());
                 intent.putExtra("pos", i);
+                intent.putExtra("status",2);
                 getParentFragment().startActivityForResult(intent, 1);
             }
         });
-
-        refreshableView.setOnRefreshListener(new RefreshableView.PullToRefreshListener() {
-            @Override
-            public void onRefresh() {
-                handler.sendEmptyMessage(0x112);
-                setData();
-            }
-        }, 12);
 //
     }
 
@@ -189,4 +187,8 @@ public class Task_History_Frag extends TaskBaseFrag {
         showListView();
     }
 
+    @Override
+    public void onRefresh() {
+        setData();
+    }
 }

@@ -40,7 +40,6 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:id="@+id/task_detail_list_item_name"
-            android:text="何永财"
             android:layout_margin="1dp" />
         <TextView
             android:textSize="13sp"
@@ -49,7 +48,6 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:id="@+id/task_detail_list_item_time"
-            android:text="16/07/20"
             android:layout_margin="1dp" />
 
 

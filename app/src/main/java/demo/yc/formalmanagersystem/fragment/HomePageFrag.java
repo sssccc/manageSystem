@@ -187,7 +187,7 @@ public class HomePageFrag extends TaskBaseFrag {
     {
         notifyLayout.setVisibility(View.GONE);
         listView.setVisibility(View.VISIBLE);
-        listViewAdapter = new MySlideListViewAdapter(this,getContext(),taskList);
+        listViewAdapter = new MySlideListViewAdapter(this,getContext(),taskList,1);
         listView.setAdapter(listViewAdapter);
         numTv.setText(taskList.size()+"");
     }
@@ -200,6 +200,7 @@ public class HomePageFrag extends TaskBaseFrag {
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
                 Intent intent = new Intent(getContext(), TaskDetailActivity.class);
                 intent.putExtra("taskId",taskList.get(position).getId());
+                intent.putExtra("status",1);
                 intent.putExtra("pos",position);
                 startActivityForResult(intent,100);
             }
@@ -251,6 +252,7 @@ public class HomePageFrag extends TaskBaseFrag {
     public void myDelete(int pos, int flag)
     {
         Toast.makeText(getContext(),"homePager...该任务已放弃",Toast.LENGTH_SHORT).show();
+        ((MainActivity)getActivity()).updateInvolveTaskList(taskList.get(pos).getId());
         taskList.remove(pos);
         listViewAdapter.notifyDataSetChanged();
         listView.slideBack();
@@ -322,6 +324,24 @@ public class HomePageFrag extends TaskBaseFrag {
         Log.w("task","收到来自服务的通知");
         notifyLayout.setVisibility(View.VISIBLE);
         notifyMessage.setText(msg);
+    }
+
+    public void updateAllTaskList(ArrayList<Task> newList)
+    {
+        taskList = newList;
+        listViewAdapter.notifyDataSetChanged();
+    }
+    public void updateSingleTaskList(String taskId)
+    {
+        for(Task t : taskList)
+        {
+            if(t.getId().equals(taskId))
+            {
+                taskList.remove(t);
+                break;
+            }
+        }
+        listViewAdapter.notifyDataSetChanged();
     }
 
 }

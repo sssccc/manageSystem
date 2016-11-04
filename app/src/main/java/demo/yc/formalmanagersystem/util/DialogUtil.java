@@ -3,6 +3,7 @@ package demo.yc.formalmanagersystem.util;
 import android.app.ProgressDialog;
 import android.content.Context;
 import android.content.DialogInterface;
+import android.util.Log;
 
 import demo.yc.formalmanagersystem.view.DialogCancelListener;
 
@@ -15,6 +16,7 @@ public class DialogUtil {
     public static ProgressDialog showDialog(Context context, String content)
     {
         if(pd == null) {
+            Log.w("pd","create--->"+context.toString());
             pd = new ProgressDialog(context);
         }
         else

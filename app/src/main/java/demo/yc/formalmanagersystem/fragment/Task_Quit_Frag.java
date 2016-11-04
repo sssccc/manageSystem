@@ -2,9 +2,11 @@ package demo.yc.formalmanagersystem.fragment;
 
 
 import android.content.Intent;
+import android.graphics.Color;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
+import android.support.v4.widget.SwipeRefreshLayout;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -35,7 +37,7 @@ import demo.yc.formalmanagersystem.view.MySlideListView2;
 /**
  * A simple {@link Fragment} subclass.
  */
-public class Task_Quit_Frag extends TaskBaseFrag {
+public class Task_Quit_Frag extends TaskBaseFrag implements SwipeRefreshLayout.OnRefreshListener{
 
 
     public Task_Quit_Frag() {
@@ -47,6 +49,7 @@ public class Task_Quit_Frag extends TaskBaseFrag {
     MySlideListViewAdapter adapter;
     ArrayList<Task> list = new ArrayList<>();
 
+    SwipeRefreshLayout refreshLayout;
     TextView numTv;
 
     @Override
@@ -77,6 +80,7 @@ public class Task_Quit_Frag extends TaskBaseFrag {
                 if( s == null || !s.startsWith("[")) {
                     Log.w("task","quitTask后台服务器返回数据异常");
                     Toast.makeText(getContext(), "获取数据异常", Toast.LENGTH_SHORT).show();
+                    getDataFromLocal();
                             return;
                 }
 
@@ -88,6 +92,7 @@ public class Task_Quit_Frag extends TaskBaseFrag {
                 {
                     Log.w("task","json task wei 空");
                     Toast.makeText(getContext(),"暂无数据",Toast.LENGTH_SHORT).show();
+                    getDataFromLocal();
                 }
             }
 
@@ -95,12 +100,25 @@ public class Task_Quit_Frag extends TaskBaseFrag {
             public void onError(VolleyError error) {
                 Toast.makeText(getContext(),"quitTask数据获取异常",Toast.LENGTH_SHORT).show();
                 Log.w("task","quitTask访问后台服务器失败："+error.toString());
+                getDataFromLocal();
             }
         });
     }
 
     private void setUi()
     {
+        refreshLayout = (SwipeRefreshLayout) view.findViewById(R.id.task_quit_refresh_layout);
+        refreshLayout.setColorSchemeColors(Color.BLUE,Color.GREEN);
+        refreshLayout.setDistanceToTriggerSync(250);
+        refreshLayout.setOnRefreshListener(this);
+        refreshLayout.post(new Runnable() {
+            @Override
+            public void run() {
+                refreshLayout.setRefreshing(true);
+            }
+        });
+        onRefresh();
+
         numTv = (TextView) view.findViewById(R.id.quit_list_num);
         listView = (MySlideListView2) view.findViewById(R.id.task_quit_listView);
         listView.initSlideMode(1);
@@ -109,7 +127,8 @@ public class Task_Quit_Frag extends TaskBaseFrag {
     //网络请求数据之后，绑定adapter 显示listView
     private void showListView()
     {
-        adapter = new MySlideListViewAdapter(this,getContext(),list);
+        refreshLayout.setRefreshing(false);
+        adapter = new MySlideListViewAdapter(this,getContext(),list,3);
         listView.setAdapter(adapter);
         numTv.setText(list.size()+"");
 
@@ -123,17 +142,23 @@ public class Task_Quit_Frag extends TaskBaseFrag {
                 Intent intent = new Intent(getContext(), TaskDetailActivity.class);
                 intent.putExtra("taskId", list.get(i).getId());
                 intent.putExtra("pos",i);
+                intent.putExtra("status",3);
                 getParentFragment().startActivityForResult(intent, 1);
             }
         });
     }
 
+
+    /**
+     * pos  坐标  flag  在这里没有用
+     * @param pos
+     * @param flag
+     */
     @Override
     public void myDelete(int pos,int flag) {
         Toast.makeText(getContext(), "改任务记录已删除", Toast.LENGTH_SHORT).show();
         list.remove(pos);
         adapter.notifyDataSetChanged();
-
         numTv.setText(list.size()+"");
         listView.slideBack();
     }
@@ -147,12 +172,9 @@ public class Task_Quit_Frag extends TaskBaseFrag {
     public void myRefresh(int requestCode, Intent intent) {
 
     }
-
-
     //没有网络，用来测试的数据
     private void getDataFromLocal()
     {
-
         StringBuffer sb =new StringBuffer();
         try {
             InputStream is = getResources().getAssets().open("task.txt");
@@ -169,5 +191,10 @@ public class Task_Quit_Frag extends TaskBaseFrag {
         }
         list = JsonUtil.parseTaskJson(sb.toString());
         showListView();
+    }
+
+    @Override
+    public void onRefresh() {
+        setData();
     }
 }

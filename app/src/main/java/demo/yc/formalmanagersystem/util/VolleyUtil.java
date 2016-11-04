@@ -7,6 +7,7 @@ import android.widget.Toast;
 import com.android.volley.AuthFailureError;
 import com.android.volley.Request;
 import com.android.volley.Response;
+import com.android.volley.Response.ErrorListener;
 import com.android.volley.VolleyError;
 import com.android.volley.toolbox.StringRequest;
 
@@ -48,7 +49,7 @@ public class VolleyUtil {
             public void onResponse(String s) {
                 listener.onSucceed(s);
             }
-        }, new Response.ErrorListener() {
+        }, new ErrorListener() {
             @Override
             public void onErrorResponse(VolleyError volleyError) {
                 listener.onError(volleyError);
@@ -80,7 +81,7 @@ public class VolleyUtil {
             public void onResponse(String s) {
                 updateListener.onSucceed(s);
             }
-        }, new Response.ErrorListener() {
+        }, new ErrorListener() {
             @Override
             public void onErrorResponse(VolleyError volleyError) {
                 updateListener.onError(volleyError);
@@ -130,7 +131,7 @@ public class VolleyUtil {
             public void onResponse(String s) {
                 updateListener.onSucceed(s);
             }
-        }, new Response.ErrorListener() {
+        }, new ErrorListener() {
             @Override
             public void onErrorResponse(VolleyError volleyError) {
                 updateListener.onError(volleyError);
@@ -185,7 +186,7 @@ public class VolleyUtil {
             public void onResponse(String s) {
                 updateListener.onSucceed(s);
         }
-        }, new Response.ErrorListener() {
+        }, new ErrorListener() {
             @Override
             public void onErrorResponse(VolleyError volleyError) {
                 updateListener.onError(volleyError);
@@ -237,7 +238,7 @@ public class VolleyUtil {
             public void onResponse(String s) {
                 updateListener.onSucceed(s);
             }
-        }, new Response.ErrorListener() {
+        }, new ErrorListener() {
             @Override
             public void onErrorResponse(VolleyError volleyError) {
                 updateListener.onError(volleyError);
@@ -283,7 +284,7 @@ public class VolleyUtil {
                 Log.w("person","save"+s);
                 updateListener.onSucceed(s);
             }
-        }, new Response.ErrorListener() {
+        }, new ErrorListener() {
             @Override
             public void onErrorResponse(VolleyError volleyError) {
                 Log.w("person","save error"+volleyError.toString());
@@ -313,7 +314,7 @@ public class VolleyUtil {
                 return params;
             }
         };
-        request2.addMarker("updatePersonInfo");
+        request2.setTag("updatePersonInfo");
         MyApplication.getInstance().getMyQueue().add(request2);
     }
 
@@ -336,7 +337,7 @@ public class VolleyUtil {
             public void onResponse(String s) {
                 updateListener.onSucceed(s);
             }
-        }, new Response.ErrorListener() {
+        }, new ErrorListener() {
             @Override
             public void onErrorResponse(VolleyError volleyError) {
                 updateListener.onError(volleyError);
@@ -358,7 +359,7 @@ public class VolleyUtil {
                 return params;
             }
         };
-        request2.addMarker("quitTask");
+        request2.setTag("quitTask");
         MyApplication.getInstance().getMyQueue().add(request2);
     }
 
@@ -370,7 +371,7 @@ public class VolleyUtil {
             public void onResponse(String s) {
                 updateListener.onSucceed(s);
             }
-        }, new Response.ErrorListener() {
+        }, new ErrorListener() {
             @Override
             public void onErrorResponse(VolleyError volleyError) {
                 updateListener.onError(volleyError);
@@ -392,7 +393,7 @@ public class VolleyUtil {
                 return params;
             }
         };
-        request2.addMarker("finishTask");
+        request2.setTag("finishTask");
         MyApplication.getInstance().getMyQueue().add(request2);
     }
 
@@ -413,7 +414,7 @@ public class VolleyUtil {
                 Log.w("person",s);
                 updateListener.onSucceed(s);
             }
-        }, new Response.ErrorListener() {
+        }, new ErrorListener() {
             @Override
             public void onErrorResponse(VolleyError volleyError) {
                 updateListener.onError(volleyError);
@@ -438,7 +439,7 @@ public class VolleyUtil {
             public void onResponse(String s) {
                 updateListener.onSucceed(s);
             }
-        }, new Response.ErrorListener() {
+        }, new ErrorListener() {
             @Override
             public void onErrorResponse(VolleyError volleyError) {
                 updateListener.onError(volleyError);
@@ -463,7 +464,7 @@ public class VolleyUtil {
             public void onResponse(String s) {
                 updateListener.onSucceed(s);
             }
-        }, new Response.ErrorListener() {
+        }, new ErrorListener() {
             @Override
             public void onErrorResponse(VolleyError volleyError) {
                 updateListener.onError(volleyError);
@@ -486,7 +487,7 @@ public class VolleyUtil {
             public void onResponse(String s) {
                 updateListener.onSucceed(s);
             }
-        }, new Response.ErrorListener() {
+        }, new ErrorListener() {
             @Override
             public void onErrorResponse(VolleyError volleyError) {
                 updateListener.onError(volleyError);
@@ -510,7 +511,7 @@ public class VolleyUtil {
             public void onResponse(String s) {
                 updateListener.onSucceed(s);
             }
-        }, new Response.ErrorListener() {
+        }, new ErrorListener() {
             @Override
             public void onErrorResponse(VolleyError volleyError) {
                 updateListener.onError(volleyError);
@@ -534,7 +535,7 @@ public class VolleyUtil {
             public void onResponse(String s) {
                 updateListener.onSucceed(s);
             }
-        }, new Response.ErrorListener() {
+        }, new ErrorListener() {
             @Override
             public void onErrorResponse(VolleyError volleyError) {
                 updateListener.onError(volleyError);
@@ -558,7 +559,7 @@ public class VolleyUtil {
             public void onResponse(String s) {
                 updateListener.onSucceed(s);
             }
-        }, new Response.ErrorListener() {
+        }, new ErrorListener() {
             @Override
             public void onErrorResponse(VolleyError volleyError) {
                 updateListener.onError(volleyError);
@@ -582,7 +583,7 @@ public class VolleyUtil {
             public void onResponse(String s) {
                 updateListener.onSucceed(s);
             }
-        }, new Response.ErrorListener() {
+        }, new ErrorListener() {
             @Override
             public void onErrorResponse(VolleyError volleyError) {
                 updateListener.onError(volleyError);
@@ -606,7 +607,7 @@ public class VolleyUtil {
             public void onResponse(String s) {
                 updateListener.onSucceed(s);
             }
-        }, new Response.ErrorListener() {
+        }, new ErrorListener() {
             @Override
             public void onErrorResponse(VolleyError volleyError) {
                 updateListener.onError(volleyError);
@@ -629,13 +630,32 @@ public class VolleyUtil {
             public void onResponse(String s) {
                 updateListener.onSucceed(s);
             }
-        }, new Response.ErrorListener() {
+        }, new ErrorListener() {
             @Override
             public void onErrorResponse(VolleyError volleyError) {
                 updateListener.onError(volleyError);
             }
         });
         request2.setTag("GetTaskDetail");
+        MyApplication.getInstance().getMyQueue().add(request2);
+    }
+
+    public synchronized void getTaskProcessRecord(final String taskId,final UpdateListener updateListener)
+    {
+
+        String url2 = ROOT_URL+"task/process?taskId="+taskId+"&role="+MyApplication.getRole();
+        StringRequest request2 = new StringRequest(Request.Method.GET, url2, new Response.Listener<String>() {
+            @Override
+            public void onResponse(String s) {
+                updateListener.onSucceed(s);
+            }
+        }, new ErrorListener() {
+            @Override
+            public void onErrorResponse(VolleyError volleyError) {
+                updateListener.onError(volleyError);
+            }
+        });
+        request2.setTag("getTaskPrecess");
         MyApplication.getInstance().getMyQueue().add(request2);
     }
 
@@ -656,7 +676,7 @@ public class VolleyUtil {
             public void onResponse(String s) {
                 updateListener.onSucceed(s);
             }
-        }, new Response.ErrorListener() {
+        }, new ErrorListener() {
             @Override
             public void onErrorResponse(VolleyError volleyError) {
                 updateListener.onError(volleyError);
