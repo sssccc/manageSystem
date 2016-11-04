@@ -9,47 +9,51 @@ public class Task
     private String title;            // 标题
     private String content;        //  描述
     private String enclosure;      //  附件
-    private String startData;      //  开始时间    毫秒
+    private String startDate;      //  开始时间    毫秒
     private String deadline;        //  结束时间   毫秒
     private String dead;
-    private String start;
-    private int status ;            //状态    任务完成情况，0：未完成，1：已完成
-    private int avaiable;
-    //是否冻结任务，1:是，0:否
+    //private String start;
+    private ProjectTeam projectTeam;
+    private Quarters quarters;
     private String administor;      //  发布者
+    private int status ;            //状态    任务完成情况，0：未完成，1：已完成
+  //  private int avaiable;
+    //是否冻结任务，1:是，0:否
+
 //    private String participator;    //  参与者
     private int taken ;         //任务是否被接收    1接收  0  拒绝
-    private String quartersId;    //所属分类
-    private String projectId;     //项目组    0表示所有人可以参与
+   // private String quartersId;    //所属分类
+   // private String projectId;     //项目组    0表示所有人可以参与
+
 
 
 
 
     public Task(){}
 
-    public Task(String title,String deadline,int status,String projectId)
-    {
-        this.title = title;
-        this.deadline = deadline;
-        this.status = status;
-        this.projectId = projectId;
-    }
+//    public Task(String title,String deadline,int status,String projectId)
+//    {
+//        this.title = title;
+//        this.deadline = deadline;
+//        this.status = status;
+//        this.projectId = projectId;
+//    }
 
-    public Task(String title,String deadline,int status)
-    {
-        this.title = title;
-        this.deadline = deadline;
-        this.status = status;
-    }
+//    public Task(String title,String deadline,int status)
+//    {
+//        this.title = title;
+//        this.deadline = deadline;
+//        this.status = status;
+//    }
 
-
-    public int getAvaiable() {
-        return avaiable;
-    }
-
-    public void setAvaiable(int avaiable) {
-        this.avaiable = this.avaiable;
-    }
+//
+//    public int getAvaiable() {
+//        return avaiable;
+//    }
+//
+//    public void setAvaiable(int avaiable) {
+//        this.avaiable = this.avaiable;
+//    }
 
     public String getContent() {
         return content;
@@ -75,29 +79,29 @@ public class Task
         this.enclosure = enclosure;
     }
 
+//
+//    public String getProjectId() {
+//        return projectId;
+//    }
+//
+//    public void setProjectId(String projectId) {
+//        this.projectId = projectId;
+//    }
+//
+//    public String getQuartersId() {
+//        return quartersId;
+//    }
+//
+//    public void setQuartersId(String quartersId) {
+//        this.quartersId = quartersId;
+//    }
 
-    public String getProjectId() {
-        return projectId;
+    public String getStartDate() {
+        return startDate;
     }
 
-    public void setProjectId(String projectId) {
-        this.projectId = projectId;
-    }
-
-    public String getQuartersId() {
-        return quartersId;
-    }
-
-    public void setQuartersId(String quartersId) {
-        this.quartersId = quartersId;
-    }
-
-    public String getStartData() {
-        return startData;
-    }
-
-    public void setStartData(String startData) {
-        this.startData = startData;
+    public void setStartDate(String startDate) {
+        this.startDate = startDate;
     }
 
     public int getStatus() {
@@ -148,11 +152,55 @@ public class Task
         this.dead = dead;
     }
 
-    public String getStart() {
-        return start;
+//    public String getStart() {
+//        return start;
+//    }
+//
+//    public void setStart(String start) {
+//        this.start = start;
+//    }
+
+    public ProjectTeam getProjectTeam() {
+        return projectTeam;
     }
 
-    public void setStart(String start) {
-        this.start = start;
+    public void setProjectTeam(ProjectTeam projectTeam) {
+        this.projectTeam = projectTeam;
     }
+
+    public Quarters getQuarters() {
+        return quarters;
+    }
+
+    public void setQuarters(Quarters quarters) {
+        this.quarters = quarters;
+    }
+
+    public static class Quarters
+    {
+        private String name ;
+        public void setName(String name)
+        {
+            this.name = name;
+        }
+        public String getName()
+        {
+            return this.name;
+        }
+    }
+    public static class ProjectTeam
+    {
+        private String name ;
+        public void setName(String name)
+        {
+            this.name = name;
+        }
+        public String getName()
+        {
+            return this.name;
+        }
+    }
+
 }
+
+

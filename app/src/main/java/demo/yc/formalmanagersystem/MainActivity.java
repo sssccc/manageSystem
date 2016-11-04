@@ -151,6 +151,8 @@ public class MainActivity extends BaseActivity implements View.OnClickListener, 
         db = MyDBHandler.getInstance(this);
         setUi();
         getDataFromDB();
+       // getPersonDataFromLocal();
+       // getPlanDataFromLocal();
         setListener();
 //
 ////        IntentFilter filter = new IntentFilter();
@@ -294,7 +296,7 @@ public class MainActivity extends BaseActivity implements View.OnClickListener, 
 
             @Override
             public void onError(VolleyError error) {
-                Toast.makeText(MainActivity.this, "plan...mainactivity..error", Toast.LENGTH_LONG).show();
+               // Toast.makeText(MainActivity.this, "plan...mainactivity..error", Toast.LENGTH_LONG).show();
                 Log.w("plen", error.toString());
                 getPlanDataFromLocal();
             }
@@ -355,6 +357,7 @@ public class MainActivity extends BaseActivity implements View.OnClickListener, 
                 Glide.with(this).load(p.getPicture()).into(personHead);
         }
         MyApplication.setPersonName(person.getName());
+        MyApplication.setPersonId(person.getId());
         personPosition.setText(PersonUtil.getPositonName(person.getQuartersId()));
         personName.setText(person.getName());
     }

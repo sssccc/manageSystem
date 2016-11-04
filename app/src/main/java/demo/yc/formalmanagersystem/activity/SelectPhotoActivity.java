@@ -26,6 +26,7 @@ import demo.yc.formalmanagersystem.contentvalues.PersonInfoContent;
 import demo.yc.formalmanagersystem.contentvalues.SelectPhotoContent;
 import demo.yc.formalmanagersystem.util.DialogUtil;
 import demo.yc.formalmanagersystem.util.FileUtil;
+import demo.yc.formalmanagersystem.util.VolleyUtil;
 import demo.yc.formalmanagersystem.view.CircleImageView;
 import demo.yc.formalmanagersystem.view.DialogCancelListener;
 import okhttp3.Call;
@@ -217,21 +218,21 @@ public class SelectPhotoActivity extends BaseActivity implements View.OnClickLis
 
         //封装数据类型，图片和用户名
         MultipartBody.Builder builder = new MultipartBody.Builder().setType(MultipartBody.FORM);
-        builder.addFormDataPart("img",filePath, RequestBody.create(UPDATE_IMAGE_TYPE, file));
-        builder.addFormDataPart("userId",MyApplication.getUser().getId());
+        builder.addFormDataPart("file",filePath, RequestBody.create(UPDATE_IMAGE_TYPE, file));
+        builder.addFormDataPart("id",MyApplication.getPersonId());
 
         //包含图片和参数的数据体
         MultipartBody requestBody = builder.build();
         //包装请求体
-        Request request = new Request.Builder()
-                .url("http://192.168.1.124:8888/information/update")
+        final Request request = new Request.Builder()
+                .url(VolleyUtil.ROOT_URL+"information/image/upload")
                 .post(requestBody)
                 .build();
 
         client.newCall(request).enqueue(new Callback() {
             @Override
             public void onFailure(Call call, IOException e) {
-                Log.w("file","failure......");
+                Log.w("file","上传图片failure......"+e.getLocalizedMessage());
                 Looper.prepare();
                 mHandler.sendEmptyMessage(UPDATE_ERROR);
                 Looper.loop();
@@ -239,9 +240,29 @@ public class SelectPhotoActivity extends BaseActivity implements View.OnClickLis
 
             @Override
             public void onResponse(Call call, Response response) throws IOException {
-                Looper.prepare();
-                mHandler.sendEmptyMessage(UPDATE_OK);
-                Looper.loop();
+
+                if(response.isSuccessful())
+                {
+                    if(response.body().string().equals("1"))
+                    {
+                        Log.w("file","上传图片ok......"+response.body().string());
+                        Looper.prepare();
+                        mHandler.sendEmptyMessage(UPDATE_OK);
+                        Looper.loop();
+                    }else
+                    {
+                        Log.w("file","上传图片failure......"+response.body().string());
+                        Looper.prepare();
+                        mHandler.sendEmptyMessage(UPDATE_ERROR);
+                        Looper.loop();
+                    }
+                }else
+                {
+                    Log.w("file","上传图片failure......"+response.body().string());
+                    Looper.prepare();
+                    mHandler.sendEmptyMessage(UPDATE_ERROR);
+                    Looper.loop();
+                }
             }
         });
     }

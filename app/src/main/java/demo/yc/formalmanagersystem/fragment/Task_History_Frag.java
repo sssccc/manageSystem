@@ -77,11 +77,12 @@ public class Task_History_Frag extends TaskBaseFrag implements SwipeRefreshLayou
         new VolleyUtil().getHistoryTaskList(MyApplication.getUser().getId(), new UpdateListener() {
             @Override
             public void onSucceed(String s) {
+                refreshLayout.setRefreshing(false);
                 Log.w("task", "historyTask访问后台服务器成功:" + s);
-
                 if (s == null || !s.startsWith("[")) {
                     Log.w("task", "history后台服务器返回数据异常");
                     Toast.makeText(getContext(), "获取数据异常", Toast.LENGTH_SHORT).show();
+                    getDataFromLocal();
                     return;
                 }
 
@@ -92,13 +93,14 @@ public class Task_History_Frag extends TaskBaseFrag implements SwipeRefreshLayou
                 } else {
                     Log.w("task", "json task 为 空");
                     Toast.makeText(getContext(), "暂无数据", Toast.LENGTH_SHORT).show();
+                    getDataFromLocal();
                 }
             }
 
             @Override
             public void onError(VolleyError error) {
+                refreshLayout.setRefreshing(false);
                 getDataFromLocal();
-
             }
         });
     }

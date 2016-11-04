@@ -4,7 +4,6 @@ import android.app.ProgressDialog;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Bundle;
-import android.os.Handler;
 import android.support.v7.app.AlertDialog;
 import android.util.Log;
 import android.view.View;
@@ -191,48 +190,60 @@ public class TaskDetailActivity extends BaseActivity {
                 bottomLayout.setVisibility(View.GONE);
                 break;
         }
+        Log.w("task","show date-->"+task.getDeadline()+"....."+task.getStartDate());
         title.setText(task.getTitle());
         name.setText(task.getAdministor());
-        time.setText(task.getStart()+"至"+task.getDead());
+        time.setText(DateUtil.getDateFromMillions(task.getStartDate())+"至"+DateUtil.getDateFromMillions(task.getDeadline()));
         describe.setText(task.getContent());
-        cateName.setText(task.getProjectId());
-        groupName.setText(task.getQuartersId());
-    }
+        cateName.setText(task.getQuarters().getName());
+        groupName.setText(task.getProjectTeam().getName());
 
+    }
     private void setAdapter()
     {
-        adapter = new MyTaskProgressListViewAdapter(this,list);
-        listView.setAdapter(adapter);
+        if(adapter == null) {
+            adapter = new MyTaskProgressListViewAdapter(this, list);
+            listView.setAdapter(adapter);
+        }else
+        {
+            adapter.notifyDataSetChanged();
+        }
     }
 
     //接收  待处理，， 已参与，，已完成，，已放弃的  详情查询
     private void getMyIntent() {
         lastIntent = getIntent();
-        status = lastIntent.getExtras().getInt("status");
-        pos = lastIntent.getExtras().getInt("pos");
-        taskId = lastIntent.getExtras().getString("taskId");
+        //status = lastIntent.getExtras().getInt("status");
+       // pos = lastIntent.getExtras().getInt("pos");
+      //   lastIntent.getExtras().getString("taskId");
+        taskId = "61dfbab4630142cd904d29ba5c48c3df";
+        status = 1;
         Log.w("detail",status + "-----" + pos + "-----" + taskId);
         new VolleyUtil().getTaskDetail(taskId, new UpdateListener() {
             @Override
             public void onSucceed(String s) {
-                task = JsonUtil.parseSingleJson(s);
-                if (task == null) {
-                    //获取失败
+                Log.w("task","task-->detail-->"+s);
+                if(JsonUtil.isSingleCorrected(s))
+                {
+                    task = JsonUtil.parseSingleJson(s);
+                    if (task == null) {
+                        //获取失败
+                        Toast.makeText(TaskDetailActivity.this,"获取失败",Toast.LENGTH_SHORT).show();
+                        getDataFromLocal();
+                    } else {
+                        setContentView(R.layout.activity_task_detail);
+                        setUi();
+                        setListener();
+                        setData();
+                        pd.dismiss();
+                    }
+                }else
+                {
+                    //格式错误
                     Toast.makeText(TaskDetailActivity.this,"获取失败",Toast.LENGTH_SHORT).show();
                     getDataFromLocal();
-                } else {
-                    task = JsonUtil.parseSingleJson(s);
-                    if(task == null)
-                    {
-                        Toast.makeText(TaskDetailActivity.this,"解析失败",Toast.LENGTH_SHORT).show();
-                        getDataFromLocal();
-                    }
-                    setContentView(R.layout.activity_task_detail);
-                    setUi();
-                    setListener();
-                    setData();
-                    pd.dismiss();
                 }
+
             }
 
             @Override
@@ -292,36 +303,39 @@ public class TaskDetailActivity extends BaseActivity {
         //删除
         if(choice == 1)
         {
-            new VolleyUtil().quitTask(task.getId(), new UpdateListener() {
+            new VolleyUtil().quitTask(task.getId(),task.getTaken(),status,new UpdateListener() {
                 @Override
                 public void onSucceed(String s) {
-                    lastIntent.putExtra("reback",-1);
+                    lastIntent.putExtra("reback", -1);
                     onsuccess(s);
                 }
 
                 @Override
                 public void onError(VolleyError error) {
                     DialogUtil.dissmiss();
+                    Log.w("task","delete---->taskdetail-->error"+error.toString());
                     Toast.makeText(TaskDetailActivity.this,"操作失败",Toast.LENGTH_SHORT).show();
                 }
             });
         }else
         {
-            new VolleyUtil().finishTask(task.getId(), new UpdateListener() {
+            new VolleyUtil().finishTask(task.getId(), task.getTaken(),status,new UpdateListener() {
                 @Override
                 public void onSucceed(String s) {
-                    lastIntent.putExtra("reback",-1);
+                    lastIntent.putExtra("reback", -1);
                     onsuccess(s);
                 }
 
                 @Override
                 public void onError(VolleyError error) {
+                    Log.w("task","finish---->taskdetail-->error"+error.toString());
                     DialogUtil.dissmiss();
                     Toast.makeText(TaskDetailActivity.this,"操作失败",Toast.LENGTH_SHORT).show();
                 }
             });
         }
     }
+
     //操作成后的回调
     private void onsuccess(String s)
     {
@@ -349,57 +363,85 @@ public class TaskDetailActivity extends BaseActivity {
             Toast.makeText(TaskDetailActivity.this,"内容不能为空",Toast.LENGTH_SHORT).show();
         }else
         {
-            TaskProcess t = new TaskProcess(content,MyApplication.getPersonName(), DateUtil.getDateFromMillions(System.currentTimeMillis()+""));
-            list.add(t);
+            final TaskProcess t = new TaskProcess(content,MyApplication.getPersonName(),System.currentTimeMillis()+"");
             DialogUtil.showDialog(this,"正在添加").show();
             ((InputMethodManager)getSystemService(INPUT_METHOD_SERVICE))
                     .hideSoftInputFromWindow(TaskDetailActivity.this.getCurrentFocus().getWindowToken(), InputMethodManager.HIDE_NOT_ALWAYS);
-            new Handler().postDelayed(new Runnable() {
+            new VolleyUtil().updateTaskProcessRecord(taskId,t, new UpdateListener() {
                 @Override
-                public void run() {
-
-                    if(adapter == null)
-                    {
-                        adapter = new MyTaskProgressListViewAdapter(TaskDetailActivity.this,list);
-                        listView.setAdapter(adapter);
-                    }else
-                        adapter.notifyDataSetChanged();
+               public void onSucceed(String s) {
                     DialogUtil.dissmiss();
-                    editText.setText("");
-                  //  Toast.makeText(TaskDetailActivity.this,t.getTime(),Toast.LENGTH_SHORT).show();
+                    Log.w("process","task-->process"+s);
+                    if(s != null && s.equals("1")) {
+                        list.add(t);
+                        editText.setText("");
+                        setAdapter();
+                    }else
+                    {
+                        Toast.makeText(TaskDetailActivity.this,"添加失败",Toast.LENGTH_SHORT).show();
+                    }
                 }
-            },3000);
+
+                @Override
+                public void onError(VolleyError error) {
+                    DialogUtil.dissmiss();
+                    Toast.makeText(TaskDetailActivity.this,"添加失败",Toast.LENGTH_SHORT).show();
+                    Log.w("process","task-->process---访问错误");
+                }
+            });
+
+//            new Handler().postDelayed(new Runnable() {
+//                @Override
+//                public void run() {
+//
+//                    if(adapter == null)
+//                    {
+//                        adapter = new MyTaskProgressListViewAdapter(TaskDetailActivity.this,list);
+//                        listView.setAdapter(adapter);
+//                    }else
+//                        adapter.notifyDataSetChanged();
+//                    DialogUtil.dissmiss();
+//                    editText.setText("");
+//                  //  Toast.makeText(TaskDetailActivity.this,t.getCreateAt(),Toast.LENGTH_SHORT).show();
+//                }
+//            },3000);
 
 
         }
     }
+
     //如果是参与任务和历史完成任务，查询进度记录
     private void getTaskRecode()
     {
-        new VolleyUtil().getTaskProcessRecord(taskId, new UpdateListener() {
+        new VolleyUtil().getTaskProcessRecord(taskId,new UpdateListener() {
             @Override
             public void onSucceed(String s) {
-                if(s == null || s.equals(""))
+                Log.w("task","process--->返回的字符串"+s);
+                if(s == null || s.equals("") || !s.startsWith("["))
                 {
-
+                    Log.w("task","process--->格式错误");
+                    getProcessDataFromLocal();
                 }else
                 {
+                    Log.w("task","process--->解析成功");
                     list = JsonUtil.parseTaskProcess(s);
                     if(list.size() != 0)
                     {
                         setAdapter();
+                    }else
+                    {
+                        Log.w("task","process--->没有记录");
                     }
                 }
             }
 
             @Override
             public void onError(VolleyError error) {
-
+                getProcessDataFromLocal();
+                Log.w("task","process--->访问失败"+error.toString());
             }
         });
     }
-
-
 
     //没有网络，用来测试的数据
     private void getDataFromLocal()
@@ -430,4 +472,27 @@ public class TaskDetailActivity extends BaseActivity {
 //        list = JsonUtil.parseTaskJson(sb.toString());
 //        showListView();
     }
+
+
+    private void getProcessDataFromLocal()
+    {
+        StringBuffer sb =new StringBuffer();
+        try {
+            InputStream is = getResources().getAssets().open("process.txt");
+            BufferedReader br = new BufferedReader(new InputStreamReader(is));
+            String line ;
+            while((line = br.readLine()) != null)
+            {
+                sb.append(line);
+            }
+        } catch (FileNotFoundException e) {
+            e.printStackTrace();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+        list = JsonUtil.parseTaskProcess(sb.toString());
+        setAdapter();
+    }
+
+
 }

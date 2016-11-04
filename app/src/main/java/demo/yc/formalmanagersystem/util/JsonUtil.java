@@ -187,7 +187,6 @@ public class JsonUtil {
         ArrayList<TaskProcess> tpList ;
         tpList = new Gson().fromJson(result,new TypeToken<List<TaskProcess>>()
         {
-
         }.getType());
 
         if(tpList == null)
@@ -195,6 +194,25 @@ public class JsonUtil {
 
         return tpList;
     }
+
+
+    public static boolean isListCorrected(String str)
+    {
+        if(str == null || str.isEmpty() || !str.startsWith("[") || !str.endsWith("]"))
+        {
+            return false;
+        }
+        return true;
+    }
+    public static boolean isSingleCorrected(String str)
+    {
+        if(str == null || str.isEmpty() || !str.startsWith("{") || !str.endsWith("}"))
+        {
+            return false;
+        }
+        return true;
+    }
+
 
 
 }
