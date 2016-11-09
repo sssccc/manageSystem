@@ -1,16 +1,13 @@
 package demo.yc.formalmanagersystem.activity;
 
 import android.content.Context;
-import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Bundle;
-import android.support.v7.app.AlertDialog;
 import android.view.View;
 import android.view.Window;
 import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import demo.yc.formalmanagersystem.R;
 import demo.yc.formalmanagersystem.models.Purchase;
@@ -117,30 +114,6 @@ public class PurchaseDetailActivity extends BaseActivity implements View.OnClick
         switch (v.getId()){
             case R.id.back_in_purchase_detail_page:
                 ActivityCollector.removeActivity(this);
-                break;
-            case R.id.accept_apply_in_purchase_detail_page:
-                AlertDialog.Builder builder1 = new AlertDialog.Builder(this);
-                builder1.setMessage("确认通过该申请吗？").setTitle("提示").setNegativeButton("取消", null).setPositiveButton("确认", new DialogInterface.OnClickListener() {
-                    @Override
-                    public void onClick(DialogInterface dialog, int which) {
-                        Toast.makeText(PurchaseDetailActivity.this,"已通过",Toast.LENGTH_SHORT).show();
-                        setResult(RESULT_OK);
-                        ActivityCollector.removeActivity(PurchaseDetailActivity.this);
-                    }
-                }).create().show();
-                break;
-            case R.id.refuse_apply_in_purchase_detail_page:
-                AlertDialog.Builder builder2 = new AlertDialog.Builder(this);
-                builder2.setMessage("确认拒绝该申请吗？").setTitle("提示").setNegativeButton("取消",null).setPositiveButton("确认", new DialogInterface.OnClickListener() {
-                    @Override
-                    public void onClick(DialogInterface dialog, int which) {
-                        purchase.setCheckState("拒绝");
-                        Intent intent = new Intent();
-                        intent.putExtra("data_result",purchase);
-                        setResult(RESULT_CANCELED,intent);
-                        ActivityCollector.removeActivity(PurchaseDetailActivity.this);
-                    }
-                }).create().show();
                 break;
         }
 
