@@ -240,13 +240,14 @@
                     android:layout_weight="2.8"
                     android:gravity="center_vertical">
 
-                    <EditText
+                    <TextView
                         android:id="@+id/date_edit_in_modify_page"
                         android:layout_width="0dp"
                         android:layout_height="wrap_content"
                         android:layout_weight="1"
                         android:background="@drawable/bg_border_gray"
                         android:padding="3dp"
+                        android:textStyle="normal"
                         android:textSize="15sp" />
 
                     <ImageView
@@ -409,24 +410,15 @@
                                 android:paddingLeft="5dp"
                                 android:text="联系电话：" />
 
-                            <android.support.design.widget.TextInputLayout
-                                android:id="@+id/textInputLayoutInModify"
+                            <EditText
+                                android:id="@+id/provider_tel_in_modify_page"
                                 android:layout_width="0dp"
                                 android:layout_height="wrap_content"
                                 android:layout_weight="1"
-                                app:counterEnabled="true"
-                                app:counterMaxLength="11"
-                                app:counterOverflowTextAppearance="@style/TextAppearance.Design.Error">
-
-                                <EditText
-                                    android:id="@+id/provider_tel_in_modify_page"
-                                    android:layout_width="match_parent"
-                                    android:layout_height="match_parent"
-                                    android:background="@null"
-                                    android:hint="卖家电话"
-                                    android:inputType="number"
-                                    android:textSize="15sp" />
-                            </android.support.design.widget.TextInputLayout>
+                                android:background="@null"
+                                android:hint="卖家电话"
+                                android:inputType="number"
+                                android:textSize="15sp" />
 
 
                         </LinearLayout>
