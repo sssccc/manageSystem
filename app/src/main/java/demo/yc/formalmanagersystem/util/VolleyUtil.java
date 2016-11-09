@@ -32,7 +32,7 @@ public class VolleyUtil {
     public VolleyUtil() {
     }
 
-    private static final String ROOT_URL = "http://192.168.1.124:8888/";
+    public static final String ROOT_URL = "http://192.168.1.124:8888/";
     private static final String BASE_URL = ROOT_URL+"property/";
 
 
@@ -233,6 +233,30 @@ public class VolleyUtil {
     public synchronized void getCreaterName(String createrIdentifier, final UpdateListener updateListener) {
 
         String url2 = BASE_URL+"get/name?studentId="+createrIdentifier+"&role="+MyApplication.getRole();
+        StringRequest request3 = new StringRequest(Request.Method.GET, url2, new Response.Listener<String>() {
+            @Override
+            public void onResponse(String s) {
+                updateListener.onSucceed(s);
+            }
+        }, new ErrorListener() {
+            @Override
+            public void onErrorResponse(VolleyError volleyError) {
+                updateListener.onError(volleyError);
+            }
+        }) ;
+
+        request3.addMarker("getName");
+        MyApplication.getInstance().getMyQueue().add(request3);
+    }
+
+    /***
+     * 根据createrIdentifier获取名字
+     * @param identifier
+     * @param updateListener
+     */
+    public synchronized void getRepairStatus(String identifier, final UpdateListener updateListener) {
+
+        String url2 = BASE_URL+"get/repairstate?identifier="+identifier+"&role="+MyApplication.getRole();
         StringRequest request3 = new StringRequest(Request.Method.GET, url2, new Response.Listener<String>() {
             @Override
             public void onResponse(String s) {
