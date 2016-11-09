@@ -325,10 +325,10 @@ public class P_MyPropertyFragment extends Fragment implements View.OnClickListen
                 public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
                     if (position1 == 0) {
                         Purchase purchase = pTemp2.get(position);
-                        PurchaseDetailActivity.startActivity(getActivity(), PurchaseDetailActivity.USER, purchase);
+                        PurchaseDetailActivity.startActivity(getActivity(), purchase);
                     } else if (position1 == 1) {
                         Repair repair = rTemp2.get(position);
-                        RepairDetailActivity.startActivity(getActivity(), RepairDetailActivity.USER, repair);
+                        RepairDetailActivity.startActivity(getActivity(), repair);
                     }
                 }
             });

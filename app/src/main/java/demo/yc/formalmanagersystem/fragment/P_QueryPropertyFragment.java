@@ -176,9 +176,9 @@ public class P_QueryPropertyFragment extends Fragment implements View.OnClickLis
                     refreshData();
                 }
             }, 3);
-            top_layout_menu = (ImageView)getActivity().findViewById(R.id.top_layout_menu);
+            top_layout_menu = (ImageView) getActivity().findViewById(R.id.top_layout_menu);
             top_layout_menu.setOnClickListener(this);
-            topBar = (RelativeLayout)getActivity().findViewById(R.id.top_layout_root);
+            topBar = (RelativeLayout) getActivity().findViewById(R.id.top_layout_root);
             topBar.setOnClickListener(this);
             getActivity().findViewById(R.id.direction_in_top).setVisibility(View.GONE);
             getActivity().getWindow().setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_ADJUST_PAN);
@@ -186,13 +186,13 @@ public class P_QueryPropertyFragment extends Fragment implements View.OnClickLis
             input.setOnTouchListener(new View.OnTouchListener() {
                 @Override
                 public boolean onTouch(View v, MotionEvent event) {
-                    if(event.getAction() == MotionEvent.ACTION_OUTSIDE){
+                    if (event.getAction() == MotionEvent.ACTION_OUTSIDE) {
                         input.setFocusable(false);
-                        Toast.makeText(MyApplication.getContext(),"ddddddd",Toast.LENGTH_SHORT).show();
-                        Log.w("aaa","ddddddddddd");
+                        Toast.makeText(MyApplication.getContext(), "ddddddd", Toast.LENGTH_SHORT).show();
+                        Log.w("aaa", "ddddddddddd");
                         return true;
                     }
-                    Log.w("aaa","ffffffff");
+                    Log.w("aaa", "ffffffff");
                     return false;
                 }
             });
@@ -279,10 +279,25 @@ public class P_QueryPropertyFragment extends Fragment implements View.OnClickLis
             listView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
                 @Override
                 public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-                    Property property = temp2.get(position);
-                    Intent intent = new Intent(getActivity(), PropertyInfoActivity.class);
-                    intent.putExtra("data_extra", property);
-                    startActivityForResult(intent, 0);
+                    final Property property = temp2.get(position);
+                    volleyUtil.getRepairStatus(property.getIdentifier(), new UpdateListener() {
+                        @Override
+                        public void onSucceed(String s) {
+                            Log.d("sss", s);
+                            property.setRepairStatus(s);
+                            Intent intent = new Intent(getActivity(), PropertyInfoActivity.class);
+                            intent.putExtra("data_extra", property);
+                            startActivityForResult(intent, 0);
+                        }
+
+                        @Override
+                        public void onError(VolleyError error) {
+                            Intent intent = new Intent(getActivity(), PropertyInfoActivity.class);
+                            intent.putExtra("data_extra", property);
+                            startActivityForResult(intent, 0);
+                        }
+                    });
+
                 }
             });
 
@@ -344,7 +359,7 @@ public class P_QueryPropertyFragment extends Fragment implements View.OnClickLis
     public void onClick(View v) {
         switch (v.getId()) {
             case R.id.top_layout_menu:
-                ((MainActivity)getActivity()).showMenu();
+                ((MainActivity) getActivity()).showMenu();
             case R.id.top_layout_root:
                 input.clearFocus();
 
@@ -614,7 +629,7 @@ public class P_QueryPropertyFragment extends Fragment implements View.OnClickLis
                 temp1.clear();
                 temp2.clear();
                 for (Property property : temp3) {
-                    if (property.getCate().equals("其他")) {
+                    if (belongToOther(property.getCate())) {
                         temp1.add(property);
                     }
                 }
@@ -690,6 +705,13 @@ public class P_QueryPropertyFragment extends Fragment implements View.OnClickLis
                 break;
 
         }
+    }
+
+    public boolean belongToOther(String cate) {
+        if (cate.equals("电脑") || cate.equals("打印机") || cate.equals("投影仪") || cate.equals("全部分类")) {
+            return false;
+        }
+        return true;
     }
 
     //获取listview的滚动高度
@@ -807,13 +829,14 @@ public class P_QueryPropertyFragment extends Fragment implements View.OnClickLis
             volleyUtil.updateSQLiteFromMySql("property", new UpdateListener() {
                 @Override
                 public void onSucceed(String s) {
-                    Log.d("aaa",s);
+                    Log.d("aaa", s);
                     refreshableView.finishRefreshing("query_property");
                     //服务器错误
                     if (s.contains("error-business")) {
                         onError(new VolleyError(s));
                     } else {
-                        ToastUtil.createToast(getActivity(),"更新成功!");
+                        Log.d("sss", s);
+                        ToastUtil.createToast(getActivity(), "更新成功!");
                         //从服务器获取数据
                         List<Property> lists = JsonUtil.parsePropertyJson(s);
                         //更新本地数据库
@@ -842,11 +865,10 @@ public class P_QueryPropertyFragment extends Fragment implements View.OnClickLis
             @Override
             public void run() {
                 SQLiteDatabase db = MyDBHandler.getInstance(getActivity()).getDBInstance();
-                Cursor cursor = db.query("Property", null, null, null, null, null, "date"+" desc", null);
+                Cursor cursor = db.query("Property", null, null, null, null, null, "date" + " desc", null);
                 properties.clear();
                 temp2.clear();
                 if (cursor.moveToFirst()) {
-                    Cursor repairCursor = null;
                     do {
                         Property property = new Property();
                         property.setName(cursor.getString(cursor.getColumnIndex("name")));
@@ -858,23 +880,6 @@ public class P_QueryPropertyFragment extends Fragment implements View.OnClickLis
                         property.setProvider(cursor.getString(cursor.getColumnIndex("provider")));
                         property.setDate(cursor.getString(cursor.getColumnIndex("date")));
                         property.setProviderTel(cursor.getString(cursor.getColumnIndex("providerTel")));
-                        try {
-                            repairCursor = db.query("Repair", null, "identifier=?", new String[]{property.getIdentifier()}, null, null, null, null);
-                            if (repairCursor.moveToFirst()) {
-
-                                String repairState = repairCursor.getString(repairCursor.getColumnIndex("repairState"));
-                                Log.d("ffff",repairState);
-                                if (!TextUtils.isEmpty(repairState)) {
-                                    property.setRepairStatus(repairState);
-                                }
-                            } else {
-                                property.setRepairStatus("无");
-                            }
-                        } catch (Exception e) {
-                            Log.d("tag", "error occurred in query Repair");
-                        } finally {
-                            repairCursor.close();
-                        }
                         property.setBorrowedProperty(cursor.getInt(cursor.getColumnIndex("isBorrowedProperty")) == 0 ? false : true);
                         properties.add(property);
                     } while (cursor.moveToNext());

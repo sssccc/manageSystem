@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:orientation="vertical">
@@ -8,12 +9,12 @@
     <RelativeLayout
         android:layout_width="match_parent"
         android:layout_height="0dp"
-        android:paddingTop="5dp"
-        android:paddingBottom="5dp"
-        android:paddingRight="5dp"
-        android:paddingLeft="10dp"
+        android:layout_weight="1"
         android:background="#5fbbb0"
-        android:layout_weight="1">
+        android:paddingBottom="5dp"
+        android:paddingLeft="10dp"
+        android:paddingRight="5dp"
+        android:paddingTop="5dp">
         <!--返回-->
         <RelativeLayout
             android:id="@+id/back_in_modify_page"
@@ -34,9 +35,9 @@
             android:layout_height="match_parent"
             android:layout_centerInParent="true"
             android:gravity="center"
+            android:text="修改资产信息"
             android:textColor="#fff"
-            android:textSize="20sp"
-            android:text="修改资产信息" />
+            android:textSize="20sp" />
     </RelativeLayout>
 
     <!--资产信息详情-->
@@ -59,184 +60,201 @@
             <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="0dp"
+                android:layout_weight="1"
                 android:gravity="center_vertical"
                 android:orientation="horizontal"
                 android:paddingLeft="5dp"
-                android:paddingRight="5dp"
-                android:layout_weight="1">
+                android:paddingRight="5dp">
+
                 <TextView
-                    android:layout_height="wrap_content"
                     android:layout_width="0dp"
+                    android:layout_height="wrap_content"
                     android:layout_weight="1"
                     android:text="资产名称：" />
+
                 <EditText
                     android:id="@+id/name_edit_in_modify_page"
                     android:layout_width="0dp"
+                    android:layout_height="wrap_content"
                     android:layout_weight="2.8"
-                    android:padding="3dp"
-                    android:textSize="15sp"
                     android:background="@drawable/bg_border_gray"
-                    android:layout_height="wrap_content" />
+                    android:padding="3dp"
+                    android:textSize="15sp" />
             </LinearLayout>
 
             <!--资产类别-->
             <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="0dp"
+                android:layout_weight="1"
                 android:gravity="center_vertical"
                 android:orientation="horizontal"
                 android:paddingLeft="5dp"
-                android:paddingRight="5dp"
-                android:layout_weight="1">
+                android:paddingRight="5dp">
+
                 <TextView
                     android:layout_width="0dp"
-                    android:layout_weight="1"
                     android:layout_height="wrap_content"
+                    android:layout_weight="1"
                     android:padding="5dp"
                     android:text="类别：" />
+
                 <EditText
                     android:id="@+id/cate_edit_in_modify_page"
                     android:layout_width="0dp"
+                    android:layout_height="wrap_content"
                     android:layout_weight="2.8"
-                    android:padding="3dp"
-                    android:textSize="15sp"
                     android:background="@drawable/bg_border_gray"
-                    android:layout_height="wrap_content" />
+                    android:padding="3dp"
+                    android:textSize="15sp" />
             </LinearLayout>
 
             <!--资产品牌-->
             <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="0dp"
+                android:layout_weight="1"
                 android:gravity="center_vertical"
                 android:orientation="horizontal"
                 android:paddingLeft="5dp"
-                android:paddingRight="5dp"
-                android:layout_weight="1">
+                android:paddingRight="5dp">
+
                 <TextView
                     android:layout_width="0dp"
-                    android:layout_weight="1"
                     android:layout_height="wrap_content"
+                    android:layout_weight="1"
                     android:padding="5dp"
                     android:text="品牌：" />
+
                 <EditText
                     android:id="@+id/brand_edit_in_modify_page"
                     android:layout_width="0dp"
+                    android:layout_height="wrap_content"
                     android:layout_weight="2.8"
-                    android:padding="3dp"
-                    android:textSize="15sp"
                     android:background="@drawable/bg_border_gray"
-                    android:layout_height="wrap_content" />
+                    android:padding="3dp"
+                    android:textSize="15sp" />
             </LinearLayout>
 
             <!--资产型号-->
             <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="0dp"
+                android:layout_weight="1"
                 android:gravity="center_vertical"
                 android:orientation="horizontal"
                 android:paddingLeft="5dp"
-                android:paddingRight="5dp"
-                android:layout_weight="1">
+                android:paddingRight="5dp">
+
                 <TextView
                     android:layout_width="0dp"
-                    android:layout_weight="1"
                     android:layout_height="wrap_content"
+                    android:layout_weight="1"
                     android:padding="5dp"
                     android:text="型号：" />
+
                 <EditText
                     android:id="@+id/model_edit_in_modify_page"
                     android:layout_width="0dp"
+                    android:layout_height="wrap_content"
                     android:layout_weight="2.8"
-                    android:padding="3dp"
-                    android:textSize="15sp"
                     android:background="@drawable/bg_border_gray"
-                    android:layout_height="wrap_content" />
+                    android:padding="3dp"
+                    android:textSize="15sp" />
             </LinearLayout>
 
             <!--资产编号-->
             <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="0dp"
+                android:layout_weight="1"
                 android:gravity="center_vertical"
                 android:orientation="horizontal"
                 android:paddingLeft="5dp"
-                android:paddingRight="5dp"
-                android:layout_weight="1">
+                android:paddingRight="5dp">
+
                 <TextView
                     android:layout_width="0dp"
-                    android:layout_weight="1"
                     android:layout_height="match_parent"
+                    android:layout_weight="1"
                     android:padding="5dp"
                     android:text="编号：" />
+
                 <EditText
                     android:id="@+id/identifier_edit_in_modify_page"
                     android:layout_width="0dp"
+                    android:layout_height="wrap_content"
                     android:layout_weight="2.8"
-                    android:padding="3dp"
-                    android:textSize="15sp"
                     android:background="@drawable/bg_border_gray"
-                    android:layout_height="wrap_content" />
+                    android:padding="3dp"
+                    android:textSize="15sp" />
             </LinearLayout>
 
             <!--资产价格-->
             <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="0dp"
+                android:layout_weight="1"
                 android:gravity="center_vertical"
                 android:orientation="horizontal"
                 android:paddingLeft="5dp"
-                android:paddingRight="5dp"
-                android:layout_weight="1">
+                android:paddingRight="5dp">
+
                 <TextView
                     android:layout_width="0dp"
-                    android:layout_weight="1"
                     android:layout_height="match_parent"
+                    android:layout_weight="1"
                     android:padding="5dp"
                     android:text="价格：" />
+
                 <EditText
                     android:id="@+id/price_edit_in_modify_page"
                     android:layout_width="0dp"
+                    android:layout_height="wrap_content"
                     android:layout_weight="2.8"
-                    android:padding="3dp"
-                    android:textSize="15sp"
                     android:background="@drawable/bg_border_gray"
-                    android:layout_height="wrap_content" />
+                    android:inputType="number"
+                    android:padding="3dp"
+                    android:textSize="15sp" />
             </LinearLayout>
 
             <!--录入日期-->
             <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="0dp"
+                android:layout_weight="1"
                 android:gravity="center_vertical"
                 android:orientation="horizontal"
                 android:paddingLeft="5dp"
-                android:paddingRight="5dp"
-                android:layout_weight="1">
+                android:paddingRight="5dp">
+
                 <TextView
                     android:layout_width="0dp"
-                    android:layout_weight="1"
                     android:layout_height="wrap_content"
+                    android:layout_weight="1"
                     android:text="录入日期：" />
+
                 <LinearLayout
                     android:layout_width="0dp"
+                    android:layout_height="match_parent"
                     android:layout_weight="2.8"
-                    android:gravity="center_vertical"
-                    android:layout_height="match_parent">
+                    android:gravity="center_vertical">
+
                     <EditText
                         android:id="@+id/date_edit_in_modify_page"
                         android:layout_width="0dp"
+                        android:layout_height="wrap_content"
                         android:layout_weight="1"
-                        android:padding="3dp"
-                        android:textSize="15sp"
                         android:background="@drawable/bg_border_gray"
-                        android:layout_height="wrap_content" />
+                        android:padding="3dp"
+                        android:textSize="15sp" />
+
                     <ImageView
                         android:id="@+id/pick_date_in_modify_page"
-                        android:clickable="true"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:src="@drawable/schedule"/>
+                        android:clickable="true"
+                        android:src="@drawable/schedule" />
                 </LinearLayout>
 
             </LinearLayout>
@@ -250,23 +268,23 @@
 
                 <TextView
                     android:layout_width="0dp"
-                    android:layout_weight="1"
                     android:layout_height="wrap_content"
+                    android:layout_weight="1"
                     android:padding="5dp"
                     android:text="是否为借入资产：" />
 
                 <LinearLayout
                     android:layout_width="0dp"
+                    android:layout_height="match_parent"
                     android:layout_weight="1.3"
-                    android:gravity="center"
-                    android:layout_height="match_parent">
+                    android:gravity="center">
+
                     <Spinner
                         android:id="@+id/isBorrowedProperty_in_modify_page"
                         android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
                         android:entries="@array/bool1"
-                        android:textSize="15sp"
-                        android:layout_height="wrap_content">
-                    </Spinner>
+                        android:textSize="15sp"></Spinner>
                 </LinearLayout>
             </LinearLayout>
 
@@ -281,88 +299,96 @@
 
                 <TextView
                     android:layout_width="0dp"
-                    android:layout_weight="1"
                     android:layout_height="wrap_content"
+                    android:layout_weight="1"
                     android:padding="5dp"
                     android:text="维修状态：" />
 
                 <LinearLayout
                     android:layout_width="0dp"
+                    android:layout_height="match_parent"
                     android:layout_weight="1.3"
-                    android:gravity="center"
-                    android:layout_height="match_parent">
+                    android:gravity="center">
+
                     <TextView
                         android:id="@+id/repair_status_in_modify_page"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:text="无">
-                    </TextView>
+                        android:text="无"></TextView>
                 </LinearLayout>
             </LinearLayout>
 
             <View
                 android:layout_width="match_parent"
                 android:layout_height="1dp"
-                android:background="#5fbbb0"/>
+                android:background="#5fbbb0" />
             <!--售后信息-->
             <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="0dp"
                 android:layout_weight="2"
                 android:orientation="horizontal">
+
                 <View
                     android:layout_width="1dp"
                     android:layout_height="match_parent"
-                    android:background="#5fbbb0"/>
+                    android:background="#5fbbb0" />
+
                 <RelativeLayout
                     android:layout_width="wrap_content"
                     android:layout_height="match_parent"
                     android:layout_margin="0dp"
                     android:paddingLeft="5dp"
                     android:paddingRight="5dp">
+
                     <TextView
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:layout_centerInParent="true"
                         android:text="联系售后" />
                 </RelativeLayout>
+
                 <View
                     android:layout_width="1dp"
                     android:layout_height="match_parent"
-                    android:background="#5fbbb0"/>
+                    android:background="#5fbbb0" />
+
                 <LinearLayout
                     android:layout_width="0dp"
-                    android:layout_margin="0dp"
                     android:layout_height="match_parent"
+                    android:layout_margin="0dp"
                     android:layout_weight="1"
                     android:orientation="vertical">
 
                     <LinearLayout
                         android:layout_width="match_parent"
                         android:layout_height="0dp"
-                        android:layout_weight="1"
                         android:layout_margin="0dp"
+                        android:layout_weight="1"
                         android:gravity="center_vertical"
                         android:padding="3dp">
 
                         <TextView
-                            android:paddingLeft="5dp"
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
+                            android:paddingLeft="5dp"
                             android:text="卖方：" />
+
                         <EditText
-                            android:hint="卖方姓名"
-                            android:background="@null"
                             android:id="@+id/provider_in_modify_page"
                             android:layout_width="0dp"
+                            android:layout_height="match_parent"
                             android:layout_weight="1"
-                            android:textSize="15sp"
-                            android:layout_height="match_parent" />
+                            android:background="@null"
+                            android:hint="卖方姓名"
+                            android:textSize="15sp" />
                     </LinearLayout>
+
                     <View
                         android:layout_width="match_parent"
                         android:layout_height="1dp"
-                        android:background="#5fbbb0"/>
+                        android:background="#5fbbb0" />
+
                     <LinearLayout
                         android:layout_width="match_parent"
                         android:layout_height="0dp"
@@ -373,51 +399,67 @@
                         <LinearLayout
                             android:layout_width="match_parent"
                             android:layout_height="wrap_content"
-                            android:gravity="center_vertical"
                             android:layout_margin="0dp"
+                            android:gravity="center_vertical"
                             android:orientation="horizontal">
 
                             <TextView
-                                android:paddingLeft="5dp"
                                 android:layout_width="wrap_content"
                                 android:layout_height="wrap_content"
+                                android:paddingLeft="5dp"
                                 android:text="联系电话：" />
-                            <EditText
-                                android:hint="卖家电话"
-                                android:background="@null"
-                                android:id="@+id/provider_tel_in_modify_page"
+
+                            <android.support.design.widget.TextInputLayout
+                                android:id="@+id/textInputLayoutInModify"
                                 android:layout_width="0dp"
+                                android:layout_height="wrap_content"
                                 android:layout_weight="1"
-                                android:textSize="15sp"
-                                android:layout_height="wrap_content" />
+                                app:counterEnabled="true"
+                                app:counterMaxLength="11"
+                                app:counterOverflowTextAppearance="@style/TextAppearance.Design.Error">
+
+                                <EditText
+                                    android:id="@+id/provider_tel_in_modify_page"
+                                    android:layout_width="match_parent"
+                                    android:layout_height="match_parent"
+                                    android:background="@null"
+                                    android:hint="卖家电话"
+                                    android:inputType="number"
+                                    android:textSize="15sp" />
+                            </android.support.design.widget.TextInputLayout>
+
+
                         </LinearLayout>
                     </LinearLayout>
                 </LinearLayout>
+
                 <View
                     android:layout_width="1dp"
                     android:layout_height="match_parent"
-                    android:background="#5fbbb0"/>
+                    android:background="#5fbbb0" />
             </LinearLayout>
+
             <View
                 android:layout_width="match_parent"
                 android:layout_height="1dp"
-                android:background="#5fbbb0"/>
+                android:background="#5fbbb0" />
             <!--确认修改-->
             <RelativeLayout
-                android:layout_marginTop="4dp"
                 android:layout_width="match_parent"
                 android:layout_height="0dp"
+                android:layout_marginTop="4dp"
                 android:layout_weight="1"
                 android:orientation="vertical">
+
                 <Button
 
                     android:id="@+id/confirm_to_modify_in_modify_page"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_centerInParent="true"
+                    android:text="确认修改"
                     android:textColor="#6e6dc7"
-                    android:textStyle="bold"
-                    android:text="确认修改" />
+                    android:textStyle="bold" />
             </RelativeLayout>
         </LinearLayout>
     </LinearLayout>

@@ -160,7 +160,7 @@ public class P_AllPurchaseFragment extends Fragment implements View.OnClickListe
             listView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
                 @Override
                 public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-                    PurchaseDetailActivity.startActivity(getActivity(), PurchaseDetailActivity.USER, temp2.get(position));
+                    PurchaseDetailActivity.startActivity(getActivity(), temp2.get(position));
                 }
             });
 

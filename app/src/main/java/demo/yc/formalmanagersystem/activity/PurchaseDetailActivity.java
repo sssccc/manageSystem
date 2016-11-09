@@ -19,12 +19,7 @@ import demo.yc.formalmanagersystem.util.ActivityCollector;
  */
 public class PurchaseDetailActivity extends BaseActivity implements View.OnClickListener {
 
-    public static final int USER = 0;
-    public static final int MANAGER = 1;
-    public static int currentCountType;
-
     private RelativeLayout back;
-    private LinearLayout btnVisibility;
     private LinearLayout reviewStatusLayout;
     private LinearLayout finishDateLayout;
     private LinearLayout purchaseStatusLayout;
@@ -39,6 +34,7 @@ public class PurchaseDetailActivity extends BaseActivity implements View.OnClick
     private TextView createrIdentifier;
     private TextView detail;
     private Purchase purchase;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -51,25 +47,18 @@ public class PurchaseDetailActivity extends BaseActivity implements View.OnClick
         initViews();
         initEvents();
         initValues();
-        if(currentCountType == USER){
-            btnVisibility.setVisibility(View.GONE);
-            String status = reviewStatus.getText().toString();
-            if (status.equals("通过")) {
-                purchaseStatusLayout.setVisibility(View.VISIBLE);
-                if (purchaseStatus.getText().toString().equals("已购买")) {
-                    finishDateLayout.setVisibility(View.VISIBLE);
-                }
+
+        String status = reviewStatus.getText().toString();
+        if (status.equals("通过")) {
+            purchaseStatusLayout.setVisibility(View.VISIBLE);
+            if (purchaseStatus.getText().toString().equals("已购买")) {
+                finishDateLayout.setVisibility(View.VISIBLE);
             }
-        } else if(currentCountType == MANAGER){
-            btnVisibility.setVisibility(View.VISIBLE);
-            finishDateLayout.setVisibility(View.GONE);
-            reviewStatusLayout.setVisibility(View.GONE);
-            purchaseStatusLayout.setVisibility(View.GONE);
         }
     }
 
     private void initValues() {
-        if(purchase!=null){
+        if (purchase != null) {
             name.setText(purchase.getName());
             date.setText(purchase.getApplyTime());
             reviewStatus.setText(purchase.getCheckState());
@@ -99,8 +88,7 @@ public class PurchaseDetailActivity extends BaseActivity implements View.OnClick
         purchaseStatus = (TextView) findViewById(R.id.purchase_status_in_purchase_detail_page);
         finishDate = (TextView) findViewById(R.id.purchase_finish_time_in_purchase_detail_page);
         creater = (TextView) findViewById(R.id.creater_in_purchase_detail_page);
-        createrIdentifier= (TextView) findViewById(R.id.creater_identifier_in_purchase_detail_page);
-        btnVisibility = (LinearLayout) findViewById(R.id.btn_visibility);
+        createrIdentifier = (TextView) findViewById(R.id.creater_identifier_in_purchase_detail_page);
         reviewStatusLayout = (LinearLayout) findViewById(R.id.review_status_layout);
         finishDateLayout = (LinearLayout) findViewById(R.id.purchase_finish_time_layout);
         purchaseStatusLayout = (LinearLayout) findViewById(R.id.purchase_status_layout);
@@ -111,7 +99,7 @@ public class PurchaseDetailActivity extends BaseActivity implements View.OnClick
 
     @Override
     public void onClick(View v) {
-        switch (v.getId()){
+        switch (v.getId()) {
             case R.id.back_in_purchase_detail_page:
                 ActivityCollector.removeActivity(this);
                 break;
@@ -119,11 +107,10 @@ public class PurchaseDetailActivity extends BaseActivity implements View.OnClick
 
     }
 
-    public static void startActivity(Context context, int countType, Purchase
-                                      purchase){
-        currentCountType = countType;
-        Intent intent = new Intent(context,PurchaseDetailActivity.class);
-        intent.putExtra("data_extra",purchase);
+    public static void startActivity(Context context, Purchase
+            purchase) {
+        Intent intent = new Intent(context, PurchaseDetailActivity.class);
+        intent.putExtra("data_extra", purchase);
         context.startActivity(intent);
     }
 

@@ -207,7 +207,7 @@ public class P_AllRepairFragment extends Fragment implements View.OnClickListene
             listView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
                 @Override
                 public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-                    RepairDetailActivity.startActivity(getActivity(), RepairDetailActivity.USER, temp2.get(position));
+                    RepairDetailActivity.startActivity(getActivity(), temp2.get(position));
                 }
             });
 

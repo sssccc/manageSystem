@@ -1,13 +1,10 @@
 package demo.yc.formalmanagersystem.activity;
 
 import android.content.Context;
-import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Bundle;
-import android.support.v7.app.AlertDialog;
 import android.view.View;
 import android.view.Window;
-import android.widget.Button;
 import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
@@ -22,15 +19,7 @@ import demo.yc.formalmanagersystem.util.ActivityCollector;
  */
 public class RepairDetailActivity extends BaseActivity implements View.OnClickListener {
 
-    public static final int USER = 0;
-    public static final int MANAGER = 1;
-    public static int currentCountType;
-
     private RelativeLayout back;
-    private Button pass;
-    private Button refuse;
-
-    private LinearLayout btnVisibility;
     private LinearLayout reviewStatusLayout;
     private LinearLayout finishDateLayout;
     private LinearLayout repairStatusLayout;
@@ -44,60 +33,28 @@ public class RepairDetailActivity extends BaseActivity implements View.OnClickLi
     private TextView createrIdentifier;
     private TextView detail;
 
-    private Repair repair;
-
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         requestWindowFeature(Window.FEATURE_NO_TITLE);
         setContentView(R.layout.repair_detail);
 
-        Intent intent = getIntent();
-        if (intent != null) {
-            repair = (Repair) intent.getSerializableExtra("data_extra");
-        }
-
         initViews();
         initEvents();
         initValues();
-        if (currentCountType == USER) {
-            btnVisibility.setVisibility(View.GONE);
-            reviewStatusLayout.setVisibility(View.VISIBLE);
-            String status = reviewStatus.getText().toString();
-            if (status.equals("通过")) {
-                repairStatusLayout.setVisibility(View.VISIBLE);
-                if (repairStatus.getText().toString().equals("已维修")) {
-                    finishDateLayout.setVisibility(View.VISIBLE);
-                }
-            }
-
-        } else if (currentCountType == MANAGER) {
-            String status = reviewStatus.getText().toString();
-            if (status.equals("通过") || status.equals("拒绝")) {
-                btnVisibility.setVisibility(View.GONE);
-                reviewStatusLayout.setVisibility(View.VISIBLE);
-                if (status.equals("通过")) {
-                    repairStatusLayout.setVisibility(View.VISIBLE);
-                    if (repairStatus.getText().toString().equals("已维修")) {
-                        finishDateLayout.setVisibility(View.VISIBLE);
-                    }
-                }
-            } else if (status.equals("审核中")) {
-                btnVisibility.setVisibility(View.VISIBLE);
-                finishDateLayout.setVisibility(View.GONE);
-                reviewStatusLayout.setVisibility(View.GONE);
-                repairStatusLayout.setVisibility(View.GONE);
+        reviewStatusLayout.setVisibility(View.VISIBLE);
+        String status = reviewStatus.getText().toString();
+        if (status.equals("通过")) {
+            repairStatusLayout.setVisibility(View.VISIBLE);
+            if (repairStatus.getText().toString().equals("已维修")) {
+                finishDateLayout.setVisibility(View.VISIBLE);
             }
         }
-
     }
 
     private void initValues() {
         Repair repair = (Repair) getIntent().getSerializableExtra("data_extra");
-        int type = getIntent().getIntExtra("type", -1);
-        if (type != (-1)) {
-            currentCountType = type;
-        }
+
         if (repair != null) {
             name.setText(repair.getName());
             identifier.setText(repair.getIdentifier());
@@ -114,15 +71,10 @@ public class RepairDetailActivity extends BaseActivity implements View.OnClickLi
 
     private void initEvents() {
         back.setOnClickListener(this);
-        pass.setOnClickListener(this);
-        refuse.setOnClickListener(this);
     }
 
     private void initViews() {
-
         back = (RelativeLayout) findViewById(R.id.back_in_repair_detail_page);
-        pass = (Button) findViewById(R.id.accept_apply_in_repair_detail_page);
-        refuse = (Button) findViewById(R.id.refuse_apply_in_repair_detail_page);
         detail = (TextView) findViewById(R.id.detail_in_repair_detail_page);
         name = (TextView) findViewById(R.id.name_in_repair_detail_page);
         identifier = (TextView) findViewById(R.id.identifier_in_repair_detail_page);
@@ -132,7 +84,6 @@ public class RepairDetailActivity extends BaseActivity implements View.OnClickLi
         finishDate = (TextView) findViewById(R.id.repair_finish_time_in_repair_detail_page);
         creater = (TextView) findViewById(R.id.creater_in_repair_detail_page);
         createrIdentifier = (TextView) findViewById(R.id.creater_identifier_in_repair_detail_page);
-        btnVisibility = (LinearLayout) findViewById(R.id.btn_visibility);
         reviewStatusLayout = (LinearLayout) findViewById(R.id.review_status_layout);
         finishDateLayout = (LinearLayout) findViewById(R.id.purchase_finish_time_layout);
         repairStatusLayout = (LinearLayout) findViewById(R.id.purchase_status_layout);
@@ -145,40 +96,11 @@ public class RepairDetailActivity extends BaseActivity implements View.OnClickLi
                 setResult(-10);
                 ActivityCollector.removeActivity(this);
                 break;
-            case R.id.accept_apply_in_repair_detail_page:
-                AlertDialog.Builder builder1 = new AlertDialog.Builder(this);
-                builder1.setMessage("确认通过该申请吗？").setTitle("提示").setNegativeButton("取消",null)
-                        .setPositiveButton("确认", new DialogInterface.OnClickListener() {
-                    @Override
-                    public void onClick(DialogInterface dialog, int which) {
-                        repair.setCheckState("通过");
-                        Intent intent = new Intent();
-                        intent.putExtra("data_result",repair);
-                        setResult(RESULT_OK,intent);
-                        ActivityCollector.removeActivity(RepairDetailActivity.this);
-                    }
-                }).create().show();
-                break;
-            case R.id.refuse_apply_in_repair_detail_page:
-                AlertDialog.Builder builder2 = new AlertDialog.Builder(this);
-                builder2.setMessage("确认拒绝该申请吗？").setTitle("提示").setNegativeButton("取消",null)
-                        .setPositiveButton("确认", new DialogInterface.OnClickListener() {
-                    @Override
-                    public void onClick(DialogInterface dialog, int which) {
-                        repair.setCheckState("拒绝");
-                        Intent intent = new Intent();
-                        intent.putExtra("data_result",repair);
-                        setResult(RESULT_CANCELED,intent);
-                        ActivityCollector.removeActivity(RepairDetailActivity.this);
-                    }
-                }).create().show();
-                break;
         }
     }
 
-    public static void startActivity(Context context, int countType, Repair
+    public static void startActivity(Context context,Repair
             repair) {
-        currentCountType = countType;
         Intent intent = new Intent(context, RepairDetailActivity.class);
         intent.putExtra("data_extra", repair);
         context.startActivity(intent);
