@@ -36,7 +36,7 @@ public class ModifyPropertyInfoActivity extends BaseActivity implements View.OnC
     private EditText model;
     private EditText identifier;
     private EditText price;
-    private EditText date;
+    private TextView date;
     private EditText provider;
     private EditText providerTel;
     private Spinner isBorrowedProperty;
@@ -98,7 +98,7 @@ public class ModifyPropertyInfoActivity extends BaseActivity implements View.OnC
         model = (EditText) findViewById(R.id.model_edit_in_modify_page);
         identifier = (EditText) findViewById(R.id.identifier_edit_in_modify_page);
         price = (EditText) findViewById(R.id.price_edit_in_modify_page);
-        date = (EditText) findViewById(R.id.date_edit_in_modify_page);
+        date = (TextView) findViewById(R.id.date_edit_in_modify_page);
         provider = (EditText) findViewById(R.id.provider_in_modify_page);
         providerTel = (EditText) findViewById(R.id.provider_tel_in_modify_page);
         isBorrowedProperty = (Spinner) findViewById(R.id.isBorrowedProperty_in_modify_page);
@@ -172,7 +172,6 @@ public class ModifyPropertyInfoActivity extends BaseActivity implements View.OnC
                                     }
                                 });
                                 successDialog.show();
-
                             }
 
                             @Override
@@ -193,58 +192,6 @@ public class ModifyPropertyInfoActivity extends BaseActivity implements View.OnC
                     }
                 });
                 alarmDialog.show();
-
-
-
-                /*AlertDialog.Builder builder = new AlertDialog.Builder(this);
-                builder.setMessage("是否确定修改资产信息？").setTitle("提示").setNegativeButton("取消", new DialogInterface.OnClickListener() {
-                    @Override
-                    public void onClick(DialogInterface dialog, int which) {
-
-                    }
-                }).setPositiveButton("确认", new DialogInterface.OnClickListener() {
-                    @Override
-                    public void onClick(DialogInterface dialog, int which) {
-                        propertyToBeModified.setId(propertyToBeModified.getIdentifier());
-                        propertyToBeModified.setName(name.getText().toString());
-                        propertyToBeModified.setCate(cate.getText().toString());
-                        propertyToBeModified.setBrand(brand.getText().toString());
-                        propertyToBeModified.setModel(model.getText().toString());
-                        propertyToBeModified.setIdentifier(identifier.getText().toString());
-                        propertyToBeModified.setPrice(price.getText().toString());
-                        propertyToBeModified.setDate(date.getText().toString());
-                        if (isBorrowedProperty.getSelectedItemPosition() == 0) {
-                            propertyToBeModified.setBorrowedProperty(true);
-                        } else {
-                            propertyToBeModified.setBorrowedProperty(false);
-                        }
-                        propertyToBeModified.setProvider(provider.getText().toString());
-                        propertyToBeModified.setProviderTel(providerTel.getText().toString());
-
-                        volleyUtil.updatePropertyInMySql(propertyToBeModified, new UpdateListener() {
-                            @Override
-                            public void onSucceed(String s) {
-                                SweetAlertDialog sweetAlertDialog = new SweetAlertDialog(ModifyPropertyInfoActivity.this,SweetAlertDialog.SUCCESS_TYPE);
-                                sweetAlertDialog.setConfirmClickListener(new SweetAlertDialog.OnSweetClickListener() {
-                                    @Override
-                                    public void onClick(SweetAlertDialog sweetAlertDialog) {
-                                        Intent intent = new Intent();
-                                        intent.putExtra("data_return", propertyToBeModified);
-                                        setResult(RESULT_OK, intent);
-                                        ActivityCollector.removeActivity(ModifyPropertyInfoActivity.this);
-                                    }
-                                });
-
-                            }
-
-                            @Override
-                            public void onError(VolleyError error) {
-                                Toast.makeText(ModifyPropertyInfoActivity.this, "修改失败，请重试！", Toast.LENGTH_SHORT).show();
-                            }
-                        });
-
-                    }
-                }).show();*/
                 break;
             case R.id.pick_date_in_modify_page:
                 Calendar c = Calendar.getInstance();
