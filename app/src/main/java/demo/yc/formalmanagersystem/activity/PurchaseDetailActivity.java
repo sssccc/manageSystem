@@ -7,7 +7,6 @@ import android.os.Bundle;
 import android.support.v7.app.AlertDialog;
 import android.view.View;
 import android.view.Window;
-import android.widget.Button;
 import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
@@ -28,9 +27,6 @@ public class PurchaseDetailActivity extends BaseActivity implements View.OnClick
     public static int currentCountType;
 
     private RelativeLayout back;
-    private Button pass;
-    private Button refuse;
-
     private LinearLayout btnVisibility;
     private LinearLayout reviewStatusLayout;
     private LinearLayout finishDateLayout;
@@ -93,15 +89,11 @@ public class PurchaseDetailActivity extends BaseActivity implements View.OnClick
 
     private void initEvents() {
         back.setOnClickListener(this);
-        pass.setOnClickListener(this);
-        refuse.setOnClickListener(this);
     }
 
     private void initViews() {
 
         back = (RelativeLayout) findViewById(R.id.back_in_purchase_detail_page);
-        pass = (Button) findViewById(R.id.accept_apply_in_purchase_detail_page);
-        refuse = (Button) findViewById(R.id.refuse_apply_in_purchase_detail_page);
 
         detail = (TextView) findViewById(R.id.detail_in_purchase_detail_page);
         name = (TextView) findViewById(R.id.name_in_purchase_detail_page);

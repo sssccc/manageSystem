@@ -380,21 +380,6 @@
             android:layout_weight="2.5"
             android:orientation="vertical">
 
-            <Button
-                android:id="@+id/accept_apply_in_purchase_detail_page"
-                android:layout_width="wrap_content"
-                android:layout_height="0dp"
-                android:layout_gravity="center_horizontal"
-                android:layout_weight="0.5"
-                android:text="审核通过" />
-
-            <Button
-                android:id="@+id/refuse_apply_in_purchase_detail_page"
-                android:layout_width="wrap_content"
-                android:layout_height="0dp"
-                android:layout_gravity="center_horizontal"
-                android:layout_weight="0.5"
-                android:text="审核失败" />
         </LinearLayout>
     </LinearLayout>
 </LinearLayout>
