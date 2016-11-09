@@ -8,7 +8,6 @@ import android.os.Bundle;
 import android.os.Handler;
 import android.os.Message;
 import android.support.v4.app.Fragment;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.MotionEvent;
 import android.view.View;
@@ -38,7 +37,6 @@ import demo.yc.formalmanagersystem.activity.PurchaseDetailActivity;
 import demo.yc.formalmanagersystem.activity.RepairDetailActivity;
 import demo.yc.formalmanagersystem.adapter.MyAdapterForPurchase;
 import demo.yc.formalmanagersystem.adapter.MyAdapterForRepair;
-import demo.yc.formalmanagersystem.contentvalues.DBContent;
 import demo.yc.formalmanagersystem.database.MyDBHandler;
 import demo.yc.formalmanagersystem.models.Purchase;
 import demo.yc.formalmanagersystem.models.Repair;
@@ -222,9 +220,8 @@ public class P_MyPropertyFragment extends Fragment implements View.OnClickListen
                         Cursor cursor = db.query("Purchase", null, "createrIdentifier=?", new String[]{MyApplication.getUser().getUsername()}, null, null, "applyTime"+" desc", null);
                         purchases.clear();
                         if (cursor.moveToFirst()) {
-                            Cursor personCursor = null;
                             do {
-                                Purchase purchase = new Purchase();
+                                final Purchase purchase = new Purchase();
                                 purchase.setName(cursor.getString(cursor.getColumnIndex("name")));
                                 purchase.setDescribe(cursor.getString(cursor.getColumnIndex("describe")));
                                 purchase.setApplyTime(cursor.getString(cursor.getColumnIndex("applyTime")));
@@ -235,18 +232,17 @@ public class P_MyPropertyFragment extends Fragment implements View.OnClickListen
                                 purchase.setPrice(cursor.getString(cursor.getColumnIndex("price")));
                                 purchase.setPurchaseState(cursor.getString(cursor.getColumnIndex("purchaseState")));
                                 purchase.setFinishTime(cursor.getString(cursor.getColumnIndex("finishTime")));
-                                try {
-                                    personCursor = db.query(DBContent.TB_PERSON,null,"userId=?",new String[]{MyApplication.getPersonId()},null,null,null);
-                                    if(personCursor.moveToFirst()){
-                                        purchase.setCreaterName(personCursor.getString(personCursor.getColumnIndex("name")));
+                                volleyUtil.getCreaterName(purchase.getCreaterIdentifier(), new UpdateListener() {
+                                    @Override
+                                    public void onSucceed(String s) {
+                                        purchase.setCreaterName(s);
                                     }
-                                } catch (Exception e) {
-                                    Log.d("tag", "error occurred in query User");
-                                } finally {
-                                    if(personCursor != null){
-                                        personCursor.close();
+
+                                    @Override
+                                    public void onError(VolleyError error) {
+                                        purchase.setCreaterName("未知");
                                     }
-                                }
+                                });
                                 purchases.add(purchase);
                             } while (cursor.moveToNext());
                             cursor.close();
