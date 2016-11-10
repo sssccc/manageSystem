@@ -32,7 +32,7 @@ public class VolleyUtil {
     public VolleyUtil() {
     }
 
-    private static final String ROOT_URL = "http://192.168.1.124:8888/";
+    public static final String ROOT_URL = "http://172.18.204.165:8888/";
     private static final String BASE_URL = ROOT_URL+"property/";
 
 
@@ -75,7 +75,7 @@ public class VolleyUtil {
         final String describe = repair.getDescribe();
 
 
-        String url2 = BASE_URL+"addrepair";
+        String url2 = BASE_URL+"addrepair?role="+MyApplication.getRole();
         StringRequest request2 = new StringRequest(Request.Method.POST, url2, new Response.Listener<String>() {
             @Override
             public void onResponse(String s) {
@@ -97,6 +97,7 @@ public class VolleyUtil {
                 map.put("describe", describe);
                 map.put("finishTime", finishTime);
                 map.put("createrIdentifier", createrIdentifier);
+                map.put("role",MyApplication.getRole());
                 return map;
             }
 
@@ -353,7 +354,7 @@ public class VolleyUtil {
      * @param taskId
      * @param updateListener
      */
-    public synchronized void quitTask(final String taskId, final int taken,final int status,final UpdateListener updateListener) {
+    public synchronized void quitTask(final String taskId,final int status,final UpdateListener updateListener) {
 
         String url2 = ROOT_URL+"task/quit";
         StringRequest request2 = new StringRequest(Request.Method.POST, url2, new Response.Listener<String>() {
@@ -370,7 +371,6 @@ public class VolleyUtil {
             @Override
             protected Map<String, String> getParams() throws AuthFailureError {
                 Map<String, String> map = new HashMap<String, String>();
-                map.put("taken",taken+"");
                 map.put("status",status+"");
                 map.put("taskId",taskId);
                 map.put("role",MyApplication.getRole());
@@ -388,7 +388,7 @@ public class VolleyUtil {
         MyApplication.getInstance().getMyQueue().add(request2);
     }
 
-    public synchronized void finishTask(final String taskId,final int taken,final int status, final UpdateListener updateListener) {
+    public synchronized void finishTask(final String taskId,final int taken, final UpdateListener updateListener) {
 
         String url2 = ROOT_URL+"task/finish";
         StringRequest request2 = new StringRequest(Request.Method.POST, url2, new Response.Listener<String>() {
@@ -406,7 +406,6 @@ public class VolleyUtil {
             protected Map<String, String> getParams() throws AuthFailureError {
                 Map<String, String> map = new HashMap<String, String>();
                 map.put("taken",taken+"");
-                map.put("status",status+"");
                 map.put("taskId",taskId);
                 map.put("role",MyApplication.getRole());
                 return map;

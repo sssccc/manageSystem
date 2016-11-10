@@ -303,7 +303,7 @@ public class TaskDetailActivity extends BaseActivity {
         //删除
         if(choice == 1)
         {
-            new VolleyUtil().quitTask(task.getId(),task.getTaken(),status,new UpdateListener() {
+            new VolleyUtil().quitTask(task.getId(),status,new UpdateListener() {
                 @Override
                 public void onSucceed(String s) {
                     lastIntent.putExtra("reback", -1);
@@ -319,7 +319,7 @@ public class TaskDetailActivity extends BaseActivity {
             });
         }else
         {
-            new VolleyUtil().finishTask(task.getId(), task.getTaken(),status,new UpdateListener() {
+            new VolleyUtil().finishTask(task.getId(), task.getTaken(),new UpdateListener() {
                 @Override
                 public void onSucceed(String s) {
                     lastIntent.putExtra("reback", -1);
