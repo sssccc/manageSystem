@@ -21,7 +21,6 @@ import demo.yc.formalmanagersystem.R;
 import demo.yc.formalmanagersystem.activity.UpdatePersonInfoActivity;
 import demo.yc.formalmanagersystem.contentvalues.PersonInfoContent;
 import demo.yc.formalmanagersystem.models.Person;
-import demo.yc.formalmanagersystem.util.PersonUtil;
 import demo.yc.formalmanagersystem.util.VolleyUtil;
 import demo.yc.formalmanagersystem.view.CircleImageView;
 
@@ -101,7 +100,8 @@ public class PersonInfoFrag extends Fragment {
         class_num.setText(p.getClazz()+"班");
         major.setText(p.getMajor());
         number.setText(p.getStudentId());
-        position.setText(PersonUtil.getPositonName(p.getQuartersId()));
+        position.setText(p.getQuartersId());
+        //position.setText(PersonUtil.getPositonName(p.getQuartersId()));
         if(p.getSex().contains("1"))
             sex.setImageResource(R.drawable.boy);
         else

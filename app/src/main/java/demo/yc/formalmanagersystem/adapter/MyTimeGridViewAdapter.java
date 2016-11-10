@@ -89,7 +89,7 @@ public class MyTimeGridViewAdapter extends BaseAdapter{
             case 0:
                 if(p.getIsFree() == 0)
                 {
-                    tv.setBackgroundResource(R.drawable.grid_item);
+                    tv.setBackgroundResource(R.drawable.gridview_back);
                     tv.setText(time+"\r\n"+"空闲");
                 }else {
                     if (p.getType() == 0) {
@@ -114,7 +114,7 @@ public class MyTimeGridViewAdapter extends BaseAdapter{
                     tv.setText(time+"\r\n"+"空闲");
                 }else
                 {
-                    tv.setBackgroundResource(R.drawable.grid_item);
+                    tv.setBackgroundResource(R.drawable.gridview_back);
                     tv.setText(time+"\r\n"+"工作");
                 }
                 break;
@@ -122,7 +122,7 @@ public class MyTimeGridViewAdapter extends BaseAdapter{
             case 2:
                 if(p.getIsFree() == 0)
                 {
-                    tv.setBackgroundResource(R.drawable.grid_item);
+                    tv.setBackgroundResource(R.drawable.gridview_back);
                     tv.setText(time+"\r\n"+"空闲");
                 }else
                 {

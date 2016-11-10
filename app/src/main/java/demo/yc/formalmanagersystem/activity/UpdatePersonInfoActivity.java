@@ -93,7 +93,8 @@ public class UpdatePersonInfoActivity extends BaseActivity implements View.OnCli
         class_num.setText(p.getClazz());
         major.setText(p.getMajor());
         number.setText(p.getStudentId());
-        position.setText(PersonUtil.getPositonName(p.getQuartersId()));
+        position.setText(p.getQuartersId());
+       // position.setText(PersonUtil.getPositonName(p.getQuartersId()));
         if (p.getSex().contains("1"))
             sex.setImageResource(R.drawable.boy);
         else

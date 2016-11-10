@@ -49,7 +49,6 @@ import demo.yc.formalmanagersystem.util.ActivityCollector;
 import demo.yc.formalmanagersystem.util.DateUtil;
 import demo.yc.formalmanagersystem.util.FileUtil;
 import demo.yc.formalmanagersystem.util.JsonUtil;
-import demo.yc.formalmanagersystem.util.PersonUtil;
 import demo.yc.formalmanagersystem.util.QR_Util;
 import demo.yc.formalmanagersystem.util.ThreadUtil;
 import demo.yc.formalmanagersystem.util.VolleyUtil;
@@ -366,7 +365,8 @@ public class MainActivity extends BaseActivity implements View.OnClickListener, 
         }
         MyApplication.setPersonName(person.getName());
         MyApplication.setPersonId(person.getId());
-        personPosition.setText(PersonUtil.getPositonName(person.getQuartersId()));
+        personPosition.setText(p.getQuartersId());
+        //personPosition.setText(PersonUtil.getPositonName(person.getQuartersId()));
         personName.setText(person.getName());
     }
 
