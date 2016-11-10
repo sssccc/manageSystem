@@ -256,7 +256,7 @@ public class MainActivity extends BaseActivity implements View.OnClickListener, 
                         }
                     } else {
                         Log.w("person", "peerson is null");
-                        // getPersonDataFromLocal();
+                         getPersonDataFromLocal();
                     }
                 }else
                 {
@@ -268,7 +268,7 @@ public class MainActivity extends BaseActivity implements View.OnClickListener, 
             @Override
             public void onError(VolleyError error) {
                 Log.w("person", "error"+error.toString());
-               // getPersonDataFromLocal();
+                getPersonDataFromLocal();
             }
         });
     }
@@ -296,7 +296,7 @@ public class MainActivity extends BaseActivity implements View.OnClickListener, 
                     Log.w("plan", "main plan todayList.size-->" + todayPlanList.size());
                     showMain();
                 } else {
-                    //getPlanDataFromLocal();
+                    getPlanDataFromLocal();
                 }
             }
 
@@ -304,7 +304,7 @@ public class MainActivity extends BaseActivity implements View.OnClickListener, 
             public void onError(VolleyError error) {
                // Toast.makeText(MainActivity.this, "plan...mainactivity..error", Toast.LENGTH_LONG).show();
                 Log.w("plen", error.toString());
-                //getPlanDataFromLocal();
+                getPlanDataFromLocal();
             }
         });
     }
