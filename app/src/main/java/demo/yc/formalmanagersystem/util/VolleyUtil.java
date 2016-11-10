@@ -1,9 +1,5 @@
 package demo.yc.formalmanagersystem.util;
-
-
 import android.util.Log;
-import android.widget.Toast;
-
 import com.android.volley.AuthFailureError;
 import com.android.volley.Request;
 import com.android.volley.Response;
@@ -460,11 +456,9 @@ public class VolleyUtil {
     public synchronized void getPersonInfo(final String userId, final UpdateListener updateListener) {
 
         String url2 = ROOT_URL + "information/show?userId=" + userId + "&role=" + MyApplication.getRole();
-        Toast.makeText(MyApplication.getContext(), userId, Toast.LENGTH_SHORT).show();
         StringRequest request2 = new StringRequest(Request.Method.GET, url2, new Response.Listener<String>() {
             @Override
             public void onResponse(String s) {
-                Toast.makeText(MyApplication.getContext(), s, Toast.LENGTH_SHORT).show();
                 Log.w("person", s);
                 updateListener.onSucceed(s);
             }
