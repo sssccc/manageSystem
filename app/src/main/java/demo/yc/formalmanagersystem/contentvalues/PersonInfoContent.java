@@ -20,6 +20,9 @@ public class PersonInfoContent {
     public static final int CHANGE_SEX = 0x116;
     public static final String CHANGE_SEX_TAG = "person_sex";
 
+    public static final int CHANGE_POSITION = 0x117;
+    public static final String CHANGE_POSITION_TAG = "person_position";
+
 
     public static final int UPDATE_PERSON_INFO = 1111;
     public static final String UPTADE_PERSON_INFO_TAG = "person_info";

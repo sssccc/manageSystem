@@ -1,5 +1,6 @@
 package demo.yc.formalmanagersystem.activity;
 
+import android.app.ProgressDialog;
 import android.content.Intent;
 import android.graphics.Bitmap;
 import android.os.Bundle;
@@ -64,6 +65,8 @@ public class SelectPhotoActivity extends BaseActivity implements View.OnClickLis
     //确认返回,上传图片到后台。
     //取消，则什么也不返回。
 
+
+    private ProgressDialog pd;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -71,6 +74,7 @@ public class SelectPhotoActivity extends BaseActivity implements View.OnClickLis
         setUi();
         setListener();
         getMyIntent();
+        pd = new ProgressDialog(this);
     }
 
     private void setUi()
@@ -161,6 +165,16 @@ public class SelectPhotoActivity extends BaseActivity implements View.OnClickLis
                             isCancel = true;
                         }
                     });
+//                    pd.setMessage("正在保存...");
+//                    pd.show();
+//                    pd.setOnCancelListener(new DialogInterface.OnCancelListener() {
+//                        @Override
+//                        public void onCancel(DialogInterface dialogInterface) {
+//
+//                            client.dispatcher().cancelAll();
+//                            isCancel = true;
+//                        }
+//                    });
                     updateImage(photoPath);
                 }else
                 {
@@ -212,14 +226,17 @@ public class SelectPhotoActivity extends BaseActivity implements View.OnClickLis
     {
 
         File file = new File(filePath);
-        if(!file.exists())
+        if(!file.exists()) {
             mHandler.sendEmptyMessage(UPDATE_ERROR);
+            return;
+        }
 
 
         //封装数据类型，图片和用户名
         MultipartBody.Builder builder = new MultipartBody.Builder().setType(MultipartBody.FORM);
         builder.addFormDataPart("file",filePath, RequestBody.create(UPDATE_IMAGE_TYPE, file));
         builder.addFormDataPart("id",MyApplication.getPersonId());
+        builder.addFormDataPart("role",MyApplication.getRole());
 
         //包含图片和参数的数据体
         MultipartBody requestBody = builder.build();
@@ -245,23 +262,17 @@ public class SelectPhotoActivity extends BaseActivity implements View.OnClickLis
                 {
                     if(response.body().string().equals("1"))
                     {
-                        Log.w("file","上传图片ok......"+response.body().string());
-                        Looper.prepare();
+                        Log.w("file","上传图片ok......");
                         mHandler.sendEmptyMessage(UPDATE_OK);
-                        Looper.loop();
                     }else
                     {
                         Log.w("file","上传图片failure......"+response.body().string());
-                        Looper.prepare();
                         mHandler.sendEmptyMessage(UPDATE_ERROR);
-                        Looper.loop();
                     }
                 }else
                 {
-                    Log.w("file","上传图片failure......"+response.body().string());
-                    Looper.prepare();
+                    Log.w("file","上传图片failure......");
                     mHandler.sendEmptyMessage(UPDATE_ERROR);
-                    Looper.loop();
                 }
             }
         });
@@ -272,6 +283,7 @@ public class SelectPhotoActivity extends BaseActivity implements View.OnClickLis
         @Override
         public void handleMessage(Message msg) {
             DialogUtil.dissmiss();
+//            pd.dismiss();
             if (msg.what == UPDATE_ERROR)
             {
                 if(!isCancel) {

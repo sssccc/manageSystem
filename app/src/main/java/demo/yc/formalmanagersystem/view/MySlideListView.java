@@ -67,9 +67,7 @@ public class MySlideListView extends ListView {
     //给外部调用的，用来决定滑动模式
     public void initSlideMode(int mode)
     {
-
         this.mode = mode;
-
     }
 
 
@@ -78,13 +76,11 @@ public class MySlideListView extends ListView {
     public boolean onTouchEvent(MotionEvent ev)
     {
 
-
         final int action = ev.getAction();
 
         //记录当前的x位置 ，这个值在手指滑动的过程中，不断改变，
         // 然后与downX 进行计算比较
         int lastX = (int) ev.getX();
-
 
         switch (action)
         {
@@ -106,7 +102,7 @@ public class MySlideListView extends ListView {
                 //如果滑动块正在滑动，则不做任何处理，返回上一级
                 if (!scroller.isFinished())
                 {
-                    return false;
+                    return true;
                 }
                 downX = (int) ev.getX(); //手指按下的x
                 downY = (int) ev.getY(); //手指按下的y
@@ -115,6 +111,8 @@ public class MySlideListView extends ListView {
                 //如果点击的地方，不属于listView 的任何一个地方，则不做任何处理，返回给上一级
                 if (slidePosition == AdapterView.INVALID_POSITION)
                 {
+                    scrollBack();
+                        //return super.onTouchEvent(ev);
                     return super.onTouchEvent(ev);
                 }
 
@@ -179,6 +177,7 @@ public class MySlideListView extends ListView {
                 }
 
 
+
                 //如果可以滑动
                 if (canMove)
                 {
@@ -201,6 +200,7 @@ public class MySlideListView extends ListView {
                     }
                     return true; // 拖动的时候ListView不滚动
                 }
+                break;
 
                 //对手指抬上来，进行处理
             case MotionEvent.ACTION_UP:
@@ -208,7 +208,6 @@ public class MySlideListView extends ListView {
                 if (canMove)
                 {
                     canMove = false;
-
                     //并且计算移动结束后的是否要弹出侧滑
                     scrollByDistanceX();
                 }
@@ -290,9 +289,7 @@ public class MySlideListView extends ListView {
     // 在左右侧滑弹出来之后，点击屏幕，把侧滑弹回去。
     private void scrollBack()
     {
-
         isSlided = false;
-
         scroller.startScroll(itemView.getScrollX(), 0, -itemView.getScrollX(),0, Math.abs(itemView.getScrollX()));
         postInvalidate(); // 刷新itemView
 

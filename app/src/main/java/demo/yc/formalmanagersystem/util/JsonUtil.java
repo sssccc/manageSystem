@@ -196,6 +196,7 @@ public class JsonUtil {
     }
 
 
+
     public static boolean isListCorrected(String str)
     {
         if(str == null || str.isEmpty() || !str.startsWith("[") || !str.endsWith("]"))

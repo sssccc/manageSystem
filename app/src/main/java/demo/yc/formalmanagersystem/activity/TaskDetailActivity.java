@@ -213,11 +213,9 @@ public class TaskDetailActivity extends BaseActivity {
     //接收  待处理，， 已参与，，已完成，，已放弃的  详情查询
     private void getMyIntent() {
         lastIntent = getIntent();
-        //status = lastIntent.getExtras().getInt("status");
-       // pos = lastIntent.getExtras().getInt("pos");
-      //   lastIntent.getExtras().getString("taskId");
-        taskId = "61dfbab4630142cd904d29ba5c48c3df";
-        status = 1;
+        status = lastIntent.getExtras().getInt("status");
+        pos = lastIntent.getExtras().getInt("pos");
+        taskId = lastIntent.getExtras().getString("taskId");
         Log.w("detail",status + "-----" + pos + "-----" + taskId);
         new VolleyUtil().getTaskDetail(taskId, new UpdateListener() {
             @Override
@@ -229,7 +227,7 @@ public class TaskDetailActivity extends BaseActivity {
                     if (task == null) {
                         //获取失败
                         Toast.makeText(TaskDetailActivity.this,"获取失败",Toast.LENGTH_SHORT).show();
-                        getDataFromLocal();
+                       // getDataFromLocal();
                     } else {
                         setContentView(R.layout.activity_task_detail);
                         setUi();
@@ -241,7 +239,7 @@ public class TaskDetailActivity extends BaseActivity {
                 {
                     //格式错误
                     Toast.makeText(TaskDetailActivity.this,"获取失败",Toast.LENGTH_SHORT).show();
-                    getDataFromLocal();
+                    //getDataFromLocal();
                 }
 
             }
@@ -303,7 +301,7 @@ public class TaskDetailActivity extends BaseActivity {
         //删除
         if(choice == 1)
         {
-            new VolleyUtil().quitTask(task.getId(),status,new UpdateListener() {
+            new VolleyUtil().quitTask(task.getId(),new UpdateListener() {
                 @Override
                 public void onSucceed(String s) {
                     lastIntent.putExtra("reback", -1);
@@ -319,7 +317,7 @@ public class TaskDetailActivity extends BaseActivity {
             });
         }else
         {
-            new VolleyUtil().finishTask(task.getId(), task.getTaken(),new UpdateListener() {
+            new VolleyUtil().finishTask(task.getId(),status,new UpdateListener() {
                 @Override
                 public void onSucceed(String s) {
                     lastIntent.putExtra("reback", -1);

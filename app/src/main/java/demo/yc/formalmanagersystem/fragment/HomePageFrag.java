@@ -12,7 +12,6 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.AdapterView;
-import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.ListView;
 import android.widget.ScrollView;
@@ -65,8 +64,8 @@ public class HomePageFrag extends TaskBaseFrag {
     TextView notifyMessage;
     ImageView notifyDelete;
 
-    View nodataLayout ;
-    Button nodateBtn ;
+    //View nodataLayout ;
+   // Button nodateBtn ;
 
     public HomePageFrag() {
     }
@@ -106,8 +105,8 @@ public class HomePageFrag extends TaskBaseFrag {
         frags.add(new Time_Frag_11_12_13());
 
         refreshPd =  view.findViewById(R.id.home_frag_task_fresh_pd);
-        nodataLayout = view.findViewById(R.id.home_frag_nodata_layout);
-        nodateBtn = (Button) view.findViewById(R.id.home_frag_nodata_btn);
+//        nodataLayout = view.findViewById(R.id.home_frag_nodata_layout);
+//        nodateBtn = (Button) view.findViewById(R.id.home_frag_nodata_btn);
 
         pager = (ViewPager) view.findViewById(R.id.viewpager);
         pager.setPageTransformer(true,new MyPagerAnimation());
@@ -134,7 +133,7 @@ public class HomePageFrag extends TaskBaseFrag {
     private void getTaskInfoFromHttp() {
 
         Log.w("task","homePage:"+MyApplication.getPersonId());
-        new VolleyUtil().getMyInvolveTaskList(MyApplication.getUser().getId(),new UpdateListener() {
+        new VolleyUtil().getAllMyInvolveTaskList(MyApplication.getUser().getId(),new UpdateListener() {
 
             @Override
             public void onSucceed(String s) {
@@ -143,8 +142,8 @@ public class HomePageFrag extends TaskBaseFrag {
                 if( s == null || !s.startsWith("[")) {
                     Log.w("task","后台服务器返回数据异常");
                     Toast.makeText(getContext(), "获取数据异常", Toast.LENGTH_SHORT).show();
-                    nodataLayout.setVisibility(View.VISIBLE);
-                    listView.setVisibility(View.GONE);
+                  //  nodataLayout.setVisibility(View.VISIBLE);
+                  //  listView.setVisibility(View.GONE);
                     return;
                 }
                 taskList = JsonUtil.parseTaskJson(s);
@@ -166,8 +165,8 @@ public class HomePageFrag extends TaskBaseFrag {
             public void onError(VolleyError error) {
                 //Toast.makeText(getContext(), "网络连接失败。。。", Toast.LENGTH_SHORT).show();
                 refreshPd.setVisibility(View.GONE);
-                nodataLayout.setVisibility(View.VISIBLE);
-                listView.setVisibility(View.GONE);
+              //  nodataLayout.setVisibility(View.VISIBLE);
+               // listView.setVisibility(View.GONE);
                 Log.w("task","homepage访问后台服务器失败："+error.toString());
             }
         });
@@ -214,15 +213,15 @@ public class HomePageFrag extends TaskBaseFrag {
             }
         });
 
-        nodateBtn.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                refreshPd.setVisibility(View.VISIBLE);
-                listView.setVisibility(View.GONE);
-                nodataLayout.setVisibility(View.GONE);
-                getTaskInfoFromHttp();
-            }
-        });
+//        nodateBtn.setOnClickListener(new View.OnClickListener() {
+//            @Override
+//            public void onClick(View view) {
+//                refreshPd.setVisibility(View.VISIBLE);
+//                listView.setVisibility(View.GONE);
+//                nodataLayout.setVisibility(View.GONE);
+//                getTaskInfoFromHttp();
+//            }
+//        });
 
     }
 

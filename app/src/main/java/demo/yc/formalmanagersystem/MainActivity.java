@@ -23,7 +23,6 @@ import com.android.volley.VolleyError;
 import com.bumptech.glide.Glide;
 
 import java.io.BufferedReader;
-import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.InputStream;
@@ -53,7 +52,6 @@ import demo.yc.formalmanagersystem.util.JsonUtil;
 import demo.yc.formalmanagersystem.util.PersonUtil;
 import demo.yc.formalmanagersystem.util.QR_Util;
 import demo.yc.formalmanagersystem.util.ThreadUtil;
-import demo.yc.formalmanagersystem.util.ToastUtil;
 import demo.yc.formalmanagersystem.util.VolleyUtil;
 import demo.yc.formalmanagersystem.view.CircleImageView;
 
@@ -227,42 +225,51 @@ public class MainActivity extends BaseActivity implements View.OnClickListener, 
 
 
         //userId   回调接口
-        Log.w("person", MyApplication.getUser().getId());
+        Log.w("person", "userId--->"+MyApplication.getUser().getId());
         new VolleyUtil().getPersonInfo(MyApplication.getUser().getId(), new UpdateListener() {
             @Override
             public void onSucceed(String s) {
                 //解析json
-                Log.w("person", s);
-                Person p = JsonUtil.parsePersonJson(s);
-                if (p != null) {
-                    MyApplication.setPersonId(p.getId());
-                    if (FileUtil.isExternalStorageOk()) {
-                        Intent intent = new Intent(DownLoadService.ACTION_DOWNLAOD_IMAGE);
-                        FileInfo fileInfo = new FileInfo(MyApplication.getUser().getId(), p.getPicture());
-                        intent.putExtra("image", fileInfo);
-                        startService(intent);
-                    }
+                Log.w("person", "ok--->"+s);
+                //数据返回正确。。。
+                if(JsonUtil.isSingleCorrected(s))
+                {
+                    Person p = JsonUtil.parsePersonJson(s);
+                    if (p != null) {
+                        MyApplication.setPersonId(p.getId());
+                        Log.w("person", "personId"+MyApplication.getPersonId());
+                        if (FileUtil.isExternalStorageOk()) {
+                            Intent intent = new Intent(DownLoadService.ACTION_DOWNLAOD_IMAGE);
+                            FileInfo fileInfo = new FileInfo(MyApplication.getUser().getId(), p.getPicture());
+                            intent.putExtra("image", fileInfo);
+                            // startService(intent);
+                        }
 
 //                    if(person == null)
 //                        db.addPersonInfo(p);
 //                    else
 //                        db.updatePersonInfo(p);
-                    updatePersonInfo(p);
+                        updatePersonInfo(p);
 
-                    if (!isPerson) {
-                        isPerson = true;
-                        showMain();
+                        if (!isPerson) {
+                            isPerson = true;
+                            showMain();
+                        }
+                    } else {
+                        Log.w("person", "peerson is null");
+                        // getPersonDataFromLocal();
                     }
-                } else {
-                    getPersonDataFromLocal();
+                }else
+                {
+                    Log.w("person", "数据格式错误"+s);
                 }
 
             }
 
             @Override
             public void onError(VolleyError error) {
-                Log.w("person", error.toString());
-                getPersonDataFromLocal();
+                Log.w("person", "error"+error.toString());
+               // getPersonDataFromLocal();
             }
         });
     }
@@ -290,7 +297,7 @@ public class MainActivity extends BaseActivity implements View.OnClickListener, 
                     Log.w("plan", "main plan todayList.size-->" + todayPlanList.size());
                     showMain();
                 } else {
-                    getPlanDataFromLocal();
+                    //getPlanDataFromLocal();
                 }
             }
 
@@ -298,7 +305,7 @@ public class MainActivity extends BaseActivity implements View.OnClickListener, 
             public void onError(VolleyError error) {
                // Toast.makeText(MainActivity.this, "plan...mainactivity..error", Toast.LENGTH_LONG).show();
                 Log.w("plen", error.toString());
-                getPlanDataFromLocal();
+                //getPlanDataFromLocal();
             }
         });
     }
@@ -349,12 +356,13 @@ public class MainActivity extends BaseActivity implements View.OnClickListener, 
         if (!MyApplication.getPersonHeadPath().equals(""))
             Glide.with(this).load(MyApplication.getPersonHeadPath()).into(personHead);
         else {
-            String tempPath = FileUtil.getUserImagePath(MyApplication.getUser().getId());
-            File file = new File(tempPath);
-            if (file.exists())
-                Glide.with(this).load(tempPath).into(personHead);
-            else
-                Glide.with(this).load(p.getPicture()).into(personHead);
+//            String tempPath = FileUtil.getUserImagePath(MyApplication.getUser().getId());
+//            File file = new File(tempPath);
+//            if (file.exists())
+//                Glide.with(this).load(tempPath).into(personHead);
+//            else
+                MyApplication.setPersonHeadPath(VolleyUtil.ROOT_URL+p.getPicture());
+                Glide.with(this).load(VolleyUtil.ROOT_URL + p.getPicture()).into(personHead);
         }
         MyApplication.setPersonName(person.getName());
         MyApplication.setPersonId(person.getId());
@@ -502,7 +510,7 @@ public class MainActivity extends BaseActivity implements View.OnClickListener, 
                 Property p = JsonUtil.parseQRCode(result);
                 //解析错误
                 if (p == null) {
-                    ToastUtil.createToast(this, "解析错误！");
+                   // ToastUtil.createToast(this, "解析错误！");
                 }
                 //解析成功，跳转至PropertyInfo Activity显示详情页面
                 else {

@@ -87,6 +87,8 @@ public class Task_All_Frag extends TaskBaseFrag implements SwipeRefreshLayout.On
         onRefresh();
         allListView = (MySlideListView) view.findViewById(R.id.task_all_all_people_listView);
         myListView = (MySlideListView) view.findViewById(R.id.task_all_my_group_listView);
+        allListView.initSlideMode(3);
+        myListView.initSlideMode(3);
         scrollView = (ScrollView) view.findViewById(R.id.task_all_scrollView);
         scrollView.smoothScrollTo(0, 0);
 
@@ -111,7 +113,8 @@ public class Task_All_Frag extends TaskBaseFrag implements SwipeRefreshLayout.On
                 }else
                 {
                     Log.w("task","taskAll解析错误");
-                    getDataFromLocal(0);
+                    refreshLayout.setRefreshing(false);
+                    //getDataFromLocal(0);
                 }
 
         }
@@ -119,8 +122,9 @@ public class Task_All_Frag extends TaskBaseFrag implements SwipeRefreshLayout.On
             @Override
             public void onError(VolleyError error) {
                 isAll = true;
+                refreshLayout.setRefreshing(false);
                 Log.w("task","all accept:"+error.toString());
-                getDataFromLocal(0);
+                //getDataFromLocal(0);
             }
         });
 
@@ -129,17 +133,25 @@ public class Task_All_Frag extends TaskBaseFrag implements SwipeRefreshLayout.On
         new VolleyUtil().getMyAcceptableTaskList(MyApplication.getUser().getId(), new UpdateListener() {
             @Override
             public void onSucceed(String s) {
-                isMy = true;
-                Log.w("task","my accept ok:"+s.toString());
-                myList = JsonUtil.parseTaskJson(s);
-                showMyListView(0);
+                if(JsonUtil.isListCorrected(s)) {
+                    isMy = true;
+                    Log.w("task", "my accept ok:" + s.toString());
+                    myList = JsonUtil.parseTaskJson(s);
+                    showMyListView(0);
+                }else
+                {
+                    Log.w("task","mytask解析错误");
+                    //getDataFromLocal(0);
+                    refreshLayout.setRefreshing(false);
+                }
             }
 
             @Override
             public void onError(VolleyError error) {
                 isMy = true;
                 Log.w("task","my accept:"+error.toString());
-                getDataFromLocal(1);
+               // getDataFromLocal(1);
+                refreshLayout.setRefreshing(false);
             }
         });
 
@@ -289,7 +301,6 @@ public class Task_All_Frag extends TaskBaseFrag implements SwipeRefreshLayout.On
         } catch (IOException e) {
             e.printStackTrace();
         }
-
         if(flag == 0)
         {
             allList = JsonUtil.parseTaskJson(sb.toString());
@@ -299,9 +310,6 @@ public class Task_All_Frag extends TaskBaseFrag implements SwipeRefreshLayout.On
             myList = JsonUtil.parseTaskJson(sb.toString());
             showMyListView(0);
         }
-
-
-
     }
 
     @Override

@@ -121,7 +121,7 @@ public class Task_Quit_Frag extends TaskBaseFrag implements SwipeRefreshLayout.O
 
         numTv = (TextView) view.findViewById(R.id.quit_list_num);
         listView = (MySlideListView2) view.findViewById(R.id.task_quit_listView);
-        listView.initSlideMode(1);
+        listView.initSlideMode(0);
     }
 
     //网络请求数据之后，绑定adapter 显示listView

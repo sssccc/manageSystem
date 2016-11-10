@@ -5,6 +5,7 @@ import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -14,16 +15,14 @@ import android.widget.TextView;
 
 import com.bumptech.glide.Glide;
 
-import java.io.File;
-
 import demo.yc.formalmanagersystem.MainActivity;
 import demo.yc.formalmanagersystem.MyApplication;
 import demo.yc.formalmanagersystem.R;
 import demo.yc.formalmanagersystem.activity.UpdatePersonInfoActivity;
 import demo.yc.formalmanagersystem.contentvalues.PersonInfoContent;
 import demo.yc.formalmanagersystem.models.Person;
-import demo.yc.formalmanagersystem.util.FileUtil;
 import demo.yc.formalmanagersystem.util.PersonUtil;
+import demo.yc.formalmanagersystem.util.VolleyUtil;
 import demo.yc.formalmanagersystem.view.CircleImageView;
 
 /**
@@ -107,15 +106,17 @@ public class PersonInfoFrag extends Fragment {
             sex.setImageResource(R.drawable.boy);
         else
             sex.setImageResource(R.drawable.girl);
-        if(!MyApplication.getPersonHeadPath().equals(""))
+        if(!MyApplication.getPersonHeadPath().equals("")) {
             Glide.with(getContext()).load(MyApplication.getPersonHeadPath()).into(headPhoto);
-        else {
-            String tempPath = FileUtil.getUserImagePath(MyApplication.getUser().getId());
-            File file = new File(tempPath);
-            if (file.exists())
-                Glide.with(this).load(tempPath).into(headPhoto);
-            else
-                Glide.with(this).load(p.getPicture()).into(headPhoto);
+            Log.w("head","personINfo-->application-->"+MyApplication.getPersonHeadPath());
+        }else {
+//            String tempPath = FileUtil.getUserImagePath(MyApplication.getUser().getId());
+//            File file = new File(tempPath);
+//            if (file.exists())
+//                Glide.with(this).load(tempPath).into(headPhoto);
+//            else
+            Log.w("head","personINfo-->p.getPicture-->"+p.getPicture());
+            Glide.with(getContext()).load(VolleyUtil.ROOT_URL+p.getPicture()).into(headPhoto);
         }
 
     }

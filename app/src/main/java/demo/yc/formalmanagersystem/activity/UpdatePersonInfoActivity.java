@@ -4,6 +4,7 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
+import android.view.inputmethod.InputMethodManager;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageView;
@@ -13,8 +14,6 @@ import android.widget.Toast;
 import com.android.volley.VolleyError;
 import com.bumptech.glide.Glide;
 
-import java.io.File;
-
 import demo.yc.formalmanagersystem.MyApplication;
 import demo.yc.formalmanagersystem.R;
 import demo.yc.formalmanagersystem.UpdateListener;
@@ -23,7 +22,6 @@ import demo.yc.formalmanagersystem.contentvalues.SelectPhotoContent;
 import demo.yc.formalmanagersystem.database.MyDBHandler;
 import demo.yc.formalmanagersystem.models.Person;
 import demo.yc.formalmanagersystem.util.DialogUtil;
-import demo.yc.formalmanagersystem.util.FileUtil;
 import demo.yc.formalmanagersystem.util.PersonUtil;
 import demo.yc.formalmanagersystem.util.VolleyUtil;
 import demo.yc.formalmanagersystem.view.CircleImageView;
@@ -78,6 +76,7 @@ public class UpdatePersonInfoActivity extends BaseActivity implements View.OnCli
         name.setOnClickListener(this);
         sex.setOnClickListener(this);
         age.setOnClickListener(this);
+        position.setOnClickListener(this);
     }
 
 
@@ -88,7 +87,6 @@ public class UpdatePersonInfoActivity extends BaseActivity implements View.OnCli
             return;
         }
         p = (Person) lastIntent.getSerializableExtra(PersonInfoContent.UPTADE_PERSON_INFO_TAG);
-
         name.setText(p.getName());
         age.setText(p.getAge() + "岁");
         institute.setText(p.getCollege());
@@ -101,15 +99,17 @@ public class UpdatePersonInfoActivity extends BaseActivity implements View.OnCli
         else
             sex.setImageResource(R.drawable.girl);
 
-        if(!MyApplication.getPersonHeadPath().equals(""))
+        if(!MyApplication.getPersonHeadPath().equals("")) {
             Glide.with(this).load(MyApplication.getPersonHeadPath()).into(headPhoto);
-        else {
-            String tempPath = FileUtil.getUserImagePath(MyApplication.getUser().getId());
-            File file = new File(tempPath);
-            if (file.exists())
-                Glide.with(this).load(tempPath).into(headPhoto);
-            else
-                Glide.with(this).load(p.getPicture()).into(headPhoto);
+            Log.w("head","updateActivity-->application-->"+MyApplication.getPersonHeadPath());
+        }else {
+//            String tempPath = FileUtil.getUserImagePath(MyApplication.getUser().getId());
+//            File file = new File(tempPath);
+//            if (file.exists())
+//                Glide.with(this).load(tempPath).into(headPhoto);
+//            else
+            Log.w("head","updateActivity-->p.getPicture-->"+p.getPicture());
+            Glide.with(this).load(VolleyUtil.ROOT_URL+p.getPicture()).into(headPhoto);
         }
     }
 
@@ -119,11 +119,11 @@ public class UpdatePersonInfoActivity extends BaseActivity implements View.OnCli
         if(!MyApplication.getPersonHeadPath().equals(""))
           path = MyApplication.getPersonHeadPath();
         else {
-            String tempPath = FileUtil.getUserImagePath(MyApplication.getUser().getId());
-            File file = new File(tempPath);
-            if (file.exists())
-                path = tempPath;
-            else
+//                String tempPath = FileUtil.getUserImagePath(MyApplication.getUser().getId());
+//                File file = new File(tempPath);
+//                if (file.exists())
+//                    path = tempPath;
+//                else
                 path = p.getPicture();
         }
         i.putExtra(PersonInfoContent.CHANGE_PHOTO_TAG, path);
@@ -148,8 +148,15 @@ public class UpdatePersonInfoActivity extends BaseActivity implements View.OnCli
         Intent sexIntent = new Intent(this, ChangeSexActivity.class);
         startActivityForResult(sexIntent, PersonInfoContent.CHANGE_SEX);
     }
+    private void changePosition() {
+        Intent sexIntent = new Intent(this, ChangePositionActivity.class);
+        startActivityForResult(sexIntent, PersonInfoContent.CHANGE_POSITION);
+    }
+
 
     private void saveInfo() {
+        ((InputMethodManager)getSystemService(INPUT_METHOD_SERVICE))
+                .hideSoftInputFromWindow(UpdatePersonInfoActivity.this.getCurrentFocus().getWindowToken(), InputMethodManager.HIDE_NOT_ALWAYS);
         DialogUtil.showDialog(UpdatePersonInfoActivity.this,"正在保存...").show();
         p.setCollege(institute.getText().toString());
         p.setMajor(major.getText().toString());
@@ -162,14 +169,21 @@ public class UpdatePersonInfoActivity extends BaseActivity implements View.OnCli
             @Override
             public void onSucceed(String s) {
                 DialogUtil.dissmiss();
-                Toast.makeText(UpdatePersonInfoActivity.this,"保存成功",Toast.LENGTH_SHORT).show();
-                db.updatePersonInfo(p);
-                MyApplication.setPersonName(p.getName());
-                lastIntent.putExtra(PersonInfoContent.UPTADE_PERSON_INFO_TAG, p);
-                if(isChange)
-                    lastIntent.putExtra("isChange",true);
-                setResult(RESULT_OK, lastIntent);
-                finish();
+                if(s.equals("1"))
+                {
+                    Toast.makeText(UpdatePersonInfoActivity.this,"保存成功",Toast.LENGTH_SHORT).show();
+                    db.updatePersonInfo(p);
+                    MyApplication.setPersonName(p.getName());
+                    lastIntent.putExtra(PersonInfoContent.UPTADE_PERSON_INFO_TAG, p);
+                    if(isChange)
+                        lastIntent.putExtra("isChange",true);
+                    setResult(RESULT_OK, lastIntent);
+                    finish();
+                }else
+                {
+                    Toast.makeText(UpdatePersonInfoActivity.this,"保存失败",Toast.LENGTH_SHORT).show();
+                }
+
             }
 
             @Override
@@ -202,6 +216,9 @@ public class UpdatePersonInfoActivity extends BaseActivity implements View.OnCli
                 break;
             case R.id.update_save_btn:
                 saveInfo();
+                break;
+            case R.id.update_position:
+                changePosition();
                 break;
             case R.id.update_cancel_btn:
                 if(isChange)
@@ -242,6 +259,11 @@ public class UpdatePersonInfoActivity extends BaseActivity implements View.OnCli
                 case PersonInfoContent.CHANGE_PHOTO:
                     Glide.with(this).load(MyApplication.getPersonHeadPath()).into(headPhoto);
                     isChange = true;
+                    break;
+                case PersonInfoContent.CHANGE_POSITION:
+                    String positionStr = data.getStringExtra(PersonInfoContent.CHANGE_POSITION_TAG);
+                    this.position.setText(positionStr);
+                    p.setQuartersId(positionStr);
                     break;
             }
         }

@@ -120,7 +120,7 @@ public class Task_History_Frag extends TaskBaseFrag implements SwipeRefreshLayou
        // refreshableView = (RefreshableView) view.findViewById(R.id.refresh_view_in_history);
         numTv = (TextView) view.findViewById(R.id.history_list_num);
         listView = (MySlideListView2) view.findViewById(R.id.task_history_listView);
-        listView.initSlideMode(1);
+        listView.initSlideMode(0);
     }
 
     //请求数据之后，绑定adapter

@@ -93,6 +93,8 @@ public class Task_Involve_Frag extends TaskBaseFrag implements SwipeRefreshLayou
 
         allListView = (MySlideListView) view.findViewById(R.id.task_involve_all_people_listView);
         myListView = (MySlideListView) view.findViewById(R.id.task_involve_my_group_listView);
+        allListView.initSlideMode(3);
+        myListView.initSlideMode(3);
         scrollView = (ScrollView) view.findViewById(R.id.task_involve_scrollView);
         scrollView.smoothScrollTo(0,0);
     }
@@ -103,14 +105,20 @@ public class Task_Involve_Frag extends TaskBaseFrag implements SwipeRefreshLayou
         new VolleyUtil().getAllInvolveTaskList(MyApplication.getUser().getId(), new UpdateListener() {
             @Override
             public void onSucceed(String s) {
-                isAll = true;
-                Log.w("task","all involve = "+s);
-                allList = JsonUtil.parseTaskJson(s);
-                if(allList != null)
-                    showMyListView(0);
-                else
-                    Toast.makeText(getContext(), "all involve nothing", Toast.LENGTH_SHORT).show();
-        }
+                if (JsonUtil.isListCorrected(s)) {
+                    isAll = true;
+                    Log.w("task", "all involve = " + s);
+                    allList = JsonUtil.parseTaskJson(s);
+                    if (allList != null)
+                        showAllListView(0);
+                    else
+                        Toast.makeText(getContext(), "all involve nothing", Toast.LENGTH_SHORT).show();
+                }else
+                {
+                    Log.w("task","taskAll解析错误");
+                    getDataFromLocal(0);
+                }
+            }
 
         @Override
         public void onError(VolleyError error) {

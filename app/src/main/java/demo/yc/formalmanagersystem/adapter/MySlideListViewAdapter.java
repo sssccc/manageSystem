@@ -164,7 +164,7 @@ public class MySlideListViewAdapter extends BaseAdapter {
                 });
                 if(choice == 1)
                 {
-                    new VolleyUtil().quitTask(task.getId(),status, new UpdateListener() {
+                    new VolleyUtil().quitTask(task.getId(), new UpdateListener() {
                         @Override
                         public void onSucceed(String s) {
                             Log.w("task","task_delete---->ok--->"+s);
@@ -190,7 +190,8 @@ public class MySlideListViewAdapter extends BaseAdapter {
                     });
                 }else
                 {
-                    new VolleyUtil().finishTask(task.getId(),task.getTaken(), new UpdateListener() {
+
+                    new VolleyUtil().finishTask(task.getId(),status, new UpdateListener() {
                         @Override
                         public void onSucceed(String s) {
                             DialogUtil.dissmiss();

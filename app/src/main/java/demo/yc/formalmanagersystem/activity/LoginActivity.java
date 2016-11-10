@@ -111,12 +111,12 @@ public class LoginActivity extends BaseActivity implements View.OnClickListener 
                 dialog.show();
 
 //
-
-                Intent i1 = new Intent(LoginActivity.this, MainActivity.class);
-                MyApplication.getUser().setId("0615bb2424f84ebca0758f387b8daf0c");
-                MyApplication.getUser().setUsername(count);
-                startActivity(i1);
-                finish();
+//
+//                Intent i1 = new Intent(LoginActivity.this, MainActivity.class);
+//                MyApplication.getUser().setId("0615bb2424f84ebca0758f387b8daf0c");
+//                MyApplication.getUser().setUsername(count);
+//                startActivity(i1);
+//                finish();
                 new VolleyUtil().login(count, password, new UpdateListener() {
                     @Override
                     public void onSucceed(String s) {
@@ -162,6 +162,7 @@ public class LoginActivity extends BaseActivity implements View.OnClickListener 
                         //登录成功
                         else
                         {
+                            dialog.dismiss();
                             Log.w("login","登陆成功");
                             Log.w("login","账号--->"+s);
                             if (rememberCheckBox.isChecked())

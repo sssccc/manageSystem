@@ -2,7 +2,6 @@ package demo.yc.formalmanagersystem.util;
 
 
 import android.util.Log;
-import android.widget.Toast;
 
 import com.android.volley.AuthFailureError;
 import com.android.volley.Request;
@@ -404,7 +403,7 @@ public class VolleyUtil {
      * @param taskId
      * @param updateListener
      */
-    public synchronized void quitTask(final String taskId,final int status,final UpdateListener updateListener) {
+    public synchronized void quitTask(final String taskId,final UpdateListener updateListener) {
 
         String url2 = ROOT_URL+"task/quit";
         StringRequest request2 = new StringRequest(Request.Method.POST, url2, new Response.Listener<String>() {
@@ -421,7 +420,7 @@ public class VolleyUtil {
             @Override
             protected Map<String, String> getParams() throws AuthFailureError {
                 Map<String, String> map = new HashMap<String, String>();
-                map.put("status",status+"");
+                map.put("userId",MyApplication.getUser().getId());
                 map.put("taskId",taskId);
                 map.put("role",MyApplication.getRole());
                 return map;
@@ -438,7 +437,9 @@ public class VolleyUtil {
         MyApplication.getInstance().getMyQueue().add(request2);
     }
 
-    public synchronized void finishTask(final String taskId,final int taken, final UpdateListener updateListener) {
+    //参与taken = 1
+    //完成 status = 1
+    public synchronized void finishTask(final String taskId, final  int flag,final UpdateListener updateListener) {
 
         String url2 = ROOT_URL+"task/finish";
         StringRequest request2 = new StringRequest(Request.Method.POST, url2, new Response.Listener<String>() {
@@ -455,7 +456,16 @@ public class VolleyUtil {
             @Override
             protected Map<String, String> getParams() throws AuthFailureError {
                 Map<String, String> map = new HashMap<String, String>();
-                map.put("taken",taken+"");
+
+                //参与
+                if(flag == 0)
+                {
+                    map.put("taken",1+"");
+                    map.put("userId",MyApplication.getUser().getId());
+                }else {
+                    map.put("status",1+"");
+                }
+
                 map.put("taskId",taskId);
                 map.put("role",MyApplication.getRole());
                 return map;
@@ -481,11 +491,11 @@ public class VolleyUtil {
     public synchronized void getPersonInfo(final String userId, final UpdateListener updateListener) {
 
         String url2 = ROOT_URL+"information/show?userId="+userId+"&role="+MyApplication.getRole();
-        Toast.makeText(MyApplication.getContext(),userId,Toast.LENGTH_SHORT).show();
+       // Toast.makeText(MyApplication.getContext(),userId,Toast.LENGTH_SHORT).show();
         StringRequest request2 = new StringRequest(Request.Method.GET, url2, new Response.Listener<String>() {
             @Override
             public void onResponse(String s) {
-                Toast.makeText(MyApplication.getContext(),s,Toast.LENGTH_SHORT).show();
+               // Toast.makeText(MyApplication.getContext(),s,Toast.LENGTH_SHORT).show();
                 Log.w("person",s);
                 updateListener.onSucceed(s);
             }
@@ -556,7 +566,7 @@ public class VolleyUtil {
      */
     public synchronized void getAllAcceptableTaskList(final UpdateListener updateListener) {
 
-        String url2 = ROOT_URL+"task/untakenteamtask?role="+MyApplication.getRole();
+        String url2 = ROOT_URL+"task/untakenteamtask?userId="+MyApplication.getUser().getId()+"&role="+MyApplication.getRole();
         StringRequest request2 = new StringRequest(Request.Method.GET, url2, new Response.Listener<String>() {
             @Override
             public void onResponse(String s) {
@@ -644,6 +654,31 @@ public class VolleyUtil {
         request2.setTag("getMyInvolveTaskList");
         MyApplication.getInstance().getMyQueue().add(request2);
     }
+
+    /**
+     * 根据用户Id 获取用户已参与的任务
+     * @param userId
+     * @param updateListener
+     */
+    public synchronized void getAllMyInvolveTaskList(final String userId, final UpdateListener updateListener) {
+
+        String url2 = ROOT_URL+"task/accepted/get?userId="+userId+"&role="+MyApplication.getRole();
+        StringRequest request2 = new StringRequest(Request.Method.GET, url2, new Response.Listener<String>() {
+            @Override
+            public void onResponse(String s) {
+                updateListener.onSucceed(s);
+            }
+        }, new ErrorListener() {
+            @Override
+            public void onErrorResponse(VolleyError volleyError) {
+                updateListener.onError(volleyError);
+            }
+
+        });
+        request2.setTag("getAllMyInvolveTaskList");
+        MyApplication.getInstance().getMyQueue().add(request2);
+    }
+
 
     /**
      * 根据用户的id获取已经完成的任务
