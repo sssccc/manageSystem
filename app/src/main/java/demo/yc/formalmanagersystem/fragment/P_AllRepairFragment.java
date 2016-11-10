@@ -129,6 +129,8 @@ public class P_AllRepairFragment extends Fragment implements View.OnClickListene
         super.onActivityCreated(savedInstanceState);
         if (getActivity() != null) {
             executor = Executors.newSingleThreadExecutor();
+            getPopupWindowView();
+            resetStatusStyle();
             readDataFromSQLite();
             //设置下拉刷新监听
             refreshableView.setOnRefreshListener(new RefreshableView.PullToRefreshListener() {
@@ -432,8 +434,6 @@ public class P_AllRepairFragment extends Fragment implements View.OnClickListene
     //数据读取完成后的操作
     private void doAfterAsyTask() {
         if (getActivity() != null) {
-            getPopupWindowView();
-            resetStatusStyle();
             //默认选中全部资产与全部分类
             allPurchase.setAlpha(1);
             allPurchase.setTextColor(Color.rgb(95, 187, 176));
