@@ -148,6 +148,8 @@ public class P_AllPurchaseFragment extends Fragment implements View.OnClickListe
             direction.setOnClickListener(this);
             directionImg = (ImageView) getActivity().findViewById(R.id.direction_img);
             executor = Executors.newFixedThreadPool(2);
+            getPopupWindowView();
+            resetStatusStyle();
             //从本地数据库读取数据
             readDataFromSQLite();
         }
@@ -259,8 +261,6 @@ public class P_AllPurchaseFragment extends Fragment implements View.OnClickListe
 
     private void doAfterAsyTask() {
         temp2 = new ArrayList<>(purchases);
-        getPopupWindowView();
-        resetStatusStyle();
         //默认选中全部资产与全部分类
         if (this.isAdded()) {
             allPurchase.setAlpha(1);
@@ -418,7 +418,7 @@ public class P_AllPurchaseFragment extends Fragment implements View.OnClickListe
             public void run() {
                 if (getActivity() != null) {
                     SQLiteDatabase db = MyDBHandler.getInstance(getActivity()).getDBInstance();
-                    Cursor cursor = db.query("Purchase", null, null, null, null, null, "applyTime"+" desc", null);
+                    Cursor cursor = db.query("Purchase", null, null, null, null, null, "applyTime" + " desc", null);
                     purchases.clear();
                     temp2.clear();
                     if (cursor.moveToFirst()) {
@@ -442,7 +442,7 @@ public class P_AllPurchaseFragment extends Fragment implements View.OnClickListe
 
                                 @Override
                                 public void onError(VolleyError error) {
-                                    Log.d("error",error.toString());
+                                    Log.d("error", error.toString());
                                     purchase.setCreaterName("未知");
                                 }
                             });

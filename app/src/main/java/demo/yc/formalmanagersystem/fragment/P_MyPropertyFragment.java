@@ -178,7 +178,6 @@ public class P_MyPropertyFragment extends Fragment implements View.OnClickListen
     @Override
     public void onAttach(Context context) {
         super.onAttach(context);
-
     }
 
     @Override
@@ -201,6 +200,28 @@ public class P_MyPropertyFragment extends Fragment implements View.OnClickListen
             hint = (TextView) getActivity().findViewById(R.id.text_view_in_top);
             hint.setVisibility(View.VISIBLE);
             hint.setText("采购");
+
+            getPopupWindowView();
+            resetTypeStyle();
+            resetStatusStyle();
+            //默认选中全部资产
+            if (this.isAdded()) {
+                if (position1 == 0) {
+                    myPurchase.setAlpha(1);
+                    myPurchase.setTextColor(Color.rgb(95, 187, 176));
+                    myPurchase.setBackgroundResource(R.drawable.bg_border_green);
+                } else if (position1 == 1) {
+                    myRepair.setAlpha(1);
+                    myRepair.setTextColor(Color.rgb(95, 187, 176));
+                    myRepair.setBackgroundResource(R.drawable.bg_border_green);
+                }
+                //默认选中全部分类
+                allProperties.setAlpha(1);
+                allProperties.setTextColor(Color.rgb(95, 187, 176));
+                allProperties.setBackgroundResource(R.drawable.bg_border_green);
+            }
+
+
             executor = Executors.newCachedThreadPool();
             readDataFromSQLite();
             getActivity().getWindow().setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_ADJUST_PAN);
@@ -217,7 +238,7 @@ public class P_MyPropertyFragment extends Fragment implements View.OnClickListen
                 public void run() {
                     if (getActivity() != null) {
                         SQLiteDatabase db = MyDBHandler.getInstance(getActivity()).getDBInstance();
-                        Cursor cursor = db.query("Purchase", null, "createrIdentifier=?", new String[]{MyApplication.getUser().getUsername()}, null, null, "applyTime"+" desc", null);
+                        Cursor cursor = db.query("Purchase", null, "createrIdentifier=?", new String[]{MyApplication.getUser().getUsername()}, null, null, "applyTime" + " desc", null);
                         purchases.clear();
                         if (cursor.moveToFirst()) {
                             do {
@@ -263,7 +284,7 @@ public class P_MyPropertyFragment extends Fragment implements View.OnClickListen
                 @Override
                 public void run() {
                     SQLiteDatabase db = MyDBHandler.getInstance(getActivity()).getDBInstance();
-                    Cursor cursor = db.query("Repair", null, "createrIdentifier=?", new String[]{MyApplication.getUser().getUsername()}, null, null,  "applyTime"+" desc", null);
+                    Cursor cursor = db.query("Repair", null, "createrIdentifier=?", new String[]{MyApplication.getUser().getUsername()}, null, null, "applyTime" + " desc", null);
                     repairs.clear();
                     if (cursor.moveToFirst()) {
                         Cursor propertyCursor;
@@ -349,27 +370,6 @@ public class P_MyPropertyFragment extends Fragment implements View.OnClickListen
             }
         });
 
-        if (count == 1) {
-            getPopupWindowView();
-            resetTypeStyle();
-            resetStatusStyle();
-            //默认选中全部资产
-            if (this.isAdded()) {
-                if (position1 == 0) {
-                    myPurchase.setAlpha(1);
-                    myPurchase.setTextColor(Color.rgb(95, 187, 176));
-                    myPurchase.setBackgroundResource(R.drawable.bg_border_green);
-                } else if (position1 == 1) {
-                    myRepair.setAlpha(1);
-                    myRepair.setTextColor(Color.rgb(95, 187, 176));
-                    myRepair.setBackgroundResource(R.drawable.bg_border_green);
-                }
-                //默认选中全部分类
-                allProperties.setAlpha(1);
-                allProperties.setTextColor(Color.rgb(95, 187, 176));
-                allProperties.setBackgroundResource(R.drawable.bg_border_green);
-            }
-        }
 
     }
 

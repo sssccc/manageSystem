@@ -95,8 +95,6 @@ public class P_QueryPropertyFragment extends Fragment implements View.OnClickLis
     private TextView other;
     private View customView;
     private boolean flag;
-    float dY = 0;
-    float uY = 0;
 
     private RefreshableView refreshableView;
 
@@ -113,6 +111,7 @@ public class P_QueryPropertyFragment extends Fragment implements View.OnClickLis
             }
             //更新成功时
             else {
+                temp2.clear();
                 properties = (List<Property>) msg.obj;
                 if (properties.size() != 0) {
                     Log.d("myTag", "success");
@@ -238,13 +237,24 @@ public class P_QueryPropertyFragment extends Fragment implements View.OnClickLis
                         listView.setAdapter(myAdapterForProperty);
                         myAdapterForProperty.notifyDataSetChanged();
                     }
-
                 }
 
                 @Override
                 public void afterTextChanged(Editable s) {
                 }
             });
+
+            getPopupWindowView();
+            resetTypeStyle();
+            resetStatusStyle();
+            //默认选中全部资产与全部分类
+            allProperty.setAlpha(1);
+            allProperty.setTextColor(Color.rgb(95, 187, 176));
+            allProperty.setBackgroundResource(R.drawable.bg_border_green);
+            allType.setAlpha(1);
+            allType.setTextColor(Color.rgb(95, 187, 176));
+            allType.setBackgroundResource(R.drawable.bg_border_green);
+            position1 = position2 = 0;
             executor = Executors.newFixedThreadPool(2);
             //从本地数据库读取数据
             readDataFromSQLite();
@@ -314,20 +324,6 @@ public class P_QueryPropertyFragment extends Fragment implements View.OnClickLis
                     } else backToTop.setVisibility(View.INVISIBLE);
                 }
             });
-
-            getPopupWindowView();
-            resetTypeStyle();
-            resetStatusStyle();
-
-            //默认选中全部资产与全部分类
-            allProperty.setAlpha(1);
-            allProperty.setTextColor(Color.rgb(95, 187, 176));
-            allProperty.setBackgroundResource(R.drawable.bg_border_green);
-            allType.setAlpha(1);
-            allType.setTextColor(Color.rgb(95, 187, 176));
-            allType.setBackgroundResource(R.drawable.bg_border_green);
-            position1 = position2 = 0;
-
         }
     }
 
@@ -362,7 +358,6 @@ public class P_QueryPropertyFragment extends Fragment implements View.OnClickLis
                 ((MainActivity) getActivity()).showMenu();
             case R.id.top_layout_root:
                 input.clearFocus();
-
                 if (popupwindow != null) {
                     down = false;
                     direction.setImageResource(R.drawable.down);
