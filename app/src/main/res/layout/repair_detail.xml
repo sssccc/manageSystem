@@ -347,29 +347,6 @@
                 android:ellipsize="end"
                 android:padding="10dp" />
         </LinearLayout>
-        <LinearLayout
-            android:id="@+id/btn_visibility"
-            android:layout_width="wrap_content"
-            android:orientation="vertical"
-            android:layout_marginRight="15dp"
-            android:layout_marginBottom="8dp"
-            android:layout_height="0dp"
-            android:layout_weight="2.5"
-            android:layout_gravity="end">
-            <Button
-                android:id="@+id/accept_apply_in_repair_detail_page"
-                android:layout_width="wrap_content"
-                android:layout_height="0dp"
-                android:layout_gravity="center_horizontal"
-                android:layout_weight="0.5"
-                android:text="审核通过" />
-            <Button
-                android:id="@+id/refuse_apply_in_repair_detail_page"
-                android:layout_width="wrap_content"
-                android:layout_height="0dp"
-                android:layout_gravity="center_horizontal"
-                android:layout_weight="0.5"
-                android:text="审核失败" />
-        </LinearLayout>
+
     </LinearLayout>
 </LinearLayout>

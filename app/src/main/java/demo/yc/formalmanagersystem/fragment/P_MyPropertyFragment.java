@@ -8,7 +8,6 @@ import android.os.Bundle;
 import android.os.Handler;
 import android.os.Message;
 import android.support.v4.app.Fragment;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.MotionEvent;
 import android.view.View;
@@ -38,7 +37,6 @@ import demo.yc.formalmanagersystem.activity.PurchaseDetailActivity;
 import demo.yc.formalmanagersystem.activity.RepairDetailActivity;
 import demo.yc.formalmanagersystem.adapter.MyAdapterForPurchase;
 import demo.yc.formalmanagersystem.adapter.MyAdapterForRepair;
-import demo.yc.formalmanagersystem.contentvalues.DBContent;
 import demo.yc.formalmanagersystem.database.MyDBHandler;
 import demo.yc.formalmanagersystem.models.Purchase;
 import demo.yc.formalmanagersystem.models.Repair;
@@ -222,9 +220,8 @@ public class P_MyPropertyFragment extends Fragment implements View.OnClickListen
                         Cursor cursor = db.query("Purchase", null, "createrIdentifier=?", new String[]{MyApplication.getUser().getUsername()}, null, null, "applyTime"+" desc", null);
                         purchases.clear();
                         if (cursor.moveToFirst()) {
-                            Cursor personCursor = null;
                             do {
-                                Purchase purchase = new Purchase();
+                                final Purchase purchase = new Purchase();
                                 purchase.setName(cursor.getString(cursor.getColumnIndex("name")));
                                 purchase.setDescribe(cursor.getString(cursor.getColumnIndex("describe")));
                                 purchase.setApplyTime(cursor.getString(cursor.getColumnIndex("applyTime")));
@@ -235,18 +232,17 @@ public class P_MyPropertyFragment extends Fragment implements View.OnClickListen
                                 purchase.setPrice(cursor.getString(cursor.getColumnIndex("price")));
                                 purchase.setPurchaseState(cursor.getString(cursor.getColumnIndex("purchaseState")));
                                 purchase.setFinishTime(cursor.getString(cursor.getColumnIndex("finishTime")));
-                                try {
-                                    personCursor = db.query(DBContent.TB_PERSON,null,"userId=?",new String[]{MyApplication.getPersonId()},null,null,null);
-                                    if(personCursor.moveToFirst()){
-                                        purchase.setCreaterName(personCursor.getString(personCursor.getColumnIndex("name")));
+                                volleyUtil.getCreaterName(purchase.getCreaterIdentifier(), new UpdateListener() {
+                                    @Override
+                                    public void onSucceed(String s) {
+                                        purchase.setCreaterName(s);
                                     }
-                                } catch (Exception e) {
-                                    Log.d("tag", "error occurred in query User");
-                                } finally {
-                                    if(personCursor != null){
-                                        personCursor.close();
+
+                                    @Override
+                                    public void onError(VolleyError error) {
+                                        purchase.setCreaterName("未知");
                                     }
-                                }
+                                });
                                 purchases.add(purchase);
                             } while (cursor.moveToNext());
                             cursor.close();
@@ -271,9 +267,8 @@ public class P_MyPropertyFragment extends Fragment implements View.OnClickListen
                     repairs.clear();
                     if (cursor.moveToFirst()) {
                         Cursor propertyCursor;
-                        Cursor personCursor;
                         do {
-                            Repair repair = new Repair();
+                            final Repair repair = new Repair();
                             repair.setIdentifier(cursor.getString(cursor.getColumnIndex("identifier")));
                             repair.setApplyTime(cursor.getString(cursor.getColumnIndex("applyTime")));
                             repair.setFinishTime(cursor.getString(cursor.getColumnIndex("finishTime")));
@@ -283,21 +278,27 @@ public class P_MyPropertyFragment extends Fragment implements View.OnClickListen
                             if (propertyCursor.moveToFirst()) {
                                 repair.setName(propertyCursor.getString(propertyCursor.getColumnIndex("name")));
                             }
-                            personCursor = db.query(DBContent.TB_PERSON,null,"userId=?",new String[]{MyApplication.getPersonId()},null,null,null);
-                            if(personCursor.moveToFirst()){
-                                repair.setCreaterName(personCursor.getString(personCursor.getColumnIndex("name")));
-                            }
                             repair.setDescribe(cursor.getString(cursor.getColumnIndex("describe")));
                             repair.setCheckState(cursor.getString(cursor.getColumnIndex("checkState")));
                             repair.setRepairState(cursor.getString(cursor.getColumnIndex("repairState")));
                             if (cursor.getString(cursor.getColumnIndex("createrIdentifier")) != null) {
                                 repair.setCreaterIdentifier(cursor.getString(cursor.getColumnIndex("createrIdentifier")));
                             } else repair.setCreaterIdentifier("");
+                            volleyUtil.getCreaterName(repair.getCreaterIdentifier(), new UpdateListener() {
+                                @Override
+                                public void onSucceed(String s) {
+                                    repair.setCreaterName(s);
+                                }
+
+                                @Override
+                                public void onError(VolleyError error) {
+                                    repair.setCreaterName("未知");
+                                }
+                            });
                             repairs.add(repair);
                         } while (cursor.moveToNext());
                         cursor.close();
                         propertyCursor.close();
-                        personCursor.close();
                         P_PropertyManagementFragment.isInitial = true;
                     }
                     Message msg = handler.obtainMessage();
@@ -324,10 +325,10 @@ public class P_MyPropertyFragment extends Fragment implements View.OnClickListen
                 public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
                     if (position1 == 0) {
                         Purchase purchase = pTemp2.get(position);
-                        PurchaseDetailActivity.startActivity(getActivity(), PurchaseDetailActivity.USER, purchase);
+                        PurchaseDetailActivity.startActivity(getActivity(), purchase);
                     } else if (position1 == 1) {
                         Repair repair = rTemp2.get(position);
-                        RepairDetailActivity.startActivity(getActivity(), RepairDetailActivity.USER, repair);
+                        RepairDetailActivity.startActivity(getActivity(), repair);
                     }
                 }
             });

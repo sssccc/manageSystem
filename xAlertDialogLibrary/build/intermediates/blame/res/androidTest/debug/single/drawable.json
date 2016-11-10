@@ -24,12 +24,12 @@
         "source": "G:\\git hub\\manageSystem\\xAlertDialogLibrary\\build\\intermediates\\bundles\\debug\\res\\drawable\\error_circle.xml"
     },
     {
-        "merged": "G:\\git hub\\manageSystem\\xAlertDialogLibrary\\build\\intermediates\\res\\merged\\androidTest\\debug\\drawable\\warning_circle.xml",
-        "source": "G:\\git hub\\manageSystem\\xAlertDialogLibrary\\build\\intermediates\\bundles\\debug\\res\\drawable\\warning_circle.xml"
-    },
-    {
         "merged": "F:\\yc\\FormalManagerSystem\\manageSystem\\xAlertDialogLibrary\\build\\intermediates\\res\\merged\\androidTest\\debug\\drawable\\red_button_background.xml",
         "source": "F:\\yc\\FormalManagerSystem\\manageSystem\\xAlertDialogLibrary\\build\\intermediates\\bundles\\debug\\res\\drawable\\red_button_background.xml"
+    },
+    {
+        "merged": "G:\\git hub\\manageSystem\\xAlertDialogLibrary\\build\\intermediates\\res\\merged\\androidTest\\debug\\drawable\\warning_circle.xml",
+        "source": "G:\\git hub\\manageSystem\\xAlertDialogLibrary\\build\\intermediates\\bundles\\debug\\res\\drawable\\warning_circle.xml"
     },
     {
         "merged": "G:\\git hub\\FormalManagerSystem\\xAlertDialogLibrary\\build\\intermediates\\res\\merged\\androidTest\\debug\\drawable\\gray_button_background.xml",
