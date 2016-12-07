@@ -1,8 +1,5 @@
 package demo.yc.formalmanagersystem.util;
 
-import android.text.InputFilter;
-
-import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.RandomAccessFile;
@@ -14,6 +11,7 @@ import java.net.URL;
  * Created by Administrator on 2016/7/23 0023.
  */
 public class DownloadAttachementFile extends Thread{
+
     private int threadNum;
     private int threadLength;
     private RandomAccessFile threadFile;

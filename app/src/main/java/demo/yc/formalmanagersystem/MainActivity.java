@@ -23,6 +23,7 @@ import com.android.volley.VolleyError;
 import com.bumptech.glide.Glide;
 
 import java.io.BufferedReader;
+import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.InputStream;
@@ -152,10 +153,7 @@ public class MainActivity extends BaseActivity implements View.OnClickListener, 
        // getPlanDataFromLocal();
         setListener();
 //
-////        IntentFilter filter = new IntentFilter();
-////        filter.addAction(DownLoadService.ACTION_CHANGE_IMAGE);
-////        filter.addAction(DownLoadService.ACTION_PROPERTY_NOTIFY);
-//        registerReceiver(mReceiver,filter);
+
     }
 
     //程序开始，为控件找到id，并且设置监听事件
@@ -241,7 +239,7 @@ public class MainActivity extends BaseActivity implements View.OnClickListener, 
                             Intent intent = new Intent(DownLoadService.ACTION_DOWNLAOD_IMAGE);
                             FileInfo fileInfo = new FileInfo(MyApplication.getUser().getId(), p.getPicture());
                             intent.putExtra("image", fileInfo);
-                            // startService(intent);
+                            startService(intent);
                         }
 
 //                    if(person == null)
@@ -353,15 +351,21 @@ public class MainActivity extends BaseActivity implements View.OnClickListener, 
 
         //修改头像,先加载本地图片，如果网络可用，就加载网络图片
         if (!MyApplication.getPersonHeadPath().equals(""))
+        {
+            Log.w("person","全局图片地址：---》"+MyApplication.getPersonHeadPath());
             Glide.with(this).load(MyApplication.getPersonHeadPath()).into(personHead);
-        else {
-//            String tempPath = FileUtil.getUserImagePath(MyApplication.getUser().getId());
-//            File file = new File(tempPath);
-//            if (file.exists())
-//                Glide.with(this).load(tempPath).into(personHead);
-//            else
-                MyApplication.setPersonHeadPath(VolleyUtil.ROOT_URL+p.getPicture());
-                Glide.with(this).load(VolleyUtil.ROOT_URL + p.getPicture()).into(personHead);
+        }else {
+            String tempPath = FileUtil.getUserImagePath(MyApplication.getUser().getId());
+            File file = new File(tempPath);
+            if (file.exists()) {
+                Log.w("person","head image is exists");
+                Glide.with(this).load(tempPath).into(personHead);
+            }
+            else {
+                 MyApplication.setPersonHeadPath(VolleyUtil.ROOT_URL+p.getPicture());
+                 Glide.with(this).load(VolleyUtil.ROOT_URL + p.getPicture()).into(personHead);
+               // Glide.with(this).load("http://avatar.csdn.net/D/F/E/1_mary881225.jpg").into(personHead);
+            }
         }
         MyApplication.setPersonName(person.getName());
         MyApplication.setPersonId(person.getId());
@@ -387,9 +391,9 @@ public class MainActivity extends BaseActivity implements View.OnClickListener, 
         if (isPlan && isPerson) {
             if (!isFirst)
                 ((HomePageFrag) fragments[1]).refreshTodayPlan();
-//            Intent intent = new Intent(this,DownLoadService.class);
-//            intent.setAction(DownLoadService.ACTION_PROPERTY_NOTIFY);
-//            startService(intent);
+            Intent intent = new Intent(this,DownLoadService.class);
+            intent.setAction(DownLoadService.ACTION_PROPERTY_NOTIFY);
+            startService(intent);
             setFrags(1);
             pd.dismiss();
         }
@@ -551,7 +555,7 @@ public class MainActivity extends BaseActivity implements View.OnClickListener, 
     //没有网络，用来测试的数据
     private void getPersonDataFromLocal() {
 
-        Person p = new Person(20, "2", "数学与信息", "软件工程", "heyongcai", "201430330210", "sdfsdf.jpg", "dfdf", "1", "1", account);
+        Person p = new Person(20, "2", "数学与信息", "软件工程", "heyongcai", "201430330210", "http://avatar.csdn.net/D/F/E/1_mary881225.jpg", "dfdf", "1", "1", account);
         updatePersonInfo(p);
         isPerson = true;
         showMain();
@@ -563,10 +567,12 @@ public class MainActivity extends BaseActivity implements View.OnClickListener, 
     @Override
     protected void onDestroy() {
         super.onDestroy();
-//        unregisterReceiver(mReceiver);
+        FileUtil.clearAllTempImage();
+        Intent stopService = new Intent(this,DownLoadService.class);
+        stopService(stopService);
     }
 
-    BroadcastReceiver mReceiver = new BroadcastReceiver() {
+     public BroadcastReceiver mReceiver = new BroadcastReceiver() {
         @Override
         public void onReceive(Context context, Intent intent) {
 
@@ -574,7 +580,7 @@ public class MainActivity extends BaseActivity implements View.OnClickListener, 
                 Log.w("file", "后台下载图片成功.......");
                 updatePersonInfo();
             } else if (intent.getAction().equals(DownLoadService.ACTION_PROPERTY_NOTIFY)) {
-                Log.w("file", "notify.......");
+                Log.w("file", "main----notify.......");
                 String msg = intent.getStringExtra("messge");
                 ((HomePageFrag) (fm.getFragments().get(1))).getNotifyDataFromMain(msg);
             } else if (intent.getAction().equals("")) {

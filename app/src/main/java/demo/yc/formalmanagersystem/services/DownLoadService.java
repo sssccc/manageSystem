@@ -2,9 +2,11 @@ package demo.yc.formalmanagersystem.services;
 
 import android.app.Service;
 import android.content.Intent;
+import android.content.IntentFilter;
 import android.os.Environment;
 import android.os.IBinder;
 import android.support.annotation.Nullable;
+import android.support.v4.content.LocalBroadcastManager;
 import android.util.Log;
 import android.widget.Toast;
 
@@ -16,6 +18,7 @@ import java.net.HttpURLConnection;
 import java.net.URL;
 
 import demo.yc.formalmanagersystem.MyApplication;
+import demo.yc.formalmanagersystem.broadcastreceiver.MyReceiver;
 import demo.yc.formalmanagersystem.models.FileInfo;
 import demo.yc.formalmanagersystem.util.FileUtil;
 
@@ -26,9 +29,14 @@ import demo.yc.formalmanagersystem.util.FileUtil;
 public class DownLoadService extends Service
 {
 
+
     public static final String ACTION_CHANGE_IMAGE = "ACTION_CHANGE_IMAGE";
     public static final String ACTION_DOWNLAOD_IMAGE = "ACTION_DOWNLAOD_IMAGE";
+    public static final String ACTION_DOWNLAOD_ENCLOSURE = "ACTION_DOWNLAOD_ENCLOSURE";
     public static final String ACTION_PROPERTY_NOTIFY = "ACTION_PROPERTY_NOTIFY";
+
+    MyReceiver receiver;
+    LocalBroadcastManager manager ;
     @Nullable
     @Override
     public IBinder onBind(Intent intent) {
@@ -36,31 +44,43 @@ public class DownLoadService extends Service
     }
 
     @Override
+    public void onCreate() {
+        super.onCreate();
+        manager = LocalBroadcastManager.getInstance(this);
+        IntentFilter filter = new IntentFilter();
+        filter.addAction(ACTION_PROPERTY_NOTIFY);
+        receiver = new MyReceiver();
+        registerReceiver(receiver,filter);
+        Log.w("file","registerReceiver.......");
+
+
+    }
+
+    @Override
     public int onStartCommand(final Intent intent, int flags, int startId) {
-//
-//        if(intent.getAction().equals(ACTION_DOWNLAOD_IMAGE))
-//        {
-//            FileInfo fileInfo = (FileInfo) intent.getSerializableExtra("image");
-//            new DownLoadThread(fileInfo).start();
-//        }else if(intent.getAction().equals(ACTION_PROPERTY_NOTIFY))
-//        {
-//            new Thread(){
-//                @Override
-//                public void run() {
-//                    try {
-//                        Thread.sleep(1000);
-//                        Intent intent1 = new Intent();
-//                        intent.putExtra("message","购买电脑成功");
-//                        intent.setAction(ACTION_PROPERTY_NOTIFY);
-//                        sendBroadcast(intent1);
-//                        Log.w("file","notify");
-//                    } catch (InterruptedException e) {
-//                        e.printStackTrace();
-//                    }
-//                }
-//            }.start();
-//        }
+        if(intent.getAction().equals(ACTION_DOWNLAOD_IMAGE))
+        {
+            FileInfo fileInfo = (FileInfo) intent.getSerializableExtra("image");
+            new DownLoadThread(fileInfo).start();
+        }else if(intent.getAction().equals(ACTION_PROPERTY_NOTIFY))
+        {
+            Intent intent1 = new Intent(ACTION_PROPERTY_NOTIFY);
+            intent.putExtra("message","购买电脑成功");
+            manager.sendBroadcast(intent1);
+            Log.w("file","service .... notify");
+        }else if(intent.getAction().equals(ACTION_DOWNLAOD_ENCLOSURE))
+        {
+            FileInfo fileInfo = (FileInfo) intent.getSerializableExtra("enclosure");
+            new DownLoadThread(fileInfo).start();
+        }
         return super.onStartCommand(intent, flags, startId);
+    }
+
+    @Override
+    public void onDestroy() {
+        super.onDestroy();
+        unregisterReceiver(receiver);
+        Log.w("file","unregisterReceiver.......");
     }
 }
 

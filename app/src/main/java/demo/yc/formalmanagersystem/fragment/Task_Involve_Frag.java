@@ -35,6 +35,7 @@ import demo.yc.formalmanagersystem.models.Task;
 import demo.yc.formalmanagersystem.util.JsonUtil;
 import demo.yc.formalmanagersystem.util.VolleyUtil;
 import demo.yc.formalmanagersystem.view.MySlideListView;
+import demo.yc.formalmanagersystem.view.RefreshLayout;
 
 /**
  * A simple {@link Fragment} subclass.
@@ -51,7 +52,7 @@ public class Task_Involve_Frag extends TaskBaseFrag implements SwipeRefreshLayou
 
     TextView allNumTv,myNumTv;
 
-    SwipeRefreshLayout refreshLayout;
+    RefreshLayout refreshLayout;
 
     boolean isAll ,isMy;
     public Task_Involve_Frag() {
@@ -76,7 +77,7 @@ public class Task_Involve_Frag extends TaskBaseFrag implements SwipeRefreshLayou
     }
     private void setUi()
     {
-        refreshLayout = (SwipeRefreshLayout) view.findViewById(R.id.task_involve_refresh_layout);
+        refreshLayout = (RefreshLayout) view.findViewById(R.id.task_involve_refresh_layout);
         refreshLayout.setColorSchemeColors(Color.BLUE,Color.GREEN);
         refreshLayout.setDistanceToTriggerSync(250);
         refreshLayout.setOnRefreshListener(this);
@@ -116,6 +117,7 @@ public class Task_Involve_Frag extends TaskBaseFrag implements SwipeRefreshLayou
                 }else
                 {
                     Log.w("task","taskAll解析错误");
+                    isAll = true;
                     getDataFromLocal(0);
                 }
             }
@@ -124,6 +126,7 @@ public class Task_Involve_Frag extends TaskBaseFrag implements SwipeRefreshLayou
         public void onError(VolleyError error) {
 
             isAll = true;
+            refreshLayout.setRefreshing(false);
             getDataFromLocal(0);
             }
         });
@@ -144,7 +147,8 @@ public class Task_Involve_Frag extends TaskBaseFrag implements SwipeRefreshLayou
         public void onError(VolleyError error) {
 
             isMy = true;
-            getDataFromLocal(1);
+            refreshLayout.setRefreshing(false);
+            getDataFromLocal(0);
         }
     });
 
@@ -319,9 +323,6 @@ public class Task_Involve_Frag extends TaskBaseFrag implements SwipeRefreshLayou
             myList = JsonUtil.parseTaskJson(sb.toString());
             showMyListView(0);
         }
-
-
-
     }
 
     public void updateTaskList(String taskId)
@@ -345,10 +346,7 @@ public class Task_Involve_Frag extends TaskBaseFrag implements SwipeRefreshLayou
                 }
             }
         }
-
     }
-
-
     @Override
     public void onRefresh() {
         setData();
@@ -362,5 +360,11 @@ public class Task_Involve_Frag extends TaskBaseFrag implements SwipeRefreshLayou
             isAll = false;
             isAll = false;
         }
+    }
+
+    @Override
+    public void onDestroy() {
+        super.onDestroy();
+        refreshLayout.setRefreshing(false);
     }
 }

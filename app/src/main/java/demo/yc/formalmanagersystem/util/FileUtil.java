@@ -21,6 +21,7 @@ public class FileUtil {
 
     private static String dir = "";
     private static String fileDir = "";
+    private static String enclosureDir = "";
 
 
     private static void getRootDir()
@@ -40,11 +41,24 @@ public class FileUtil {
                 tempFile.mkdirs();
             }
             fileDir = tempFile.getAbsolutePath();
-            Toast.makeText(MyApplication.getContext(),"filedir = "+fileDir,Toast.LENGTH_SHORT).show();
-
+            //Toast.makeText(MyApplication.getContext(),"filedir = "+fileDir,Toast.LENGTH_SHORT).show();
         }
-
     }
+    private static void getEnclosureDir()
+    {
+
+        if (isExternalStorageOk()) {
+            File tempFile = new File(Environment.getExternalStorageDirectory().getAbsolutePath() + "/809/manage/file/");
+            if (!tempFile.exists()) {
+                tempFile.mkdirs();
+            }
+            enclosureDir = tempFile.getAbsolutePath();
+            Log.w("file","enclosureDir--->"+enclosureDir);
+            //Toast.makeText(MyApplication.getContext(),"enclodir = "+fileDir,Toast.LENGTH_SHORT).show();
+        }
+    }
+
+
 
     //获取存储用户头像的路径
     public static String getImagePath(String fileName)
@@ -89,8 +103,8 @@ public class FileUtil {
     //获取下载附件的路径
     public static String getEnclosurePath(String fileName)
     {
-        if(fileDir.equals(""))
-            getFileDir();
+        if(enclosureDir.equals(""))
+            getEnclosureDir();
         File file = new File(fileDir,fileName);
         return file.getAbsolutePath();
     }
@@ -134,6 +148,7 @@ public class FileUtil {
 
     }
 
+
     public static String getUserImagePath(String userId)
     {
         if(dir.equals(""))
@@ -141,6 +156,22 @@ public class FileUtil {
         return dir+userId+".jpg";
     }
 
+    public static void clearAllTempImage()
+    {
+        File file = new File(fileDir);
+        if(file.exists())
+        {
+            File[] files = file.listFiles();
+            for(File f:files) {
+                if (f.exists() && f.isFile() && f.getName().endsWith("jpg")) {
+                    f.delete();
+                }
+            }
+        }else
+        {
+
+        }
+    }
 
 
 
