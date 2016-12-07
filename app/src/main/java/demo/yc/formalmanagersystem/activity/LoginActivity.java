@@ -111,12 +111,14 @@ public class LoginActivity extends BaseActivity implements View.OnClickListener 
                 dialog.show();
 
 //
-//
+
 //                Intent i1 = new Intent(LoginActivity.this, MainActivity.class);
 //                MyApplication.getUser().setId("0615bb2424f84ebca0758f387b8daf0c");
 //                MyApplication.getUser().setUsername(count);
 //                startActivity(i1);
 //                finish();
+
+
                 new VolleyUtil().login(count, password, new UpdateListener() {
                     @Override
                     public void onSucceed(String s) {

@@ -22,7 +22,6 @@ import demo.yc.formalmanagersystem.contentvalues.SelectPhotoContent;
 import demo.yc.formalmanagersystem.database.MyDBHandler;
 import demo.yc.formalmanagersystem.models.Person;
 import demo.yc.formalmanagersystem.util.DialogUtil;
-import demo.yc.formalmanagersystem.util.PersonUtil;
 import demo.yc.formalmanagersystem.util.VolleyUtil;
 import demo.yc.formalmanagersystem.view.CircleImageView;
 
@@ -162,7 +161,6 @@ public class UpdatePersonInfoActivity extends BaseActivity implements View.OnCli
         p.setCollege(institute.getText().toString());
         p.setMajor(major.getText().toString());
         p.setStudentId(number.getText().toString());
-        p.setQuartersId(PersonUtil.getPositonName(position.getText().toString()));
         p.setClazz(class_num.getText().toString());
 
 
