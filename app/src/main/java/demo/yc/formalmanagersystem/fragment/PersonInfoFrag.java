@@ -15,12 +15,15 @@ import android.widget.TextView;
 
 import com.bumptech.glide.Glide;
 
+import java.io.File;
+
 import demo.yc.formalmanagersystem.MainActivity;
 import demo.yc.formalmanagersystem.MyApplication;
 import demo.yc.formalmanagersystem.R;
 import demo.yc.formalmanagersystem.activity.UpdatePersonInfoActivity;
 import demo.yc.formalmanagersystem.contentvalues.PersonInfoContent;
 import demo.yc.formalmanagersystem.models.Person;
+import demo.yc.formalmanagersystem.util.FileUtil;
 import demo.yc.formalmanagersystem.util.VolleyUtil;
 import demo.yc.formalmanagersystem.view.CircleImageView;
 
@@ -37,8 +40,8 @@ public class PersonInfoFrag extends Fragment {
     CircleImageView headPhoto;
     Person p;
 
-    public PersonInfoFrag(){
-
+    public PersonInfoFrag()
+    {
     }
 
     @Override
@@ -101,7 +104,6 @@ public class PersonInfoFrag extends Fragment {
         major.setText(p.getMajor());
         number.setText(p.getStudentId());
         position.setText(p.getQuartersId());
-        //position.setText(PersonUtil.getPositonName(p.getQuartersId()));
         if(p.getSex().contains("1"))
             sex.setImageResource(R.drawable.boy);
         else
@@ -110,15 +112,16 @@ public class PersonInfoFrag extends Fragment {
             Glide.with(getContext()).load(MyApplication.getPersonHeadPath()).into(headPhoto);
             Log.w("head","personINfo-->application-->"+MyApplication.getPersonHeadPath());
         }else {
-//            String tempPath = FileUtil.getUserImagePath(MyApplication.getUser().getId());
-//            File file = new File(tempPath);
-//            if (file.exists())
-//                Glide.with(this).load(tempPath).into(headPhoto);
-//            else
-            Log.w("head","personINfo-->p.getPicture-->"+p.getPicture());
-            Glide.with(getContext()).load(VolleyUtil.ROOT_URL+p.getPicture()).into(headPhoto);
+            String tempPath = FileUtil.getUserImagePath(MyApplication.getUser().getId());
+            File file = new File(tempPath);
+            if (file.exists()) {
+                Log.w("person", "head image is exists");
+                Glide.with(this).load(tempPath).into(headPhoto);
+            } else {
+                Log.w("head", "personINfo-->p.getPicture-->" + p.getPicture());
+                Glide.with(getContext()).load(VolleyUtil.ROOT_URL + p.getPicture()).into(headPhoto);
+            }
         }
-
     }
 
     @Override

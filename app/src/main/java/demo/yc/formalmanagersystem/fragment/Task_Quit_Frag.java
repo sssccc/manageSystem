@@ -203,6 +203,6 @@ public class Task_Quit_Frag extends TaskBaseFrag implements SwipeRefreshLayout.O
     public void onDestroy() {
         super.onDestroy();
         refreshLayout.setRefreshing(false);
-
+        MyApplication.getInstance().getMyQueue().cancelAll("getQuitTaskList");
     }
 }

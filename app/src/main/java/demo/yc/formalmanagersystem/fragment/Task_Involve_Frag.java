@@ -366,5 +366,7 @@ public class Task_Involve_Frag extends TaskBaseFrag implements SwipeRefreshLayou
     public void onDestroy() {
         super.onDestroy();
         refreshLayout.setRefreshing(false);
+        MyApplication.getInstance().getMyQueue().cancelAll("getAllInvolveTaskList");
+        MyApplication.getInstance().getMyQueue().cancelAll("getMyInvolveTaskList");
     }
 }

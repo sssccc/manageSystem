@@ -5,6 +5,7 @@ import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.content.IntentFilter;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
@@ -134,6 +135,7 @@ public class MainActivity extends BaseActivity implements View.OnClickListener, 
         }
     };
 
+    MReceiver receiver;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -152,7 +154,12 @@ public class MainActivity extends BaseActivity implements View.OnClickListener, 
        // getPersonDataFromLocal();
        // getPlanDataFromLocal();
         setListener();
-//
+
+        receiver = new MReceiver();
+        IntentFilter filter = new IntentFilter();
+        filter.addAction(DownLoadService.ACTION_PROPERTY_NOTIFY);
+        filter.addAction(DownLoadService.ACTION_CHANGE_IMAGE);
+        registerReceiver(receiver,filter);
 
     }
 
@@ -210,13 +217,11 @@ public class MainActivity extends BaseActivity implements View.OnClickListener, 
         drawerLayout.openDrawer(leftLayout);
     }
 
-
     //然后进入数据库查找信息。。。找不到，进入后台访问。。。。
     private void getDataFromDB() {
         getPersonInfoFromHttp();
         getPlanInfoFromHttp();
     }
-
 
     private void getPersonInfoFromHttp() {
 
@@ -235,12 +240,7 @@ public class MainActivity extends BaseActivity implements View.OnClickListener, 
                     if (p != null) {
                         MyApplication.setPersonId(p.getId());
                         Log.w("person", "personId"+MyApplication.getPersonId());
-                        if (FileUtil.isExternalStorageOk()) {
-                            Intent intent = new Intent(DownLoadService.ACTION_DOWNLAOD_IMAGE);
-                            FileInfo fileInfo = new FileInfo(MyApplication.getUser().getId(), p.getPicture());
-                            intent.putExtra("image", fileInfo);
-                            startService(intent);
-                        }
+
 
 //                    if(person == null)
 //                        db.addPersonInfo(p);
@@ -260,7 +260,6 @@ public class MainActivity extends BaseActivity implements View.OnClickListener, 
                 {
                     Log.w("person", "数据格式错误"+s);
                 }
-
             }
 
             @Override
@@ -285,10 +284,8 @@ public class MainActivity extends BaseActivity implements View.OnClickListener, 
                 }
                 ArrayList<Plan> tempList = JsonUtil.parsePlanJson(s);
                 if (tempList != null && tempList.size() != 0) {
-
                     if (todayPlanList.size() != 0)
                         todayPlanList.clear();
-
                     todayPlanList = tempList;
                     isPlan = true;
                     Log.w("plan", "main plan todayList.size-->" + todayPlanList.size());
@@ -301,7 +298,7 @@ public class MainActivity extends BaseActivity implements View.OnClickListener, 
             @Override
             public void onError(VolleyError error) {
                // Toast.makeText(MainActivity.this, "plan...mainactivity..error", Toast.LENGTH_LONG).show();
-                Log.w("plen", error.toString());
+                Log.w("plan", error.toString());
                 getPlanDataFromLocal();
             }
         });
@@ -360,11 +357,19 @@ public class MainActivity extends BaseActivity implements View.OnClickListener, 
             if (file.exists()) {
                 Log.w("person","head image is exists");
                 Glide.with(this).load(tempPath).into(personHead);
+                MyApplication.setPersonHeadPath(tempPath);
             }
             else {
+                if (FileUtil.isExternalStorageOk()) {
+                    //启动服务，后台去下载用户头像
+                    Intent intent = new Intent(MainActivity.this,DownLoadService.class);
+                    intent.setAction(DownLoadService.ACTION_DOWNLAOD_IMAGE);
+                    FileInfo fileInfo = new FileInfo(MyApplication.getUser().getId(), VolleyUtil.ROOT_URL+p.getPicture());
+                    intent.putExtra("image", fileInfo);
+                    startService(intent);
+                }
                  MyApplication.setPersonHeadPath(VolleyUtil.ROOT_URL+p.getPicture());
-                 Glide.with(this).load(VolleyUtil.ROOT_URL + p.getPicture()).into(personHead);
-               // Glide.with(this).load("http://avatar.csdn.net/D/F/E/1_mary881225.jpg").into(personHead);
+                 Glide.with(this).load(VolleyUtil.ROOT_URL+p.getPicture()).into(personHead);
             }
         }
         MyApplication.setPersonName(person.getName());
@@ -391,9 +396,10 @@ public class MainActivity extends BaseActivity implements View.OnClickListener, 
         if (isPlan && isPerson) {
             if (!isFirst)
                 ((HomePageFrag) fragments[1]).refreshTodayPlan();
-            Intent intent = new Intent(this,DownLoadService.class);
-            intent.setAction(DownLoadService.ACTION_PROPERTY_NOTIFY);
-            startService(intent);
+            //启动服务，接收服务器信息。。。
+//            Intent intent = new Intent(this,DownLoadService.class);
+//            intent.setAction(DownLoadService.ACTION_PROPERTY_NOTIFY);
+//            startService(intent);
             setFrags(1);
             pd.dismiss();
         }
@@ -555,24 +561,26 @@ public class MainActivity extends BaseActivity implements View.OnClickListener, 
     //没有网络，用来测试的数据
     private void getPersonDataFromLocal() {
 
-        Person p = new Person(20, "2", "数学与信息", "软件工程", "heyongcai", "201430330210", "http://avatar.csdn.net/D/F/E/1_mary881225.jpg", "dfdf", "1", "1", account);
+        Person p = new Person(20, "2", "数学与信息", "软件工程", "heyongcai", "201430330210", "http://p3.so.qhmsg.com/bdr/_240_/t01fd28074e1a38fccd.jpg", "dfdf", "1", "1", account);
         updatePersonInfo(p);
         isPerson = true;
         showMain();
-
-
     }
 
 
     @Override
     protected void onDestroy() {
+
+        Glide.get(this).clearMemory();
         super.onDestroy();
         FileUtil.clearAllTempImage();
+        unregisterReceiver(receiver);
         Intent stopService = new Intent(this,DownLoadService.class);
         stopService(stopService);
     }
 
-     public BroadcastReceiver mReceiver = new BroadcastReceiver() {
+    public  class  MReceiver extends BroadcastReceiver
+     {
         @Override
         public void onReceive(Context context, Intent intent) {
 
@@ -581,18 +589,19 @@ public class MainActivity extends BaseActivity implements View.OnClickListener, 
                 updatePersonInfo();
             } else if (intent.getAction().equals(DownLoadService.ACTION_PROPERTY_NOTIFY)) {
                 Log.w("file", "main----notify.......");
-                String msg = intent.getStringExtra("messge");
+                String msg = intent.getStringExtra("message");
                 ((HomePageFrag) (fm.getFragments().get(1))).getNotifyDataFromMain(msg);
             } else if (intent.getAction().equals("")) {
 
             }
         }
-    };
+    }
 
     public void updateHomePageTaskList(ArrayList<Task> newList)
     {
        ((HomePageFrag)fragments[1]).updateAllTaskList(newList);
     }
+
     public void updateHomePageTaskList(String taskId)
     {
         ((HomePageFrag)fragments[1]).updateSingleTaskList(taskId);
@@ -602,4 +611,6 @@ public class MainActivity extends BaseActivity implements View.OnClickListener, 
     {
         ((Task_Involve_Frag)(((TaskManageFrag)fragments[2]).list.get(1))).updateTaskList(taskId);
     }
+
+
 }

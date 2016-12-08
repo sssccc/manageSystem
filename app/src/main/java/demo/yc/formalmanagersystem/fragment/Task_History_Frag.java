@@ -197,6 +197,6 @@ public class Task_History_Frag extends TaskBaseFrag implements SwipeRefreshLayou
     public void onDestroy() {
         super.onDestroy();
         refreshLayout.setRefreshing(false);
-        MyApplication.getInstance().getMyQueue().cancelAll("");
+        MyApplication.getInstance().getMyQueue().cancelAll("getHistoryTaskList");
     }
 }

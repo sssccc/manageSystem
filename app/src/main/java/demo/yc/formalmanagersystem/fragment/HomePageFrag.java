@@ -321,9 +321,10 @@ public class HomePageFrag extends TaskBaseFrag {
 
     public void getNotifyDataFromMain(String msg)
     {
-        Log.w("task","收到来自服务的通知");
+        Log.w("update","收到来自服务的通知--->"+msg);
         notifyLayout.setVisibility(View.VISIBLE);
         notifyMessage.setText(msg);
+       // notifyMessage.setTextColor(Color.BLACK);
     }
 
     public void updateAllTaskList(ArrayList<Task> newList)

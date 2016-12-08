@@ -332,6 +332,8 @@ public class Task_All_Frag extends TaskBaseFrag implements SwipeRefreshLayout.On
     public void onDestroy() {
         super.onDestroy();
         refreshLayout.setRefreshing(false);
+        MyApplication.getInstance().getMyQueue().cancelAll("getMyAcceptableTaskList");
+        MyApplication.getInstance().getMyQueue().cancelAll("getAllAcceptableTaskList");
     }
 
 }

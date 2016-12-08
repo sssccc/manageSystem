@@ -37,7 +37,8 @@
             android:textSize="15sp"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="何永财"
+            android:text=""
+            android:maxLength="5"
             android:layout_marginLeft="20dp"
             android:layout_marginRight="20dp"
             android:textColor="#ffffff"
@@ -46,7 +47,7 @@
             android:textSize="15sp"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="20岁"
+            android:text=""
             android:textColor="#ffffff"
             android:id="@+id/info_age"/>
 
