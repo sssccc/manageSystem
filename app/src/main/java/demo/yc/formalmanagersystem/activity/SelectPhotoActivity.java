@@ -7,6 +7,8 @@ import android.os.Bundle;
 import android.os.Handler;
 import android.os.Looper;
 import android.os.Message;
+import android.support.v4.graphics.drawable.RoundedBitmapDrawable;
+import android.support.v4.graphics.drawable.RoundedBitmapDrawableFactory;
 import android.util.Log;
 import android.view.View;
 import android.widget.Button;
@@ -15,6 +17,7 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.bumptech.glide.Glide;
+import com.bumptech.glide.request.target.BitmapImageViewTarget;
 
 import java.io.File;
 import java.io.FileNotFoundException;
@@ -28,7 +31,6 @@ import demo.yc.formalmanagersystem.contentvalues.SelectPhotoContent;
 import demo.yc.formalmanagersystem.util.DialogUtil;
 import demo.yc.formalmanagersystem.util.FileUtil;
 import demo.yc.formalmanagersystem.util.VolleyUtil;
-import demo.yc.formalmanagersystem.view.CircleImageView;
 import demo.yc.formalmanagersystem.view.DialogCancelListener;
 import okhttp3.Call;
 import okhttp3.Callback;
@@ -39,14 +41,15 @@ import okhttp3.Request;
 import okhttp3.RequestBody;
 import okhttp3.Response;
 
+
 public class SelectPhotoActivity extends BaseActivity implements View.OnClickListener{
 
     ImageView backBtn;
-    CircleImageView headPhoto;
+   // CircleImageView headPhoto;
     Button gallery, camera;
     TextView saveTv,title;
 
-
+    ImageView  headPhoto;
     String imageURl;
     String photoPath;
 
@@ -80,7 +83,7 @@ public class SelectPhotoActivity extends BaseActivity implements View.OnClickLis
     private void setUi()
     {
 
-        headPhoto = (CircleImageView) findViewById(R.id.select_head);
+        headPhoto = (ImageView) findViewById(R.id.select_head);
         saveTv = (TextView) findViewById(R.id.select_save_btn);
 
         gallery = (Button) findViewById(R.id.select_gallery);
@@ -107,14 +110,33 @@ public class SelectPhotoActivity extends BaseActivity implements View.OnClickLis
     {
         lastIntent  = getIntent();
         imageURl = lastIntent.getStringExtra(PersonInfoContent.CHANGE_PHOTO_TAG);
-        Glide.with(this).load(imageURl).into(headPhoto);
+       // Glide.with(this).load(imageURl).fitCenter().into(headPhoto);
+
+        Glide.with(this).load(imageURl).asBitmap().fitCenter().placeholder(R.drawable.error).into(new BitmapImageViewTarget(headPhoto) {
+            @Override
+            protected void setResource(Bitmap resource) {
+                RoundedBitmapDrawable circularBitmapDrawable =
+                        RoundedBitmapDrawableFactory.create(getResources(), resource);
+                circularBitmapDrawable.setCircular(true);
+                headPhoto.setImageDrawable(circularBitmapDrawable);
+            }
+        });
     }
 
     private void dealLocalPhoto(Intent data)
     {
         if(data != null) {
             photoPath = data.getStringExtra("photo");
-            Glide.with(this).load(photoPath).into(headPhoto);
+          //  Glide.with(this).load(photoPath).fitCenter().into(headPhoto);
+            Glide.with(this).load(photoPath).asBitmap().fitCenter().placeholder(R.drawable.error).into(new BitmapImageViewTarget(headPhoto) {
+                @Override
+                protected void setResource(Bitmap resource) {
+                    RoundedBitmapDrawable circularBitmapDrawable =
+                            RoundedBitmapDrawableFactory.create(getResources(), resource);
+                    circularBitmapDrawable.setCircular(true);
+                    headPhoto.setImageDrawable(circularBitmapDrawable);
+                }
+            });
             isChange = true;
         }
     }
@@ -130,7 +152,16 @@ public class SelectPhotoActivity extends BaseActivity implements View.OnClickLis
                 bitmap.compress(Bitmap.CompressFormat.JPEG, 100, fos);
                 fos.flush();
                 fos.close();
-                Glide.with(this).load(photoPath).into(headPhoto);
+               // Glide.with(this).load(photoPath).fitCenter().into(headPhoto);
+                Glide.with(this).load(photoPath).asBitmap().fitCenter().placeholder(R.drawable.error).into(new BitmapImageViewTarget(headPhoto) {
+                    @Override
+                    protected void setResource(Bitmap resource) {
+                        RoundedBitmapDrawable circularBitmapDrawable =
+                                RoundedBitmapDrawableFactory.create(getResources(), resource);
+                        circularBitmapDrawable.setCircular(true);
+                        headPhoto.setImageDrawable(circularBitmapDrawable);
+                    }
+                });
                 isChange = true;
             } catch (FileNotFoundException e) {
                 e.printStackTrace();

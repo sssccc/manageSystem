@@ -105,16 +105,16 @@ public class UpdatePersonInfoActivity extends BaseActivity implements View.OnCli
             sex.setImageResource(R.drawable.girl);
 
         if(!MyApplication.getPersonHeadPath().equals("")) {
-            Glide.with(this).load(MyApplication.getPersonHeadPath()).into(headPhoto);
+            Glide.with(this).load(MyApplication.getPersonHeadPath()).placeholder(R.drawable.error).into(headPhoto);
             Log.w("head","updateActivity-->application-->"+MyApplication.getPersonHeadPath());
         }else {
-//            String tempPath = FileUtil.getUserImagePath(MyApplication.getUser().getId());
-//            File file = new File(tempPath);
-//            if (file.exists())
-//                Glide.with(this).load(tempPath).into(headPhoto);
-//            else
-            Log.w("head","updateActivity-->p.getPicture-->"+p.getPicture());
-            Glide.with(this).load(VolleyUtil.ROOT_URL+p.getPicture()).into(headPhoto);
+            String tempPath = FileUtil.getUserImagePath(MyApplication.getUser().getId());
+            File file = new File(tempPath);
+            if (file.exists())
+                Glide.with(this).load(tempPath).placeholder(R.drawable.error).skipMemoryCache(true).into(headPhoto);
+            else
+                //Log.w("head","updateActivity-->p.getPicture-->"+p.getPicture());
+                Glide.with(this).load(VolleyUtil.ROOT_URL+p.getPicture()).placeholder(R.drawable.error).into(headPhoto);
         }
     }
 
@@ -270,7 +270,7 @@ public class UpdatePersonInfoActivity extends BaseActivity implements View.OnCli
                         sex.setImageResource(R.drawable.girl);
                     break;
                 case PersonInfoContent.CHANGE_PHOTO:
-                    Glide.with(this).load(MyApplication.getPersonHeadPath()).into(headPhoto);
+                    Glide.with(this).load(MyApplication.getPersonHeadPath()).placeholder(R.drawable.error).into(headPhoto);
                     isChange = true;
                     break;
                 case PersonInfoContent.CHANGE_POSITION:

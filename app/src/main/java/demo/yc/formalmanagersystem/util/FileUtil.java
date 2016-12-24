@@ -23,20 +23,21 @@ public class FileUtil {
     private static String fileDir = "";
     private static String enclosureDir = "";
 
-
+    //head 头像
     private static void getRootDir()
     {
-        dir = Environment.getExternalStorageDirectory().getAbsoluteFile()+"/809/manage/head/";
+        dir = Environment.getExternalStorageDirectory().getAbsoluteFile()+"/809/"+MyApplication.getUser().getUsername()+"/head/";
         File dirFile = new File(dir);
         if(!dirFile.exists())
-            dirFile.mkdir();
+            dirFile.mkdirs();
     }
 
+    //拍照
     private static void getFileDir()
     {
 
         if (isExternalStorageOk()) {
-            File tempFile = new File(Environment.getExternalStorageDirectory().getAbsolutePath() + "/809/manage/");
+            File tempFile = new File(Environment.getExternalStorageDirectory().getAbsolutePath() + "/809/"+MyApplication.getUser().getUsername()+"/photo/");
             if (!tempFile.exists()) {
                 tempFile.mkdirs();
             }
@@ -44,11 +45,12 @@ public class FileUtil {
             //Toast.makeText(MyApplication.getContext(),"filedir = "+fileDir,Toast.LENGTH_SHORT).show();
         }
     }
+
+    //附件
     private static void getEnclosureDir()
     {
-
         if (isExternalStorageOk()) {
-            File tempFile = new File(Environment.getExternalStorageDirectory().getAbsolutePath() + "/809/manage/file/");
+            File tempFile = new File(Environment.getExternalStorageDirectory().getAbsolutePath() + "/809/"+MyApplication.getUser().getUsername()+"/file/");
             if (!tempFile.exists()) {
                 tempFile.mkdirs();
             }
@@ -63,8 +65,8 @@ public class FileUtil {
     //获取存储用户头像的路径
     public static String getImagePath(String fileName)
     {
-        if(dir.equals(""))
-            getRootDir();
+        //if(dir.equals(""))
+        getRootDir();
         Log.w("path","....."+dir+"......."+fileName+".jpg");
         File file = new File(dir,fileName+".jpg");
         if(file.exists()) {
@@ -93,8 +95,8 @@ public class FileUtil {
     //获取用户拍摄的图片的路径
     public static String getPicturePath()
     {
-        if(fileDir.equals(""))
-            getFileDir();
+       // if(fileDir.equals(""))
+        getFileDir();
         File file = new File(fileDir,System.currentTimeMillis()+".jpg");
         Toast.makeText(MyApplication.getContext(),"filedir = "+fileDir,Toast.LENGTH_SHORT).show();
         return file.getAbsolutePath();
@@ -103,8 +105,8 @@ public class FileUtil {
     //获取下载附件的路径
     public static String getEnclosurePath(String fileName)
     {
-        if(enclosureDir.equals(""))
-            getEnclosureDir();
+        //if(enclosureDir.equals(""))
+        getEnclosureDir();
         File file = new File(fileDir,fileName);
         return file.getAbsolutePath();
     }
@@ -151,8 +153,8 @@ public class FileUtil {
 
     public static String getUserImagePath(String userId)
     {
-        if(dir.equals(""))
-            getRootDir();
+       // if(dir.equals(""))
+        getRootDir();
         return dir+userId+".jpg";
     }
 

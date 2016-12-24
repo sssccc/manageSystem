@@ -351,12 +351,13 @@ public class MainActivity extends BaseActivity implements View.OnClickListener, 
         {
             Log.w("person","全局图片地址：---》"+MyApplication.getPersonHeadPath());
             Glide.with(this).load(MyApplication.getPersonHeadPath()).into(personHead);
+          //  Glide.with(this).load(MyApplication.getPersonHeadPath()).error(R.drawable.error).into(personHead);
         }else {
             String tempPath = FileUtil.getUserImagePath(MyApplication.getUser().getId());
             File file = new File(tempPath);
             if (file.exists()) {
                 Log.w("person","head image is exists");
-                Glide.with(this).load(tempPath).into(personHead);
+                Glide.with(this).load(tempPath).skipMemoryCache(true).into(personHead);
                 MyApplication.setPersonHeadPath(tempPath);
             }
             else {

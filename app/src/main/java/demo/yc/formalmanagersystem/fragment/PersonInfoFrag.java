@@ -109,17 +109,17 @@ public class PersonInfoFrag extends Fragment {
         else
             sex.setImageResource(R.drawable.girl);
         if(!MyApplication.getPersonHeadPath().equals("")) {
-            Glide.with(getContext()).load(MyApplication.getPersonHeadPath()).into(headPhoto);
+            Glide.with(getContext()).load(MyApplication.getPersonHeadPath()).crossFade().placeholder(R.drawable.error).into(headPhoto);
             Log.w("head","personINfo-->application-->"+MyApplication.getPersonHeadPath());
         }else {
             String tempPath = FileUtil.getUserImagePath(MyApplication.getUser().getId());
             File file = new File(tempPath);
             if (file.exists()) {
                 Log.w("person", "head image is exists");
-                Glide.with(this).load(tempPath).into(headPhoto);
+                Glide.with(this).load(tempPath).crossFade().placeholder(R.drawable.error).skipMemoryCache(true).into(headPhoto);
             } else {
                 Log.w("head", "personINfo-->p.getPicture-->" + p.getPicture());
-                Glide.with(getContext()).load(VolleyUtil.ROOT_URL + p.getPicture()).into(headPhoto);
+                Glide.with(getContext()).load(VolleyUtil.ROOT_URL + p.getPicture()).crossFade().placeholder(R.drawable.error).into(headPhoto);
             }
         }
     }
@@ -133,7 +133,7 @@ public class PersonInfoFrag extends Fragment {
                 Person pp = (Person) data.getSerializableExtra(PersonInfoContent.UPTADE_PERSON_INFO_TAG);
                 if(pp == null)
                 {
-                    Glide.with(getContext()).load(MyApplication.getPersonHeadPath()).into(headPhoto);
+                    Glide.with(getContext()).load(MyApplication.getPersonHeadPath()).placeholder(R.drawable.error).error(R.drawable.error).into(headPhoto);
                     if (listener != null)
                         listener.updatePersonInfo();
                 }
@@ -141,7 +141,7 @@ public class PersonInfoFrag extends Fragment {
                     p = pp;
                     setUiData();
                     if(data.getBooleanExtra("isChange",false)) {
-                        Glide.with(getContext()).load(MyApplication.getPersonHeadPath()).into(headPhoto);
+                        Glide.with(getContext()).load(MyApplication.getPersonHeadPath()).placeholder(R.drawable.error).into(headPhoto);
                         if (listener != null)
                             listener.updatePersonInfo();
                     }

@@ -38,8 +38,6 @@ public class PhotoSelectFromPhoneActivity extends BaseActivity {
     GridView gridView;
     MyGridViewAdapter adapter;
     List<String> allImges = new ArrayList<>();
-
-
     View bottomLayout;
     TextView dirName ;
     TextView dirCount;
