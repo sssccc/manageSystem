@@ -42,6 +42,9 @@ public class ModifyPropertyInfoActivity extends BaseActivity implements View.OnC
     private Spinner isBorrowedProperty;
     private TextView repairStatus;
     private Button confirmToModify;
+    private EditText location;
+    private EditText user;
+    private EditText factoryId;
 
     private ImageView datePicker;
 
@@ -63,6 +66,9 @@ public class ModifyPropertyInfoActivity extends BaseActivity implements View.OnC
         Intent i = getIntent();
         propertyToBeModified = (Property) i.getSerializableExtra("property_to_be_modified");
         if (propertyToBeModified != null) {
+            location.setText(propertyToBeModified.getLocation());
+            user.setText(propertyToBeModified.getConsumer());
+            factoryId.setText(propertyToBeModified.getFactoryId());
             name.setText(propertyToBeModified.getName());
             name.setSelection(propertyToBeModified.getName().length());
             cate.setText(propertyToBeModified.getCate());
@@ -91,6 +97,9 @@ public class ModifyPropertyInfoActivity extends BaseActivity implements View.OnC
     }
 
     private void initViews() {
+        location = (EditText) findViewById(R.id.location_edit_text);
+        user = (EditText) findViewById(R.id.user_edit_text);
+        factoryId = (EditText) findViewById(R.id.factory_edit_text);
         back = (RelativeLayout) findViewById(R.id.back_in_modify_page);
         name = (EditText) findViewById(R.id.name_edit_in_modify_page);
         cate = (EditText) findViewById(R.id.cate_edit_in_modify_page);
@@ -132,7 +141,7 @@ public class ModifyPropertyInfoActivity extends BaseActivity implements View.OnC
                     @Override
                     public void onClick(final SweetAlertDialog alarmDialog) {
                         alarmDialog.dismissWithAnimation();
-                        final SweetAlertDialog progressDialog = new SweetAlertDialog(ModifyPropertyInfoActivity.this,SweetAlertDialog.PROGRESS_TYPE);
+                        final SweetAlertDialog progressDialog = new SweetAlertDialog(ModifyPropertyInfoActivity.this, SweetAlertDialog.PROGRESS_TYPE);
                         progressDialog.setCanceledOnTouchOutside(false);
                         progressDialog.setCancelable(false);
                         progressDialog.setTitleText("");
@@ -147,6 +156,9 @@ public class ModifyPropertyInfoActivity extends BaseActivity implements View.OnC
                         propertyToBeModified.setIdentifier(identifier.getText().toString());
                         propertyToBeModified.setPrice(price.getText().toString());
                         propertyToBeModified.setDate(date.getText().toString());
+                        propertyToBeModified.setLocation(location.getText().toString());
+                        propertyToBeModified.setConsumer(user.getText().toString());
+                        propertyToBeModified.setFactoryId(factoryId.getText().toString());
                         if (isBorrowedProperty.getSelectedItemPosition() == 0) {
                             propertyToBeModified.setBorrowedProperty(true);
                         } else {
@@ -159,7 +171,7 @@ public class ModifyPropertyInfoActivity extends BaseActivity implements View.OnC
                             @Override
                             public void onSucceed(String s) {
                                 progressDialog.dismiss();
-                                SweetAlertDialog successDialog = new SweetAlertDialog(ModifyPropertyInfoActivity.this,SweetAlertDialog.SUCCESS_TYPE);
+                                SweetAlertDialog successDialog = new SweetAlertDialog(ModifyPropertyInfoActivity.this, SweetAlertDialog.SUCCESS_TYPE);
                                 successDialog.setTitleText("修改成功!");
                                 successDialog.setConfirmClickListener(new SweetAlertDialog.OnSweetClickListener() {
                                     @Override
