@@ -45,6 +45,7 @@ public class ModifyPropertyInfoActivity extends BaseActivity implements View.OnC
     private EditText location;
     private EditText user;
     private EditText factoryId;
+    private TextView dataPicker;
 
     private ImageView datePicker;
 
@@ -94,9 +95,11 @@ public class ModifyPropertyInfoActivity extends BaseActivity implements View.OnC
         back.setOnClickListener(this);
         confirmToModify.setOnClickListener(this);
         datePicker.setOnClickListener(this);
+        dataPicker.setOnClickListener(this);
     }
 
     private void initViews() {
+        dataPicker = (TextView)findViewById(R.id.date_edit_in_modify_page);
         location = (EditText) findViewById(R.id.location_edit_text);
         user = (EditText) findViewById(R.id.user_edit_text);
         factoryId = (EditText) findViewById(R.id.factory_edit_text);
@@ -205,6 +208,7 @@ public class ModifyPropertyInfoActivity extends BaseActivity implements View.OnC
                 });
                 alarmDialog.show();
                 break;
+            case R.id.date_edit_in_modify_page:
             case R.id.pick_date_in_modify_page:
                 Calendar c = Calendar.getInstance();
                 new DatePickerDialog(this, new DatePickerDialog.OnDateSetListener() {
