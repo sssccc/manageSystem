@@ -38,6 +38,9 @@ public class PropertyInfoActivity extends BaseActivity implements View.OnClickLi
     private TextView providerTel;
     private TextView isBorrowedProperty;
     private TextView repairStatus;
+    private TextView user;
+    private TextView factoryId;
+    private TextView location;
     private Property property;
     private boolean change;
 
@@ -53,6 +56,9 @@ public class PropertyInfoActivity extends BaseActivity implements View.OnClickLi
 
     private void initValues() {
         property = (Property) getIntent().getSerializableExtra("data_extra");
+        location.setText(property.getLocation());
+        factoryId.setText(property.getFactoryId());
+        user.setText(property.getConsumer());
         name.setText(property.getName());
         cate.setText(property.getCate());
         brand.setText(property.getBrand());
@@ -104,6 +110,9 @@ public class PropertyInfoActivity extends BaseActivity implements View.OnClickLi
         providerTel = (TextView) findViewById(R.id.provider_tel_in_info_page);
         isBorrowedProperty = (TextView) findViewById(R.id.isBorrowedProperty);
         repairStatus = (TextView) findViewById(R.id.repair_status);
+        user = (TextView) findViewById(R.id.user_in_property_info);
+        factoryId = (TextView) findViewById(R.id.factory_identifier_in_property_info);
+        location = (TextView) findViewById(R.id.location_in_property_info);
     }
 
     @Override
@@ -153,6 +162,9 @@ public class PropertyInfoActivity extends BaseActivity implements View.OnClickLi
                         date.setText(property.getDate());
                         provider.setText(property.getProvider());
                         providerTel.setText(property.getProviderTel());
+                        user.setText(property.getConsumer());
+                        location.setText(property.getLocation());
+                        factoryId.setText(property.getFactoryId());
                         if (property.isBorrowedProperty()) {
                             isBorrowedProperty.setText("是");
                         } else {
@@ -167,7 +179,7 @@ public class PropertyInfoActivity extends BaseActivity implements View.OnClickLi
                         } else if (property.getRepairStatus().equals("无")) {
                             repairStatus.setText("无");
                             applyRepair.setVisibility(View.VISIBLE);
-                        } else if(property.getRepairStatus().equals("待处理")){
+                        } else if (property.getRepairStatus().equals("待处理")) {
                             repairStatus.setText("待处理");
                             applyRepair.setVisibility(View.GONE);
                         }
