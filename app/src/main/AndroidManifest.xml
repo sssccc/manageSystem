@@ -53,10 +53,6 @@
             android:name=".activity.TimeManageActivity"
             android:screenOrientation="portrait" />
         <activity
-            android:name=".activity.PlanDetailActivity"
-            android:screenOrientation="portrait"
-            android:theme="@style/MyPlanDetailActivity" />
-        <activity
             android:name=".activity.TaskDetailActivity"
             android:screenOrientation="portrait"
             android:windowSoftInputMode="adjustResize|stateAlwaysHidden" />
@@ -84,13 +80,13 @@
             android:screenOrientation="portrait" />
         <activity
             android:name=".activity.RegisterActivity"
-            android:screenOrientation="portrait"></activity>
+            android:screenOrientation="portrait"/>
         <activity
             android:name=".activity.BaseActivity"
-            android:screenOrientation="portrait"></activity>
+            android:screenOrientation="portrait"/>
         <activity
             android:name=".activity.PropertyInfoActivity"
-            android:screenOrientation="portrait"></activity>
+            android:screenOrientation="portrait"/>
         <activity
             android:name=".activity.ModifyPropertyInfoActivity"
             android:screenOrientation="portrait" />

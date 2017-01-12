@@ -34,6 +34,7 @@ import demo.yc.formalmanagersystem.models.Task;
 import demo.yc.formalmanagersystem.util.JsonUtil;
 import demo.yc.formalmanagersystem.util.VolleyUtil;
 import demo.yc.formalmanagersystem.view.MySlideListView;
+import demo.yc.formalmanagersystem.view.RefreshLayout;
 
 /**
  * A simple {@link Fragment} subclass.
@@ -48,7 +49,7 @@ public class Task_All_Frag extends TaskBaseFrag implements SwipeRefreshLayout.On
     MySlideListViewAdapter allAdapter, myAdapter;
     TextView allNumTv,myNumTv;
 
-    SwipeRefreshLayout refreshLayout;
+    RefreshLayout refreshLayout;
 
     boolean isAll ,isMy;
     public Task_All_Frag() {
@@ -67,14 +68,14 @@ public class Task_All_Frag extends TaskBaseFrag implements SwipeRefreshLayout.On
         // Inflate the layout for this fragment
         view = inflater.inflate(R.layout.fragment_task_all, container, false);
         setUi();
-//        setData();
+        setData();
         setListener();
         return view;
     }
 
     private void setUi() {
 
-        refreshLayout = (SwipeRefreshLayout) view.findViewById(R.id.task_all_refresh_layout);
+        refreshLayout = (RefreshLayout) view.findViewById(R.id.task_all_refresh_layout);
         refreshLayout.setColorSchemeColors(Color.BLUE,Color.GREEN);
         refreshLayout.setDistanceToTriggerSync(250);
         refreshLayout.setOnRefreshListener(this);
@@ -124,7 +125,7 @@ public class Task_All_Frag extends TaskBaseFrag implements SwipeRefreshLayout.On
                 isAll = true;
                 refreshLayout.setRefreshing(false);
                 Log.w("task","all accept:"+error.toString());
-                //getDataFromLocal(0);
+                getDataFromLocal(0);
             }
         });
 
@@ -325,6 +326,14 @@ public class Task_All_Frag extends TaskBaseFrag implements SwipeRefreshLayout.On
             isAll = false;
             isAll = false;
         }
+    }
+
+    @Override
+    public void onDestroy() {
+        super.onDestroy();
+        refreshLayout.setRefreshing(false);
+        MyApplication.getInstance().getMyQueue().cancelAll("getMyAcceptableTaskList");
+        MyApplication.getInstance().getMyQueue().cancelAll("getAllAcceptableTaskList");
     }
 
 }

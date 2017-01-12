@@ -31,6 +31,8 @@ public class VolleyUtil {
     public VolleyUtil() {
     }
 
+
+    //public static final String ROOT_URL = "";
     public static final String ROOT_URL = "http://192.168.1.124:8888/";
     private static final String BASE_URL = ROOT_URL+"property/";
 
@@ -632,7 +634,7 @@ public class VolleyUtil {
     }
 
     /**
-     * 根据用户Id 获取用户已参与的任务
+     * 根据用户Id 获取用户已参与的项目组任务
      * @param userId
      * @param updateListener
      */
@@ -656,7 +658,8 @@ public class VolleyUtil {
     }
 
     /**
-     * 根据用户Id 获取用户已参与的任务
+     * 在homepage 获取
+     * 根据用户Id 获取用户已参与的所有人组和项目组任务
      * @param userId
      * @param updateListener
      */

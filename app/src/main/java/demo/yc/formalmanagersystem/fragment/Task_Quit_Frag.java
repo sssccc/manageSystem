@@ -33,6 +33,7 @@ import demo.yc.formalmanagersystem.models.Task;
 import demo.yc.formalmanagersystem.util.JsonUtil;
 import demo.yc.formalmanagersystem.util.VolleyUtil;
 import demo.yc.formalmanagersystem.view.MySlideListView2;
+import demo.yc.formalmanagersystem.view.RefreshLayout;
 
 /**
  * A simple {@link Fragment} subclass.
@@ -49,7 +50,7 @@ public class Task_Quit_Frag extends TaskBaseFrag implements SwipeRefreshLayout.O
     MySlideListViewAdapter adapter;
     ArrayList<Task> list = new ArrayList<>();
 
-    SwipeRefreshLayout refreshLayout;
+    RefreshLayout refreshLayout;
     TextView numTv;
 
     @Override
@@ -107,7 +108,7 @@ public class Task_Quit_Frag extends TaskBaseFrag implements SwipeRefreshLayout.O
 
     private void setUi()
     {
-        refreshLayout = (SwipeRefreshLayout) view.findViewById(R.id.task_quit_refresh_layout);
+        refreshLayout = (RefreshLayout) view.findViewById(R.id.task_quit_refresh_layout);
         refreshLayout.setColorSchemeColors(Color.BLUE,Color.GREEN);
         refreshLayout.setDistanceToTriggerSync(250);
         refreshLayout.setOnRefreshListener(this);
@@ -196,5 +197,12 @@ public class Task_Quit_Frag extends TaskBaseFrag implements SwipeRefreshLayout.O
     @Override
     public void onRefresh() {
         setData();
+    }
+
+    @Override
+    public void onDestroy() {
+        super.onDestroy();
+        refreshLayout.setRefreshing(false);
+        MyApplication.getInstance().getMyQueue().cancelAll("getQuitTaskList");
     }
 }

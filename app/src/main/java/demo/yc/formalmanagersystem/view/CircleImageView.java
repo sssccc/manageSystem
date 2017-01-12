@@ -24,7 +24,7 @@ import demo.yc.formalmanagersystem.R;
 
 public class CircleImageView extends ImageView {
 
-    private static final ScaleType SCALE_TYPE = ScaleType.CENTER_INSIDE;
+    private static final ScaleType SCALE_TYPE = ScaleType.FIT_CENTER;
 
     private static final Bitmap.Config BITMAP_CONFIG = Bitmap.Config.ARGB_8888;
     private static final int COLORDRAWABLE_DIMENSION = 1;
@@ -89,9 +89,9 @@ public class CircleImageView extends ImageView {
 
     @Override
     public void setScaleType(ScaleType scaleType) {
-        if (scaleType != SCALE_TYPE) {
-            throw new IllegalArgumentException(String.format("ScaleType %s not supported.", scaleType));
-       }//else
+       // if (scaleType != SCALE_TYPE) {
+        //    throw new IllegalArgumentException(String.format("ScaleType %s not supported.", scaleType));
+      // }//else
 //            super.setScaleType(scaleType);
     }
 

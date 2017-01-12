@@ -101,17 +101,10 @@ public class TaskManageFrag extends Fragment implements View.OnClickListener{
         screenWidth = ScreenSizeUtil.getScreenWidth(getActivity());
         perWidth = screenWidth/texts.length;
 
-      //  View params = new FrameLayout.LayoutParams(perWidth, ViewGroup.LayoutParams.WRAP_CONTENT);
-//        ViewGroup.LayoutParams params = new ViewGroup.LayoutParams(perWidth,5);
-
         FrameLayout.LayoutParams  params = (FrameLayout.LayoutParams) line.getLayoutParams();
         params.width = perWidth;
         line.setLayoutParams(params);
-        //LinearLayout.LayoutParams(perWidth, ViewGroup.LayoutParams.WRAP_CONTENT);
-     //   line.setLayoutParams(params);
-        //ViewGroup.LayoutParams params = new ViewGroup.LayoutParams(perWidth, 5);
-      //  line.setLayoutParams(params);
-        //line.setLayoutParams(new ViewGroup.LayoutParams(perWidth, ViewGroup.LayoutParams.WRAP_CONTENT));
+
     }
 
 
@@ -132,14 +125,8 @@ public class TaskManageFrag extends Fragment implements View.OnClickListener{
         {
             if(i==index)
             {
-                if(!list.get(i).isAdded())
-                    ft.add(R.id.task_frame_layout,list.get(i));
-                else
-                    ft.show(list.get(i));
-            }else
-            {
-                if(list.get(i).isAdded())
-                    ft.hide(list.get(i));
+                if(!list.get(i).isVisible())
+                    ft.replace(R.id.task_frame_layout,list.get(i));
             }
         }
         ft.commit();

@@ -15,12 +15,15 @@ import android.widget.TextView;
 
 import com.bumptech.glide.Glide;
 
+import java.io.File;
+
 import demo.yc.formalmanagersystem.MainActivity;
 import demo.yc.formalmanagersystem.MyApplication;
 import demo.yc.formalmanagersystem.R;
 import demo.yc.formalmanagersystem.activity.UpdatePersonInfoActivity;
 import demo.yc.formalmanagersystem.contentvalues.PersonInfoContent;
 import demo.yc.formalmanagersystem.models.Person;
+import demo.yc.formalmanagersystem.util.FileUtil;
 import demo.yc.formalmanagersystem.util.VolleyUtil;
 import demo.yc.formalmanagersystem.view.CircleImageView;
 
@@ -37,8 +40,8 @@ public class PersonInfoFrag extends Fragment {
     CircleImageView headPhoto;
     Person p;
 
-    public PersonInfoFrag(){
-
+    public PersonInfoFrag()
+    {
     }
 
     @Override
@@ -101,24 +104,24 @@ public class PersonInfoFrag extends Fragment {
         major.setText(p.getMajor());
         number.setText(p.getStudentId());
         position.setText(p.getQuartersId());
-        //position.setText(PersonUtil.getPositonName(p.getQuartersId()));
         if(p.getSex().contains("1"))
             sex.setImageResource(R.drawable.boy);
         else
             sex.setImageResource(R.drawable.girl);
         if(!MyApplication.getPersonHeadPath().equals("")) {
-            Glide.with(getContext()).load(MyApplication.getPersonHeadPath()).into(headPhoto);
+            Glide.with(getContext()).load(MyApplication.getPersonHeadPath()).crossFade().placeholder(R.drawable.error).into(headPhoto);
             Log.w("head","personINfo-->application-->"+MyApplication.getPersonHeadPath());
         }else {
-//            String tempPath = FileUtil.getUserImagePath(MyApplication.getUser().getId());
-//            File file = new File(tempPath);
-//            if (file.exists())
-//                Glide.with(this).load(tempPath).into(headPhoto);
-//            else
-            Log.w("head","personINfo-->p.getPicture-->"+p.getPicture());
-            Glide.with(getContext()).load(VolleyUtil.ROOT_URL+p.getPicture()).into(headPhoto);
+            String tempPath = FileUtil.getUserImagePath(MyApplication.getUser().getId());
+            File file = new File(tempPath);
+            if (file.exists()) {
+                Log.w("person", "head image is exists");
+                Glide.with(this).load(tempPath).crossFade().placeholder(R.drawable.error).skipMemoryCache(true).into(headPhoto);
+            } else {
+                Log.w("head", "personINfo-->p.getPicture-->" + p.getPicture());
+                Glide.with(getContext()).load(VolleyUtil.ROOT_URL + p.getPicture()).crossFade().placeholder(R.drawable.error).into(headPhoto);
+            }
         }
-
     }
 
     @Override
@@ -130,7 +133,7 @@ public class PersonInfoFrag extends Fragment {
                 Person pp = (Person) data.getSerializableExtra(PersonInfoContent.UPTADE_PERSON_INFO_TAG);
                 if(pp == null)
                 {
-                    Glide.with(getContext()).load(MyApplication.getPersonHeadPath()).into(headPhoto);
+                    Glide.with(getContext()).load(MyApplication.getPersonHeadPath()).placeholder(R.drawable.error).error(R.drawable.error).into(headPhoto);
                     if (listener != null)
                         listener.updatePersonInfo();
                 }
@@ -138,7 +141,7 @@ public class PersonInfoFrag extends Fragment {
                     p = pp;
                     setUiData();
                     if(data.getBooleanExtra("isChange",false)) {
-                        Glide.with(getContext()).load(MyApplication.getPersonHeadPath()).into(headPhoto);
+                        Glide.with(getContext()).load(MyApplication.getPersonHeadPath()).placeholder(R.drawable.error).into(headPhoto);
                         if (listener != null)
                             listener.updatePersonInfo();
                     }

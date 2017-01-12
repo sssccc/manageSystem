@@ -6,7 +6,6 @@ import android.os.Environment;
 import android.os.IBinder;
 import android.support.annotation.Nullable;
 import android.util.Log;
-import android.widget.Toast;
 
 import java.io.File;
 import java.io.FileOutputStream;
@@ -15,7 +14,6 @@ import java.io.OutputStream;
 import java.net.HttpURLConnection;
 import java.net.URL;
 
-import demo.yc.formalmanagersystem.MyApplication;
 import demo.yc.formalmanagersystem.models.FileInfo;
 import demo.yc.formalmanagersystem.util.FileUtil;
 
@@ -25,10 +23,11 @@ import demo.yc.formalmanagersystem.util.FileUtil;
 
 public class DownLoadService extends Service
 {
-
     public static final String ACTION_CHANGE_IMAGE = "ACTION_CHANGE_IMAGE";
     public static final String ACTION_DOWNLAOD_IMAGE = "ACTION_DOWNLAOD_IMAGE";
+    public static final String ACTION_DOWNLAOD_ENCLOSURE = "ACTION_DOWNLAOD_ENCLOSURE";
     public static final String ACTION_PROPERTY_NOTIFY = "ACTION_PROPERTY_NOTIFY";
+
     @Nullable
     @Override
     public IBinder onBind(Intent intent) {
@@ -36,31 +35,47 @@ public class DownLoadService extends Service
     }
 
     @Override
+    public void onCreate() {
+        super.onCreate();
+        Log.w("file","registerReceiver.......");
+    }
+
+    @Override
     public int onStartCommand(final Intent intent, int flags, int startId) {
-//
-//        if(intent.getAction().equals(ACTION_DOWNLAOD_IMAGE))
-//        {
-//            FileInfo fileInfo = (FileInfo) intent.getSerializableExtra("image");
-//            new DownLoadThread(fileInfo).start();
-//        }else if(intent.getAction().equals(ACTION_PROPERTY_NOTIFY))
-//        {
-//            new Thread(){
-//                @Override
-//                public void run() {
-//                    try {
-//                        Thread.sleep(1000);
-//                        Intent intent1 = new Intent();
-//                        intent.putExtra("message","购买电脑成功");
-//                        intent.setAction(ACTION_PROPERTY_NOTIFY);
-//                        sendBroadcast(intent1);
-//                        Log.w("file","notify");
-//                    } catch (InterruptedException e) {
-//                        e.printStackTrace();
-//                    }
-//                }
-//            }.start();
-//        }
+        if(intent.getAction().equals(ACTION_DOWNLAOD_IMAGE))
+        {
+            Log.w("file","service....下载图片");
+            FileInfo fileInfo = (FileInfo) intent.getSerializableExtra("image");
+            new DownLoadThread(fileInfo).start();
+        }else if(intent.getAction().equals(ACTION_PROPERTY_NOTIFY))
+        {
+            new Thread(){
+                @Override
+                public void run() {
+                    try {
+                        Thread.sleep(3000);
+                        Intent intent1 = new Intent(ACTION_PROPERTY_NOTIFY);
+                        intent1.putExtra("message","购买电脑成功");
+                        sendBroadcast(intent1);
+                        Log.w("file","service .... notify");
+                    } catch (InterruptedException e) {
+                        e.printStackTrace();
+                    }
+                }
+            }.start();
+
+        }else if(intent.getAction().equals(ACTION_DOWNLAOD_ENCLOSURE))
+        {
+            FileInfo fileInfo = (FileInfo) intent.getSerializableExtra("enclosure");
+            new DownLoadThread(fileInfo).start();
+        }
         return super.onStartCommand(intent, flags, startId);
+    }
+
+    @Override
+    public void onDestroy() {
+        super.onDestroy();
+        Log.w("file","unregisterReceiver.......");
     }
 }
 
@@ -77,16 +92,21 @@ class DownLoadThread extends Thread
         HttpURLConnection conn = null;
         InputStream is = null;
         OutputStream os = null;
-        File file = new File(Environment.getExternalStorageDirectory().getAbsolutePath()+"/temp.jpg");
-        Toast.makeText(MyApplication.getContext(),file.getAbsolutePath(),Toast.LENGTH_SHORT).show();
+        File file = new File(Environment.getExternalStorageDirectory().getAbsolutePath()+"/809temp.jpg");
+        //Toast.makeText(MyApplication.getContext(),file.getAbsolutePath(),Toast.LENGTH_SHORT).show();
+
         Log.w("file","tempFile path = "+file.getAbsolutePath());
+        Log.w("file",fileInfo.getFileURL()+"....");
         try {
             URL url = new URL(fileInfo.getFileURL());
             conn = (HttpURLConnection) url.openConnection();
             conn.setRequestMethod("GET");
             conn.setConnectTimeout(5000);
-            if(file == null)
+            if(file == null) {
+                Log.w("file","file is null。。。。");
                 return;
+            }
+
             if(conn.getResponseCode() == HttpURLConnection.HTTP_OK)
             {
                 is = conn.getInputStream();
@@ -97,9 +117,13 @@ class DownLoadThread extends Thread
                 {
                     os.write(bytes,0,len);
                 }
+                FileUtil.compressImage(fileInfo.getFileName(),file.getAbsolutePath());
+            }else
+            {
+                Log.w("file","下载失败");
             }
-            FileUtil.compressImage(fileInfo.getFileName(),file.getAbsolutePath());
-            file.delete();
+
+
         }catch (Exception e)
         {
             e.printStackTrace();
@@ -108,6 +132,7 @@ class DownLoadThread extends Thread
             try {
                 os.close();
                 conn.disconnect();
+                file.delete();
                 is.close();
             } catch (Exception e) {
                 e.printStackTrace();

@@ -69,7 +69,7 @@
                 android:layout_width="match_parent"
                 android:layout_height="80dp">
                 <demo.yc.formalmanagersystem.view.CircleImageView
-                    android:src="@drawable/person"
+                    android:src="@drawable/error"
                     android:layout_width="50dp"
                     android:layout_height="50dp"
                     android:layout_alignParentLeft="true"

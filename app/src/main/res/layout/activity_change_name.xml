@@ -26,6 +26,7 @@
                 android:textSize="20sp"
                 android:background="#5fbbb0"/>
             <EditText
+                android:maxLength="5"
                 android:gravity="center"
                 android:textSize="20sp"
                 android:textColor="#000"

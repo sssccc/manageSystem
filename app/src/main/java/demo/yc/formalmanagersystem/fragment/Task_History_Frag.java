@@ -33,6 +33,7 @@ import demo.yc.formalmanagersystem.models.Task;
 import demo.yc.formalmanagersystem.util.JsonUtil;
 import demo.yc.formalmanagersystem.util.VolleyUtil;
 import demo.yc.formalmanagersystem.view.MySlideListView2;
+import demo.yc.formalmanagersystem.view.RefreshLayout;
 
 /**
  * A simple {@link Fragment} subclass.
@@ -47,7 +48,7 @@ public class Task_History_Frag extends TaskBaseFrag implements SwipeRefreshLayou
 
 
     TextView numTv;
-    SwipeRefreshLayout refreshLayout;
+    RefreshLayout refreshLayout;
 
     public Task_History_Frag() {
         // Required empty public constructor
@@ -106,7 +107,7 @@ public class Task_History_Frag extends TaskBaseFrag implements SwipeRefreshLayou
     }
 
     private void setUi() {
-        refreshLayout = (SwipeRefreshLayout) view.findViewById(R.id.task_history_refresh_layout);
+        refreshLayout = (RefreshLayout) view.findViewById(R.id.task_history_refresh_layout);
         refreshLayout.setColorSchemeColors(Color.BLUE,Color.GREEN);
         refreshLayout.setDistanceToTriggerSync(250);
         refreshLayout.setOnRefreshListener(this);
@@ -117,7 +118,6 @@ public class Task_History_Frag extends TaskBaseFrag implements SwipeRefreshLayou
             }
         });
         onRefresh();
-       // refreshableView = (RefreshableView) view.findViewById(R.id.refresh_view_in_history);
         numTv = (TextView) view.findViewById(R.id.history_list_num);
         listView = (MySlideListView2) view.findViewById(R.id.task_history_listView);
         listView.initSlideMode(0);
@@ -125,7 +125,6 @@ public class Task_History_Frag extends TaskBaseFrag implements SwipeRefreshLayou
 
     //请求数据之后，绑定adapter
     private void showListView() {
-       // refreshableView.finishRefreshing("history");
         refreshLayout.setRefreshing(false);
         adapter = new MySlideListViewAdapter(this, getContext(), list,2);
         listView.setAdapter(adapter);
@@ -192,5 +191,12 @@ public class Task_History_Frag extends TaskBaseFrag implements SwipeRefreshLayou
     @Override
     public void onRefresh() {
         setData();
+    }
+
+    @Override
+    public void onDestroy() {
+        super.onDestroy();
+        refreshLayout.setRefreshing(false);
+        MyApplication.getInstance().getMyQueue().cancelAll("getHistoryTaskList");
     }
 }
